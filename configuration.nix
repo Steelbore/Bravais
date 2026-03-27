@@ -129,6 +129,10 @@
     onedriver
     superfile
 
+    # 📝 Productivity & Notes
+    appflowy
+    affine
+
     # 🎮 Gaming / Emulation
     dosbox-x
     retroarch-full
@@ -210,6 +214,17 @@
     emulsion
     t-rec
 
+    # 🤖 AI Coding Tools
+    codex
+    copilot-cli
+    github-copilot-cli
+    opencode
+    aichat
+    gemini-cli
+    claude-code
+    gpt-cli
+    emacsPackages.claude-code
+
     # 🔧 Dev Tools
     just
     tokei
@@ -224,7 +239,6 @@
     php
     git
     gh
-    github-copilot-cli
     cachix
 
     # 🌐 Networking
