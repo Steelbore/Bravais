@@ -1,6 +1,6 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# and in the NixOS manual (accessible by running 'nixos-help').
 
 { config, pkgs, ... }:
 
@@ -13,6 +13,9 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # Enable flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -77,11 +80,11 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Define a user account. Don't forget to set a password with 'passwd'.
   users.users.mj = {
     isNormalUser = true;
     description = "Mohamed Hammad";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "input" "docker" "mj" ];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -96,8 +99,188 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    # 🌐 Browsers
+    google-chrome
+    brave
+    microsoft-edge
+    librewolf
+
+    # 🖥️ GUI / Editors / Terminals
+    zed-editor
+    lapce
+    alacritty
+    wezterm
+    ptyxis
+    waveterm
+    warp-terminal
+    termius
+    vscode
+    vscodium
+    emacs-pgtk
+    gedit
+    dconf-editor
+    github-desktop
+    libreoffice-fresh
+    onlyoffice-desktopeditors
+    qalculate-gtk
+    vlc
+    tutanota-desktop
+    bitwarden-desktop
+    onedriver
+    superfile
+
+    # 🎮 Gaming / Emulation
+    dosbox-x
+    retroarch-full
+
+    # 🔐 Security & Passwords
+    bitwarden-cli
+    gnupg
+    gpg-tui
+    age
+    sops
+    pinentry-gnome3
+    pinentry-curses
+
+    # 📦 Archive & File Tools
+    p7zip
+    zip
+    unzip
+    ventoy-full
+
+    # 📥 Download & Transfer
+    aria2
+    uget
+    yt-dlp
+    rqbit
+    curlFull
+    wget
+    wget2
+    monolith
+
+    # 🐳 Containers & Virtualization
+    distrobox
+    boxbuddy
+
+    # 🐚 Shells & Prompt
+    nushell
+    ion
+    starship
+    pipr
+    sudo-rs
+    moar
+    powershell
+
+    # 📂 Navigation
+    zoxide
+    broot
+
+    # 📜 Text & Search
+    bat
+    mdcat
+    ripgrep
+    skim
+    sd
+    delta
+    tealdeer
+    difftastic
+  #  frawk
+
+    # 📊 System Monitors
+    bottom
+  #  ytop
+    procs
+    macchina
+    htop
+    htop-vim
+    gotop
+    btop
+    i7z
+    fastfetch
+    hw-probe
+
+    # 📦 File & Disk
+    dust
+    dua
+    ouch
+    fclones
+    teip
+    htmlq
+    viu
+    emulsion
+    t-rec
+
+    # 🔧 Dev Tools
+    just
+    tokei
+    sad
+    pueue
+    gitui
+    pipe-rename
+    amp
+    topgrade
+    rustup
+    jdk
+    php
+    git
+    gh
+    github-copilot-cli
+    cachix
+
+    # 🌐 Networking
+    fd
+    paru
+    matrix-commander-rs
+    wl-clipboard-rs
+    openssh_hpn
+    dnsmasq
+    atftp
+    adguardhome
+
+    # 🖊️ Terminal Editors
+    vim
+    neovim
+    mg
+    vimacs
+    mc
+    msedit
+
+    # 🐧 System Utilities
+    uutils-coreutils
+    uutils-diffutils
+    uutils-findutils
+    zfs
+    antigravity
+    doas
+    eza
+    screen
+    os-prober
+    kbd
+    numlockx
+    xremap
+    glibc
+    phoronix-test-suite
+    perf
+    input-leap
+
+    # 🪐 COSMIC / Extra Desktop
+    cosmic-wallpapers
+    xdg-desktop-portal-cosmic
+
+    # 🧩 GNOME Extensions & Tools
+    gnome-extension-manager
+    gnome-browser-connector
+    gnomeExtensions.caffeine
+    gnomeExtensions.just-perfection
+    gnomeExtensions.window-gestures
+    gnomeExtensions.wayland-or-x11
+    gnomeExtensions.toggler
+    gnomeExtensions.vim-alt-tab
+    gnomeExtensions.yakuake
+    gnomeExtensions.open-bar
+    gnomeExtensions.tweaks-in-system-menu
+    gnomeExtensions.launcher
+    gnomeExtensions.window-title-is-back
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -121,7 +304,7 @@
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
+  # on your system were taken. It's perfectly fine and recommended to leave
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
