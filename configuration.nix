@@ -14,10 +14,13 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Kernel
+    boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
+  
   # Enable flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "lattice"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -49,8 +52,8 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.gnome.enable= true;
+  services.displayManager.gdm.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -99,6 +102,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    pkgs.linuxKernel.kernels.linux_xanmod_latest
     # 🌐 Browsers
     google-chrome
     brave
@@ -136,8 +140,8 @@
     # 🎮 Gaming / Emulation
     dosbox
     dosbox-x
-    emu2
-    retroarch-full
+    #emu2
+    #retroarch-full
 
     # 🔐 Security & Passwords
     bitwarden-cli
@@ -152,7 +156,7 @@
     p7zip
     zip
     unzip
-    ventoy-full
+    #ventoy-full
 
     # 📥 Download & Transfer
     aria2
@@ -305,7 +309,6 @@
     cosmic-player
     cosmic-session
     cosmic-greeter
-    cosmic-greater
     cosmic-ext-ctl
     cosmic-applets
     cosmic-settings
@@ -365,6 +368,18 @@
     gnomeExtensions.launcher
     gnomeExtensions.window-title-is-back
   ];
+
+  environment.sessionVariables = {
+    # Rust (Cargo) flags
+    RUSTFLAGS = "-C target-cpu=x86-64-v4 -C opt-level=3";
+    
+    # Go flags
+    GOAMD64 = "v4";
+    
+    # Optional C/C++ flags for local Make/CMake builds outside of Nix builds
+    CFLAGS = "-march=x86-64-v4 -O3 -pipe -fno-plt -flto=auto";
+    CXXFLAGS = "-march=x86-64-v4 -O3 -pipe -fno-plt -flto=auto";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
