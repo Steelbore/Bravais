@@ -5,10 +5,10 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+    "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz"}/nixos"
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -202,7 +202,7 @@
     starship
     pipr
     sudo-rs
-    moar
+    moor
     powershell
 
     # 📂 Navigation
@@ -429,5 +429,14 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
+
+  # Home Manager Configuration
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.backupFileExtension = "backup";
+  home-manager.users.mj = { config, lib, ... }: {
+    imports = [ ./hosts/lattice/home.nix ];
+    home.file."steelbore".source = config.lib.file.mkOutOfStoreSymlink "/Steelbore";
+  };
 
 }
