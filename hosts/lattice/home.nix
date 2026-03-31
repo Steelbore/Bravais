@@ -30,7 +30,7 @@ in
       enable = true;
       userName = "UnbreakableMJ";
       userEmail = "34196588+UnbreakableMJ@users.noreply.github.com";
-      extraConfig = {
+      settings = {
         init.defaultBranch = "main";
         gpg.format = "ssh";
       };
