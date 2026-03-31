@@ -4,143 +4,40 @@
 
 { config, pkgs, ... }:
 
+let
+  # Import the unstable channel you just added
+  unstable = import <nixos-unstable> {
+    config = config.nixpkgs.config; # Inherit system config (like allowUnfree)
+  };
+in
 {
   imports = [
     ./hardware-configuration.nix
     "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz"}/nixos"
   ];
-
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # Kernel
-    boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
-  
-  # Enable flakes
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  networking.hostName = "lattice"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-
-  # Set your time zone.
-  time.timeZone = "Asia/Bahrain";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
-  };
-
-  services.fprintd.enable = true;
-  #services.fprintd.tod.enable = true;
-  #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-vfs0090;
-  # If the above doesn't work, try this one:
-  # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
-
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable greetd
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd cosmic-session";
-        user = "mj";
-      };
-    };
-  };
-
-  services.desktopManager.cosmic.enable = true;
-  services.displayManager.cosmic-greeter.enable = false;
-  
-  services.xserver.windowManager.leftwm.enable = true;
-  programs.niri.enable = true;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with 'passwd'.
-  users.users.mj = {
-    isNormalUser = true;
-    description = "Mohamed Hammad";
-    extraGroups = [ "networkmanager" "wheel" "input" "docker" "mj" ];
-    packages = with pkgs; [
-    #  thunderbird
-    ];
-  };
-
-  # Install firefox.
-  programs.firefox.enable = true;
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    pkgs.linuxKernel.kernels.linux_xanmod_latest
-    pkgs.mcp-nixos
-    
+    unstable.linuxKernel.kernels.linux_xanmod_latest
+    unstable.mcp-nixos
+
     # 🌐 Browsers
-    google-chrome
-    brave
-    microsoft-edge
-    librewolf
+    unstable.google-chrome
+    unstable.brave
+    unstable.microsoft-edge
+    unstable.librewolf
 
     # 🖥️ GUI / Editors / Terminals
-    zed-editor
+    unstable.zed-editor
     lapce
-    alacritty
-    wezterm
-    ptyxis
-    waveterm
-    warp-terminal
+    unstable.alacritty
+    unstable.wezterm
+    unstable.ptyxis
+    unstable.waveterm
+    unstable.warp-terminal
     termius
-    vscode
-    vscodium
+    unstable.vscode
+    unstable.vscodium
     emacs-pgtk
     gedit
     dconf-editor
@@ -149,8 +46,8 @@
     onlyoffice-desktopeditors
     qalculate-gtk
     vlc
-    tutanota-desktop
-    bitwarden-desktop
+    unstable.tutanota-desktop
+    unstable.bitwarden-desktop
     onedriver
     superfile
     pkgs.rio
@@ -166,13 +63,26 @@
     #retroarch-full
 
     # 🔐 Security & Passwords
-    bitwarden-cli
+    unstable.bitwarden-cli
+    openssh
     gnupg
     gpg-tui
-    age
+
+    # File encryption & Secrets
+    #age
+    rage
     sops
-    pinentry-gnome3
-    pinentry-curses
+
+    # PGP Ecosystem
+    pkgs.sequoia-sq
+    pkgs.sequoia-chameleon-gnupg
+
+    #pinentry-gnome3
+    #pinentry-curses
+
+    pkgs.sequoia-wot
+    pkgs.sequoia-sqv
+    pkgs.sequoia-sqop
 
     # 📦 Archive & File Tools
     p7zip
@@ -202,8 +112,8 @@
     starship
     pipr
     sudo-rs
-    moor
-    powershell
+    unstable.moor
+    unstable.powershell
 
     # 📂 Navigation
     zoxide
@@ -219,11 +129,11 @@
     delta
     tealdeer
     difftastic
-  #  frawk
+    #  frawk
 
     # 📊 System Monitors
     bottom
-  #  ytop
+    #  ytop
     procs
     macchina
     htop
@@ -249,14 +159,14 @@
     t-rec
 
     # 🤖 AI Coding Tools
-    codex
-    copilot-cli
-    github-copilot-cli
-    opencode
-    aichat
-    gemini-cli
-    claude-code
-    gpt-cli
+    unstable.codex
+    unstable.copilot-cli
+    unstable.github-copilot-cli
+    unstable.opencode
+    unstable.aichat
+    unstable.gemini-cli
+    unstable.claude-code
+    unstable.gpt-cli
     emacsPackages.claude-code
 
     # 🔧 Dev Tools
@@ -274,10 +184,11 @@
     jdk
     php
     git
-    gh
+    unstable.gh
     cachix
     guix
     emacsPackages.guix
+    nixfmt
 
     # 🌐 Networking
     fd
@@ -302,7 +213,7 @@
     uutils-diffutils
     uutils-findutils
     zfs
-    antigravity
+    unstable.antigravity
     doas
     eza
     screen
@@ -391,13 +302,137 @@
     gnomeExtensions.window-title-is-back
   ];
 
+  # Install firefox.
+  programs.firefox.enable = true;
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  nixpkgs.overlays = [
+    (final: prev: {
+      sequoia-wot = prev.sequoia-wot.overrideAttrs (old: {
+        doCheck = false;
+      });
+    })
+  ];
+
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # Kernel
+  boot.kernelPackages = unstable.linuxPackages_xanmod_latest;
+
+  # Enable flakes
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
+  networking.hostName = "lattice"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Enable networking
+  networking.networkmanager.enable = true;
+
+  # Set your time zone.
+  time.timeZone = "Asia/Bahrain";
+
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
+  };
+
+  services.flatpak.enable = true;
+
+  services.fprintd.enable = true;
+  #services.fprintd.tod.enable = true;
+  #services.fprintd.tod.driver = pkgs.libfprint-2-tod1-vfs0090;
+  # If the above doesn't work, try this one:
+  # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
+
+  # Enable the X11 windowing system.
+  services.xserver.enable = true;
+
+  # Enable greetd
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd cosmic-session";
+        user = "mj";
+      };
+    };
+  };
+
+  services.desktopManager.cosmic.enable = true;
+  services.displayManager.cosmic-greeter.enable = false;
+
+  services.xserver.windowManager.leftwm.enable = true;
+  programs.niri.enable = true;
+
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
+
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
+
+  # Enable sound with pipewire.
+  services.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
+  };
+
+  # Enable touchpad support (enabled default in most desktopManager).
+  # services.xserver.libinput.enable = true;
+
+  # Define a user account. Don't forget to set a password with 'passwd'.
+  users.users.mj = {
+    isNormalUser = true;
+    description = "Mohamed Hammad";
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "input"
+      "docker"
+      "mj"
+    ];
+  };
+
   environment.sessionVariables = {
     # Rust (Cargo) flags
     RUSTFLAGS = "-C target-cpu=x86-64-v4 -C opt-level=3";
-    
+
     # Go flags
     GOAMD64 = "v4";
-    
+
     # Optional C/C++ flags for local Make/CMake builds outside of Nix builds
     CFLAGS = "-march=x86-64-v4 -O3 -pipe -fno-plt -flto=auto";
     CXXFLAGS = "-march=x86-64-v4 -O3 -pipe -fno-plt -flto=auto";
@@ -434,9 +469,11 @@
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.backupFileExtension = "backup";
-  home-manager.users.mj = { config, lib, ... }: {
-    imports = [ ./hosts/lattice/home.nix ];
-    home.file."steelbore".source = config.lib.file.mkOutOfStoreSymlink "/Steelbore";
-  };
+  home-manager.users.mj =
+    { config, lib, ... }:
+    {
+      imports = [ ./hosts/lattice/home.nix ];
+      home.file."steelbore".source = config.lib.file.mkOutOfStoreSymlink "/steelbore";
+    };
 
 }
