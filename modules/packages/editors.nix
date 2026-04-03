@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Steelbore Lattice — Text Editors and IDEs
+{ config, lib, pkgs, ... }:
+
+{
+  options.steelbore.packages.editors = {
+    enable = lib.mkEnableOption "Text editors and IDEs";
+  };
+
+  config = lib.mkIf config.steelbore.packages.editors.enable {
+    environment.systemPackages = with pkgs; [
+      # Linting
+      markdownlint-cli2           # Markdown linter
+
+      # TUI Editors (Rust preferred)
+      helix                      # Rust — Modal editor
+      amp                        # Rust — Vim-like
+      msedit                     # Rust — MS-DOS style
+
+      # TUI Editors (Standard)
+      neovim
+      vim
+      mg                         # Micro Emacs
+      mc                         # Midnight Commander
+
+      # GUI Editors (Rust preferred)
+      zed-editor                 # Rust — Fast collaborative
+      lapce                      # Rust — Lightning fast
+      neovide                    # Rust — Neovim GUI
+      cosmic-edit                # Rust — COSMIC editor
+
+      # GUI Editors (Standard)
+      emacs-pgtk
+      vscode-fhs                  # Keep a single Code-family editor in system.path
+      gedit
+    ];
+  };
+}

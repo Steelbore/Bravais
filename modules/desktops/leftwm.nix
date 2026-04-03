@@ -1,0 +1,362 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Steelbore Lattice — LeftWM Tiling Window Manager (X11)
+{ config, lib, pkgs, steelborePalette, ... }:
+
+{
+  options.steelbore.desktops.leftwm = {
+    enable = lib.mkEnableOption "LeftWM tiling window manager (X11)";
+  };
+
+  config = lib.mkIf config.steelbore.desktops.leftwm.enable {
+    # Enable X11 and LeftWM
+    services.xserver.enable = true;
+    services.xserver.windowManager.leftwm.enable = true;
+
+    # X11 keyboard layout
+    services.xserver.xkb = {
+      layout = "us,ar";
+      options = "grp:ctrl_space_toggle";
+    };
+
+    # LeftWM and companion packages
+    environment.systemPackages = with pkgs; [
+      leftwm
+      leftwm-theme
+      leftwm-config
+
+      # Launcher
+      rlaunch                    # Application launcher (Rust)
+      rofi                       # Alternative launcher
+      dmenu                      # Minimal launcher
+
+      # Bar
+      polybar                    # Status bar
+
+      # Compositor
+      picom                      # Compositor for transparency/effects
+
+      # Utilities
+      feh                        # Background setter
+      dunst                      # Notification daemon
+      xclip                      # Clipboard
+      xsel                       # Clipboard
+      maim                       # Screenshot
+      xdotool                    # X11 automation
+      numlockx                   # NumLock control
+    ];
+
+    # LeftWM configuration
+    environment.etc."leftwm/config.ron".text = ''
+      // Steelbore LeftWM Configuration
+      // The Steelbore Standard — X11 Tiling
+
+      #![enable(implicit_some)]
+      (
+          modkey: "Mod4",
+          mousekey: "Mod4",
+          workspaces: [],
+          tags: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          max_window_width: None,
+          layouts: [
+              MainAndVertStack,
+              MainAndHorizontalStack,
+              MainAndDeck,
+              GridHorizontal,
+              EvenHorizontal,
+              EvenVertical,
+              Fibonacci,
+              Monocle,
+          ],
+          layout_mode: Tag,
+          insert_behavior: Bottom,
+          scratchpad: [
+              (name: "Terminal", value: "alacritty", x: 50, y: 50, width: 1200, height: 800),
+          ],
+          window_rules: [],
+          disable_current_tag_swap: false,
+          disable_tile_drag: false,
+          disable_window_snap: false,
+          focus_behaviour: Sloppy,
+          focus_new_windows: true,
+          single_window_border: true,
+          sloppy_mouse_follows_focus: true,
+          auto_derive_workspaces: true,
+          keybind: [
+              // Session
+              (command: Execute, value: "loginctl kill-session $XDG_SESSION_ID", modifier: ["modkey", "Shift"], key: "e"),
+
+              // Applications
+              (command: Execute, value: "alacritty", modifier: ["modkey"], key: "Return"),
+              (command: Execute, value: "rlaunch", modifier: ["modkey"], key: "d"),
+              (command: Execute, value: "rofi -show drun", modifier: ["modkey", "Shift"], key: "d"),
+
+              // Window management
+              (command: CloseWindow, value: "", modifier: ["modkey"], key: "q"),
+              (command: ToggleFullScreen, value: "", modifier: ["modkey"], key: "f"),
+              (command: ToggleFloating, value: "", modifier: ["modkey", "Shift"], key: "f"),
+
+              // Focus (Vim-style)
+              (command: FocusWindowLeft, value: "", modifier: ["modkey"], key: "h"),
+              (command: FocusWindowRight, value: "", modifier: ["modkey"], key: "l"),
+              (command: FocusWindowUp, value: "", modifier: ["modkey"], key: "k"),
+              (command: FocusWindowDown, value: "", modifier: ["modkey"], key: "j"),
+
+              // Focus (Arrow keys)
+              (command: FocusWindowLeft, value: "", modifier: ["modkey"], key: "Left"),
+              (command: FocusWindowRight, value: "", modifier: ["modkey"], key: "Right"),
+              (command: FocusWindowUp, value: "", modifier: ["modkey"], key: "Up"),
+              (command: FocusWindowDown, value: "", modifier: ["modkey"], key: "Down"),
+
+              // Move windows (Vim-style)
+              (command: MoveWindowLeft, value: "", modifier: ["modkey", "Shift"], key: "h"),
+              (command: MoveWindowRight, value: "", modifier: ["modkey", "Shift"], key: "l"),
+              (command: MoveWindowUp, value: "", modifier: ["modkey", "Shift"], key: "k"),
+              (command: MoveWindowDown, value: "", modifier: ["modkey", "Shift"], key: "j"),
+
+              // Layouts
+              (command: NextLayout, value: "", modifier: ["modkey"], key: "space"),
+              (command: PreviousLayout, value: "", modifier: ["modkey", "Shift"], key: "space"),
+
+              // Workspaces
+              (command: GotoTag, value: "1", modifier: ["modkey"], key: "1"),
+              (command: GotoTag, value: "2", modifier: ["modkey"], key: "2"),
+              (command: GotoTag, value: "3", modifier: ["modkey"], key: "3"),
+              (command: GotoTag, value: "4", modifier: ["modkey"], key: "4"),
+              (command: GotoTag, value: "5", modifier: ["modkey"], key: "5"),
+              (command: GotoTag, value: "6", modifier: ["modkey"], key: "6"),
+              (command: GotoTag, value: "7", modifier: ["modkey"], key: "7"),
+              (command: GotoTag, value: "8", modifier: ["modkey"], key: "8"),
+              (command: GotoTag, value: "9", modifier: ["modkey"], key: "9"),
+              (command: MoveToTag, value: "1", modifier: ["modkey", "Shift"], key: "1"),
+              (command: MoveToTag, value: "2", modifier: ["modkey", "Shift"], key: "2"),
+              (command: MoveToTag, value: "3", modifier: ["modkey", "Shift"], key: "3"),
+              (command: MoveToTag, value: "4", modifier: ["modkey", "Shift"], key: "4"),
+              (command: MoveToTag, value: "5", modifier: ["modkey", "Shift"], key: "5"),
+              (command: MoveToTag, value: "6", modifier: ["modkey", "Shift"], key: "6"),
+              (command: MoveToTag, value: "7", modifier: ["modkey", "Shift"], key: "7"),
+              (command: MoveToTag, value: "8", modifier: ["modkey", "Shift"], key: "8"),
+              (command: MoveToTag, value: "9", modifier: ["modkey", "Shift"], key: "9"),
+
+              // Resize
+              (command: IncreaseMainWidth, value: "5", modifier: ["modkey"], key: "equal"),
+              (command: DecreaseMainWidth, value: "5", modifier: ["modkey"], key: "minus"),
+
+              // Scratchpad
+              (command: ToggleScratchPad, value: "Terminal", modifier: ["modkey"], key: "grave"),
+          ],
+          state_path: None,
+      )
+    '';
+
+    # LeftWM theme (Steelbore)
+    environment.etc."leftwm/themes/current/theme.ron".text = ''
+      // Steelbore LeftWM Theme
+      (
+          border_width: 2,
+          margin: 8,
+          workspace_margin: Some(8),
+          default_border_color: "${steelborePalette.steelBlue}",
+          floating_border_color: "${steelborePalette.liquidCool}",
+          focused_border_color: "${steelborePalette.moltenAmber}",
+          on_new_window_cmd: None,
+      )
+    '';
+
+    # LeftWM autostart (up script)
+    environment.etc."leftwm/themes/current/up" = {
+      mode = "0755";
+      text = ''
+        #!/usr/bin/env bash
+        # Steelbore LeftWM Startup Script
+
+        # Set background
+        feh --bg-solid "${steelborePalette.voidNavy}" &
+
+        # Start compositor
+        picom --config /etc/leftwm/themes/current/picom.conf &
+
+        # Start notification daemon
+        dunst &
+
+        # Start polybar
+        polybar steelbore &
+
+        # Enable NumLock
+        numlockx on &
+      '';
+    };
+
+    # LeftWM shutdown (down script)
+    environment.etc."leftwm/themes/current/down" = {
+      mode = "0755";
+      text = ''
+        #!/usr/bin/env bash
+        # Steelbore LeftWM Shutdown Script
+        pkill polybar
+        pkill picom
+        pkill dunst
+      '';
+    };
+
+    # Polybar configuration (Steelbore theme)
+    environment.etc."leftwm/themes/current/polybar.ini".text = ''
+      ; Steelbore Polybar Configuration
+
+      [colors]
+      background = ${steelborePalette.voidNavy}
+      foreground = ${steelborePalette.moltenAmber}
+      accent = ${steelborePalette.steelBlue}
+      success = ${steelborePalette.radiumGreen}
+      warning = ${steelborePalette.redOxide}
+      info = ${steelborePalette.liquidCool}
+
+      [bar/steelbore]
+      width = 100%
+      height = 32
+      fixed-center = true
+
+      background = ''${colors.background}
+      foreground = ''${colors.foreground}
+
+      line-size = 2
+      line-color = ''${colors.accent}
+
+      border-bottom-size = 2
+      border-bottom-color = ''${colors.accent}
+
+      padding-left = 2
+      padding-right = 2
+      module-margin = 1
+
+      font-0 = "Share Tech Mono:size=12;2"
+      font-1 = "JetBrainsMono Nerd Font:size=12;2"
+
+      modules-left = leftwm-tags
+      modules-center = date
+      modules-right = cpu memory network
+
+      cursor-click = pointer
+      cursor-scroll = ns-resize
+
+      [module/leftwm-tags]
+      type = custom/script
+      exec = leftwm-state -w "$LEFTWM_STATE_SOCKET" -t "$LEFTWM_THEME_DIR/template.liquid"
+      tail = true
+
+      [module/date]
+      type = internal/date
+      interval = 1
+      date = "%Y-%m-%d"
+      time = "%H:%M:%S"
+      label = "%time% :: %date%"
+      label-foreground = ''${colors.foreground}
+
+      [module/cpu]
+      type = internal/cpu
+      interval = 1
+      label = "CPU: %percentage%%"
+      label-foreground = ''${colors.success}
+
+      [module/memory]
+      type = internal/memory
+      interval = 1
+      label = "RAM: %percentage_used%%"
+      label-foreground = ''${colors.success}
+
+      [module/network]
+      type = internal/network
+      interface-type = wireless
+      interval = 1
+      label-connected = "%essid%"
+      label-connected-foreground = ''${colors.info}
+      label-disconnected = "Offline"
+      label-disconnected-foreground = ''${colors.warning}
+    '';
+
+    # Polybar template for LeftWM tags
+    environment.etc."leftwm/themes/current/template.liquid".text = ''
+      {% for tag in workspace.tags %}
+      %{A1:leftwm-command "SendWorkspaceToTag {{ workspace.index }} {{ tag.index }}":}
+      {% if tag.mine %}
+      %{F${steelborePalette.moltenAmber}}%{+u}
+      {% elsif tag.visible %}
+      %{F${steelborePalette.liquidCool}}
+      {% elsif tag.busy %}
+      %{F${steelborePalette.steelBlue}}
+      {% else %}
+      %{F${steelborePalette.steelBlue}50}
+      {% endif %}
+        {{ tag.name }}
+      %{-u}%{F-}%{A}
+      {% endfor %}
+    '';
+
+    # Picom configuration
+    environment.etc."leftwm/themes/current/picom.conf".text = ''
+      # Steelbore Picom Configuration
+      backend = "glx";
+      vsync = true;
+
+      # Opacity
+      active-opacity = 1.0;
+      inactive-opacity = 0.95;
+      frame-opacity = 1.0;
+
+      # Fading
+      fading = true;
+      fade-delta = 5;
+      fade-in-step = 0.03;
+      fade-out-step = 0.03;
+
+      # Rounded corners
+      corner-radius = 0;
+
+      # Shadows
+      shadow = false;
+    '';
+
+    # Dunst notification configuration
+    environment.etc."dunst/dunstrc".text = ''
+      # Steelbore Dunst Configuration
+      [global]
+      monitor = 0
+      follow = mouse
+      width = 350
+      height = 150
+      origin = top-right
+      offset = 10x40
+
+      transparency = 5
+      padding = 16
+      horizontal_padding = 16
+      frame_width = 2
+      frame_color = "${steelborePalette.steelBlue}"
+      separator_color = frame
+
+      font = "Share Tech Mono 12"
+      line_height = 0
+      markup = full
+      format = "<b>%s</b>\n%b"
+      alignment = left
+
+      icon_position = left
+      max_icon_size = 48
+
+      [urgency_low]
+      background = "${steelborePalette.voidNavy}"
+      foreground = "${steelborePalette.liquidCool}"
+      timeout = 5
+
+      [urgency_normal]
+      background = "${steelborePalette.voidNavy}"
+      foreground = "${steelborePalette.moltenAmber}"
+      timeout = 10
+
+      [urgency_critical]
+      background = "${steelborePalette.voidNavy}"
+      foreground = "${steelborePalette.redOxide}"
+      frame_color = "${steelborePalette.redOxide}"
+      timeout = 0
+    '';
+  };
+}
