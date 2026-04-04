@@ -43,7 +43,7 @@
     git = {
       enable = true;
       settings = {
-        user.name = "Mohamed Hammad";
+        user.name = "UnbreakableMJ";
         user.email = "34196588+UnbreakableMJ@users.noreply.github.com";
         user.signingkey = "~/.ssh/id_ed25519.pub";
         gpg.format = "ssh";
@@ -111,7 +111,7 @@
         alias ll = ls -l
         alias lla = ls -la
         alias telemetry = macchina
-        alias sensors = watch -n 1 sensors
+        alias sensors = ^watch -n 1 sensors
         alias sys-logs = journalctl -p 3 -xb
         alias network-diag = gping google.com
         alias top-processes = bottom
@@ -121,7 +121,7 @@
         # Project Steelbore Identity
         def steelbore [] {
           print "╔══════════════════════════════════════════════════════╗"
-          print "║  STEELBORE :: Industrial Sci-Fi Utility Environment  ║"
+          print "║  STEELBORE :: Rust-Centric Desktop Environment       ║"
           print "╠══════════════════════════════════════════════════════╣"
           print "║  STATUS    :: ACTIVE                                 ║"
           print "║  LOAD      :: NOMINAL                                ║"
