@@ -22,6 +22,7 @@
 
   # SSH agent (for SSH key-based git signing)
   programs.ssh.startAgent = true;
+  services.gnome.gcr-ssh-agent.enable = false;
 
   # Tmpfiles rules
   systemd.tmpfiles.rules = [
