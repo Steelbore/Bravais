@@ -33,7 +33,6 @@
       rav1e                      # Rust — AV1 encoder
       gifski                     # Rust — GIF encoder
       oxipng                     # Rust — PNG optimizer
-      gyroflow                   # Rust — Video stabilization
       video-trimmer              # Rust — Video trimmer
       ffmpeg
 

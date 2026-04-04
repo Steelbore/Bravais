@@ -19,9 +19,12 @@
   # X11 (for LeftWM)
   services.xserver.enable = true;
   services.xserver.xkb = {
-    layout = "us,ar";
+    layout = "us,ara";
     options = "grp:ctrl_space_toggle";
   };
+
+  # ckbcomp can't resolve multi-layout XKB configs; keep console on US
+  console.keyMap = "us";
 
   # Printing
   services.printing.enable = true;

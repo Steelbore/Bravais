@@ -1,6 +1,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Lattice — GNOME Desktop Environment (Wayland)
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options.steelbore.desktops.gnome = {
@@ -10,8 +15,8 @@
   config = lib.mkIf config.steelbore.desktops.gnome.enable {
     # Enable GNOME
     services.xserver.enable = true;
-    services.xserver.displayManager.gdm.enable = lib.mkDefault false; # Use greetd instead
-    services.xserver.displayManager.gdm.wayland = true;
+    services.displayManager.gdm.enable = lib.mkDefault false; # Use greetd instead
+    services.displayManager.gdm.wayland = true;
     services.desktopManager.gnome.enable = true;
 
     # GNOME packages

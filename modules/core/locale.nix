@@ -20,6 +20,5 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Console/TTY
-  console.useXkbConfig = true;
+  # Console/TTY keymap is set per-host (see hosts/lattice/default.nix)
 }
