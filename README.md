@@ -18,7 +18,7 @@ The design of Lattice is guided by four primary tenets:
 
 ```
 lattice/
-├── flake.nix                      # Flake entry point (mkLattice helper, 5 nixosConfigurations)
+├── flake.nix                      # Flake entry point (mkLattice helper, 10 nixosConfigurations)
 ├── flake.lock                     # Pinned dependencies
 ├── lib/                           # Custom Nix helper functions
 │   └── default.nix                # Color palette definitions
@@ -66,8 +66,9 @@ lattice/
 │   └── mj/                        # User "mj"
 │       ├── default.nix            # System-level user config
 │       └── home.nix               # Home Manager configuration
-└── overlays/                      # Package overlays
-    └── default.nix                # Custom derivations (sequoia-wot fix)
+├── overlays/                      # Package overlays
+│   └── default.nix                # Custom derivations (sequoia-wot fix)
+└── v0/                            # Frozen v0-era configurations (archive)
 ```
 
 ## Steelbore Color Palette
@@ -137,6 +138,9 @@ All profiles share: `-O3 -flto=auto -mpclmul` (v2+) and full security hardening
 | Input | Channel | Purpose |
 |-------|---------|---------|
 | `nixpkgs` | 25.11 stable | Core package set (all packages) |
+| `home-manager` | release-25.11 | Home Manager (follows `nixpkgs`) |
+| `nixpkgs-unstable` | nixos-unstable (rolling) | Bleeding-edge package set |
+| `home-manager-unstable` | main (rolling) | Home Manager (follows `nixpkgs-unstable`) |
 
 ## Host Configuration Pattern
 
@@ -188,14 +192,19 @@ nixos-rebuild dry-build --flake .#lattice
 # Build without switching
 nixos-rebuild build --flake .#lattice
 
-# Switch to new configuration (default: AVX-512 / v4)
+# Switch to new configuration (default: stable AVX-512 / v4)
 sudo nixos-rebuild switch --flake .#lattice
 
-# Switch to a specific CPU profile
+# Switch to a specific stable CPU profile
 sudo nixos-rebuild switch --flake .#lattice-v3   # AVX2
 sudo nixos-rebuild switch --flake .#lattice-v2   # SSE4.2 (ALHP-derived)
 sudo nixos-rebuild switch --flake .#lattice-v1   # Baseline x86-64
 sudo nixos-rebuild switch --flake .#lattice-v4   # AVX-512 (same as .#lattice)
+
+# Switch to unstable channel (bleeding-edge packages)
+sudo nixos-rebuild switch --flake .#lattice-unstable       # AVX-512 / v4
+sudo nixos-rebuild switch --flake .#lattice-unstable-v3    # AVX2
+sudo nixos-rebuild switch --flake .#lattice-unstable-v1    # Baseline x86-64
 ```
 
 ## Documentation

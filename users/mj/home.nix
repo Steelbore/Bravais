@@ -123,7 +123,6 @@ in
 
         # Project Steelbore Identity
         def steelbore [] {
-<<<<<<< HEAD
           print "============================================================"
           print "  STEELBORE :: Industrial Sci-Fi Desktop Environment"
           print "============================================================"
@@ -131,15 +130,6 @@ in
           print "  LOAD      :: NOMINAL"
           print "  INTEGRITY :: VERIFIED"
           print "============================================================"
-=======
-          print "╔══════════════════════════════════════════════════════╗"
-          print "║  STEELBORE :: Rust-Centric Desktop Environment       ║"
-          print "╠══════════════════════════════════════════════════════╣"
-          print "║  STATUS    :: ACTIVE                                 ║"
-          print "║  LOAD      :: NOMINAL                                ║"
-          print "║  INTEGRITY :: VERIFIED                               ║"
-          print "╚══════════════════════════════════════════════════════╝"
->>>>>>> 1ba51bde52124497c34c7bf93163878b210748af
         }
       '';
     };
