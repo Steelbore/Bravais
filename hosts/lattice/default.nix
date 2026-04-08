@@ -41,8 +41,14 @@
       "audio"
       "docker"
     ];
-    shell = pkgs.nushell;
+    shell = pkgs.ion;
   };
+
+  # Root shell
+  users.users.root.shell = pkgs.brush;
+
+  # Register shells as valid login shells
+  environment.shells = [ pkgs.ion pkgs.brush ];
 
   # Steelbore module toggles
   steelbore = {

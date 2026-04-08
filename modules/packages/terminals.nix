@@ -39,7 +39,7 @@ in
       xterm                      # Classic X11 terminal
 
       # XFCE terminal
-      xfce.xfce4-terminal        # XFCE4 terminal
+      xfce4-terminal             # XFCE4 terminal
     ];
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -105,7 +105,7 @@ in
       white = "${steelborePalette.moltenAmber}"
 
       [terminal.shell]
-      program = "${pkgs.nushell}/bin/nu"
+      program = "${pkgs.ion}/bin/ion"
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -125,7 +125,7 @@ in
       config.window_padding = { left = 10, right = 10, top = 10, bottom = 10 }
       config.enable_tab_bar = true
       config.hide_tab_bar_if_only_one_tab = true
-      config.default_prog = { "${pkgs.nushell}/bin/nu" }
+      config.default_prog = { "${pkgs.ion}/bin/ion" }
 
       -- Steelbore color scheme
       config.colors = {
@@ -232,7 +232,7 @@ in
       white = '${steelborePalette.moltenAmber}'
 
       [shell]
-      program = "${pkgs.nushell}/bin/nu"
+      program = "${pkgs.ion}/bin/ion"
       args = []
     '';
 
@@ -277,8 +277,8 @@ in
       palette = 14=${steelborePalette.liquidCool}
       palette = 15=${steelborePalette.moltenAmber}
 
-      # Shell — launches nushell (starship integrated via nushell config)
-      command = ${pkgs.nushell}/bin/nu
+      # Shell — launches ion
+      command = ${pkgs.ion}/bin/ion
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -506,7 +506,7 @@ in
       Font=JetBrains Mono,12,-1,5,50,0,0,0,0,0
 
       [General]
-      Command=${pkgs.nushell}/bin/nu
+      Command=${pkgs.ion}/bin/ion
       Name=Steelbore
       Parent=FALLBACK/
       TerminalColumns=160
@@ -554,7 +554,7 @@ in
 
       [main]
       font=JetBrains Mono:size=12
-      shell=${pkgs.nushell}/bin/nu
+      shell=${pkgs.ion}/bin/ion
       term=xterm-256color
 
       [colors]
@@ -634,7 +634,7 @@ in
       FontName=JetBrains Mono 12
       MiscDefaultGeometry=160x48
       RunCustomCommand=TRUE
-      CustomCommand=${pkgs.nushell}/bin/nu
+      CustomCommand=${pkgs.ion}/bin/ion
       BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
       BackgroundDarkness=0.95
       ColorBackground=${steelborePalette.voidNavy}
@@ -650,7 +650,7 @@ in
     # ═══════════════════════════════════════════════════════════════════════════
     # GNOME CONSOLE (kgx) — GNOME 4x minimal terminal
     # Color palette is fixed by theme; "night" is the closest dark option.
-    # Shell is inherited from $SHELL (nushell). Configured via dconf in home.
+    # Shell is inherited from $SHELL (ion). Configured via dconf in home.
     # ═══════════════════════════════════════════════════════════════════════════
   };
 }

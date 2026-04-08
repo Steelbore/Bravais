@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Lattice — AI Coding Assistants and Tools
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, stablePkgs, ... }:
 
 {
   options.steelbore.packages.ai = {
@@ -19,7 +19,7 @@
       github-copilot-cli
       gpt-cli
       mcp-nixos
-      claude-code                # Stable — avoids issues with unstable
+      stablePkgs.claude-code  # pinned to stable — unstable npm tarball is broken
     ];
   };
 }
