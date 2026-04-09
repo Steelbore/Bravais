@@ -448,19 +448,19 @@ in
 
       [fonts.regular]
       family = "JetBrains Mono"
-      style = "Regular"
+      weight = 400
 
       [fonts.bold]
       family = "JetBrains Mono"
-      style = "Bold"
+      weight = 700
 
       [fonts.italic]
       family = "JetBrains Mono"
-      style = "Italic"
+      weight = 400
 
       [fonts.bold-italic]
       family = "JetBrains Mono"
-      style = "Bold Italic"
+      weight = 700
 
       [colors]
       background = '${steelborePalette.voidNavy}'
