@@ -39,7 +39,6 @@
       "input"
       "video"
       "audio"
-      "docker"
     ];
     shell = pkgs.ion;
   };

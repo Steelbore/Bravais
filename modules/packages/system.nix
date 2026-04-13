@@ -80,7 +80,7 @@
       # Containers & Virtualization
       distrobox
       boxbuddy                   # Rust — Distrobox GUI
-      docker
+      podman
       youki                      # Rust — OCI container runtime
       oxker                      # Rust — Docker/Podman TUI
       qemu
@@ -111,16 +111,11 @@
       perf
     ];
 
-    # Docker — Youki (Rust) as the OCI runtime
-    virtualisation.docker = {
+    # Podman — Youki (Rust) as the OCI runtime
+    virtualisation.podman = {
       enable = true;
-      extraOptions = "--add-runtime youki=${pkgs.youki}/bin/youki";
-      daemon.settings = {
-        default-runtime = "youki";
-        runtimes.youki = {
-          path = "${pkgs.youki}/bin/youki";
-        };
-      };
+      dockerCompat = true;       # docker → podman drop-in alias
+      extraPackages = [ pkgs.youki ];
     };
 
     # Flatpak service
