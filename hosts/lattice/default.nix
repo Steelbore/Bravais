@@ -54,6 +54,7 @@
     # Desktop environments
     desktops.gnome.enable = true;
     desktops.cosmic.enable = true;   # stable pkgs (nixos-25.11)
+    desktops.plasma.enable = true;
     desktops.niri.enable = true;
     desktops.leftwm.enable = true;
 

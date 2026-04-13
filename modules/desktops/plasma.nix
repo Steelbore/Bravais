@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Steelbore Lattice — KDE Plasma 6 Desktop Environment (Wayland)
+{ config, lib, pkgs, ... }:
+
+{
+  options.steelbore.desktops.plasma = {
+    enable = lib.mkEnableOption "KDE Plasma 6 Desktop Environment (Wayland)";
+  };
+
+  config = lib.mkIf config.steelbore.desktops.plasma.enable {
+    # Enable Plasma 6
+    services.desktopManager.plasma6.enable = true;
+    services.displayManager.sddm.enable = lib.mkDefault false; # Use greetd instead
+    services.displayManager.sddm.wayland.enable = lib.mkDefault false;
+
+    # X server required for XWayland support
+    services.xserver.enable = true;
+
+    environment.systemPackages = with pkgs; [
+      kdePackages.plasma-browser-integration
+      kdePackages.kdeconnect-kde
+      kdePackages.plasma-systemmonitor
+      kdePackages.filelight
+      kdePackages.kcalc
+      kdePackages.ark
+      kdePackages.kate
+      xdg-desktop-portal-kde
+    ];
+
+    # Exclude KDE bloat
+    environment.plasma6.excludePackages = with pkgs.kdePackages; [
+      oxygen
+      elisa
+      khelpcenter
+    ];
+  };
+}

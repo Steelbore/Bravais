@@ -66,6 +66,7 @@ in
   services.displayManager.sessionPackages = with pkgs; [
     niri
     cosmic-session
+    kdePackages.plasma-workspace
     ion-shell-session
     nushell-session
     brush-session
@@ -76,6 +77,8 @@ in
   environment.etc."greetd/environments".text = ''
     niri-session
     start-cosmic
+    plasma-session
+    plasma-x11-session
     gnome-session
     ion
     nu

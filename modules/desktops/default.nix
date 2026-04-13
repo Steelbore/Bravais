@@ -6,6 +6,7 @@
   imports = [
     ./gnome.nix
     ./cosmic.nix
+    ./plasma.nix
     ./niri.nix
     ./leftwm.nix
   ];
