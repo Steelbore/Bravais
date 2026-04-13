@@ -66,7 +66,6 @@ in
   services.displayManager.sessionPackages = with pkgs; [
     niri
     cosmic-session
-    kdePackages.plasma-workspace
     ion-shell-session
     nushell-session
     brush-session

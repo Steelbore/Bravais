@@ -1,7 +1,7 @@
-# Lattice — Product Requirements Document
+# Lattice -- Product Requirements Document
 
 **Project:** Lattice (A Steelbore NixOS Distribution)
-**Version:** 2.1 | **Date:** 2026-04-05
+**Version:** 3.0 | **Date:** 2026-04-13
 **Author:** Mohamed Hammad | **License:** GPL-3.0-or-later
 **Status:** Implemented
 
@@ -9,14 +9,19 @@
 
 ## 1. Executive Summary
 
-Lattice is a flake-based NixOS configuration implementing the Steelbore Standard. This PRD defines a complete system with a modular, opt-in architecture supporting four desktop environments: GNOME (Wayland), COSMIC (Wayland), Niri (Wayland), and LeftWM (X11).
+Lattice is a flake-based NixOS configuration implementing the Steelbore Standard. It delivers a complete, reproducible system with a modular, opt-in architecture supporting five desktop environments: GNOME (Wayland), COSMIC (Wayland), KDE Plasma 6 (Wayland), Niri (Wayland), and LeftWM (X11).
 
 **Core Principles:**
 
 - Memory-safe tooling preferred (Rust-first ecosystem)
-- Opt-in modularity via `lib.mkEnableOption`
-- Steelbore Color Palette applied universally
-- Self-sufficient configuration (no external dependencies beyond nixpkgs)
+- Opt-in modularity via `lib.mkEnableOption` in the `steelbore.*` namespace
+- Steelbore Color Palette applied universally to all visual surfaces
+- Self-sufficient flake configuration (no external dependencies beyond nixpkgs, home-manager, and nix-flatpak)
+- Dual-channel support (stable nixos-25.11 / unstable rolling) with four x86-64 microarchitecture profiles (v1-v4)
+- 14+ terminal emulators, all themed with the Steelbore palette
+- Declarative Flatpak management via nix-flatpak
+- Podman (not Docker) with runc as default runtime and Youki (Rust) available
+- Ion (Rust) as default user shell; Brush (Rust) as root shell
 
 ---
 
@@ -26,52 +31,57 @@ Lattice is a flake-based NixOS configuration implementing the Steelbore Standard
 
 ```text
 lattice/
-├── flake.nix                      # Flake entry point
-├── flake.lock                     # Pinned dependencies
-├── lib/                           # Custom Nix helper functions
-│   └── default.nix                # mkSteelboreModule, color palette
-├── hosts/                         # Machine-specific configurations
-│   └── lattice/                   # Primary host
-│       ├── default.nix            # Host traits (boot, locale, user)
-│       └── hardware.nix           # Hardware configuration
-├── modules/                       # NixOS modules (steelbore.* namespace)
-│   ├── core/                      # Always-enabled necessities
-│   │   ├── default.nix            # Core module entry
-│   │   ├── nix.nix                # Nix settings, flakes
-│   │   ├── boot.nix               # Bootloader, kernel
-│   │   ├── locale.nix             # Timezone, i18n
-│   │   ├── audio.nix              # PipeWire audio stack
-│   │   └── security.nix           # sudo-rs, polkit
-│   ├── theme/                     # Steelbore visual identity
-│   │   ├── default.nix            # Color palette, TTY colors
-│   │   └── fonts.nix              # Typography
-│   ├── hardware/                  # Hardware-specific modules
-│   │   ├── fingerprint.nix        # fprintd
-│   │   └── intel.nix              # Intel-specific optimizations
-│   ├── desktops/                  # Desktop environments (opt-in)
-│   │   ├── gnome.nix              # GNOME on Wayland
-│   │   ├── cosmic.nix             # COSMIC DE on Wayland
-│   │   ├── niri.nix               # Niri + Ironbar on Wayland
-│   │   └── leftwm.nix             # LeftWM + Polybar on X11
-│   ├── login/                     # Display/login managers
-│   │   └── default.nix            # greetd + tuigreet
-│   └── packages/                  # Application bundles (opt-in)
-│       ├── browsers.nix           # Web browsers
-│       ├── terminals.nix          # Terminal emulators
-│       ├── editors.nix            # Text editors & IDEs
-│       ├── development.nix        # Dev tools & languages
-│       ├── security.nix           # Encryption & auth
-│       ├── networking.nix         # Network tools
-│       ├── multimedia.nix         # Media players & processing
-│       ├── productivity.nix       # Office & notes
-│       ├── system.nix             # System utilities
-│       └── ai.nix                 # AI coding assistants
-├── users/                         # User profiles
-│   └── mj/                        # User "mj"
-│       ├── default.nix            # System-level user config
-│       └── home.nix               # Home Manager configuration
-└── overlays/                      # Package overlays
-    └── default.nix                # Custom derivations
++-- flake.nix                      # Flake entry point
++-- flake.lock                     # Pinned dependencies
++-- lib/                           # Custom Nix helper functions
+|   +-- default.nix                # mkSteelboreModule, color palette
++-- hosts/                         # Machine-specific configurations
+|   +-- lattice/                   # Primary host
+|       +-- default.nix            # Host traits (boot, locale, user, toggles)
+|       +-- hardware.nix           # Hardware configuration (generated)
++-- modules/                       # NixOS modules (steelbore.* namespace)
+|   +-- core/                      # Always-enabled necessities
+|   |   +-- default.nix            # Core module entry
+|   |   +-- nix.nix                # Nix settings, flakes, overlays
+|   |   +-- boot.nix               # Bootloader, kernel
+|   |   +-- locale.nix             # Timezone, i18n
+|   |   +-- audio.nix              # PipeWire audio stack
+|   |   +-- security.nix           # sudo-rs, polkit, SSH agent
+|   +-- theme/                     # Steelbore visual identity
+|   |   +-- default.nix            # Color palette env vars, TTY colors
+|   |   +-- fonts.nix              # Typography (system fonts)
+|   +-- hardware/                  # Hardware-specific modules
+|   |   +-- default.nix            # Hardware module entry
+|   |   +-- fingerprint.nix        # fprintd
+|   |   +-- intel.nix              # Intel CPU optimizations (v1-v4 march levels)
+|   +-- desktops/                  # Desktop environments (opt-in)
+|   |   +-- default.nix            # Desktop module entry
+|   |   +-- gnome.nix              # GNOME on Wayland
+|   |   +-- cosmic.nix             # COSMIC DE on Wayland
+|   |   +-- plasma.nix             # KDE Plasma 6 on Wayland
+|   |   +-- niri.nix               # Niri + Ironbar on Wayland
+|   |   +-- leftwm.nix             # LeftWM + Polybar on X11
+|   +-- login/                     # Display/login managers
+|   |   +-- default.nix            # greetd + tuigreet + shell sessions
+|   +-- packages/                  # Application bundles (opt-in)
+|       +-- default.nix            # Package module entry
+|       +-- browsers.nix           # Web browsers
+|       +-- terminals.nix          # Terminal emulators (14+, all themed)
+|       +-- editors.nix            # Text editors & IDEs
+|       +-- development.nix        # Dev tools & languages
+|       +-- security.nix           # Encryption & auth
+|       +-- networking.nix         # Network tools
+|       +-- multimedia.nix         # Media players & processing
+|       +-- productivity.nix       # Office & notes
+|       +-- system.nix             # System utilities & containers
+|       +-- ai.nix                 # AI coding assistants
+|       +-- flatpak.nix            # Declarative Flatpak apps
++-- users/                         # User profiles
+|   +-- mj/                        # User "mj"
+|       +-- default.nix            # System-level user config
+|       +-- home.nix               # Home Manager configuration
++-- overlays/                      # Package overlays
+    +-- default.nix                # sequoia-wot fix, claude-code binary
 ```
 
 ### 2.2 Module Design Pattern
@@ -79,11 +89,10 @@ lattice/
 All modules use the `steelbore.*` namespace with `lib.mkEnableOption`:
 
 ```nix
-# Example: modules/desktops/niri.nix
 { config, lib, pkgs, ... }:
 {
   options.steelbore.desktops.niri = {
-    enable = lib.mkEnableOption "Niri scrolling tiling compositor";
+    enable = lib.mkEnableOption "Niri scrolling tiling compositor (Wayland)";
   };
 
   config = lib.mkIf config.steelbore.desktops.niri.enable {
@@ -92,38 +101,123 @@ All modules use the `steelbore.*` namespace with `lib.mkEnableOption`:
 }
 ```
 
+A `mkSteelboreModule` helper is available in `lib/default.nix` to reduce boilerplate.
+
 ### 2.3 Host Configuration Pattern
 
-Hosts toggle modules declaratively:
+The host toggles modules declaratively:
 
 ```nix
-# hosts/lattice/default.nix
-{
-  steelbore = {
-    # Desktops
-    desktops.gnome.enable = true;
-    desktops.cosmic.enable = true;
-    desktops.niri.enable = true;
-    desktops.leftwm.enable = true;
+steelbore = {
+  desktops.gnome.enable = true;
+  desktops.cosmic.enable = true;
+  desktops.plasma.enable = true;
+  desktops.niri.enable = true;
+  desktops.leftwm.enable = true;
 
-    # Hardware
-    hardware.fingerprint.enable = true;
-    hardware.intel.enable = true;
+  hardware.fingerprint.enable = true;
+  hardware.intel.enable = true;
 
-    # Packages
-    packages.browsers.enable = true;
-    packages.terminals.enable = true;
-    packages.editors.enable = true;
-    packages.development.enable = true;
-  };
-}
+  packages.browsers.enable = true;
+  packages.terminals.enable = true;
+  packages.editors.enable = true;
+  packages.development.enable = true;
+  packages.security.enable = true;
+  packages.networking.enable = true;
+  packages.multimedia.enable = true;
+  packages.productivity.enable = true;
+  packages.system.enable = true;
+  packages.ai.enable = true;
+  packages.flatpak.enable = true;
+};
 ```
+
+### 2.4 Dual-Channel Design
+
+Lattice supports two nixpkgs channels, selectable per build:
+
+| Channel    | nixpkgs Branch    | Home Manager Branch | Stability |
+|------------|-------------------|---------------------|-----------|
+| `stable`   | `nixos-25.11`     | `release-25.11`     | Tested    |
+| `unstable` | `nixos-unstable`  | Latest              | Rolling   |
+
+### 2.5 Microarchitecture Profiles
+
+Ten `nixosConfigurations` are generated (5 stable + 5 unstable):
+
+| Configuration          | Channel  | March Level | CPU Features                      |
+|------------------------|----------|-------------|-----------------------------------|
+| `lattice` (default)    | stable   | v4          | AVX-512F/BW/CD/DQ/VL             |
+| `lattice-v1`           | stable   | v1          | Baseline x86-64 (SSE2)           |
+| `lattice-v2`           | stable   | v2          | SSE4.2 / POPCNT / CX16           |
+| `lattice-v3`           | stable   | v3          | AVX2 / BMI1/2 / FMA / MOVBE      |
+| `lattice-v4`           | stable   | v4          | AVX-512F/BW/CD/DQ/VL             |
+| `lattice-unstable`     | unstable | v4          | AVX-512F/BW/CD/DQ/VL             |
+| `lattice-unstable-v1`  | unstable | v1          | Baseline x86-64 (SSE2)           |
+| `lattice-unstable-v2`  | unstable | v2          | SSE4.2 / POPCNT / CX16           |
+| `lattice-unstable-v3`  | unstable | v3          | AVX2 / BMI1/2 / FMA / MOVBE      |
+| `lattice-unstable-v4`  | unstable | v4          | AVX-512F/BW/CD/DQ/VL             |
 
 ---
 
-## 3. Steelbore Visual Identity
+## 3. Flake Configuration
 
-### 3.1 Color Palette
+### 3.1 Inputs
+
+| Input                    | URL                                                    | Follows        |
+|--------------------------|--------------------------------------------------------|----------------|
+| `nixpkgs`                | `github:nixos/nixpkgs/nixos-25.11`                    | --             |
+| `home-manager`           | `github:nix-community/home-manager/release-25.11`     | `nixpkgs`      |
+| `nixpkgs-unstable`       | `github:nixos/nixpkgs/nixos-unstable`                 | --             |
+| `home-manager-unstable`  | `github:nix-community/home-manager`                   | `nixpkgs-unstable` |
+| `nix-flatpak`            | `github:gmodena/nix-flatpak`                          | --             |
+
+### 3.2 Steelbore Color Palette Definition
+
+Defined in `flake.nix` and passed as `specialArgs` to all modules:
+
+```nix
+steelborePalette = {
+  voidNavy    = "#000027";
+  moltenAmber = "#D98E32";
+  steelBlue   = "#4B7EB0";
+  radiumGreen = "#50FA7B";
+  redOxide    = "#FF5C5C";
+  liquidCool  = "#8BE9FD";
+};
+```
+
+### 3.3 mkLattice Function
+
+```nix
+mkLattice = { marchLevel, channel ? "stable" }: ...
+```
+
+- Selects nixpkgs and home-manager inputs based on `channel`
+- Instantiates `stablePkgs` (for packages pinned to stable, e.g. `claude-code`)
+- Passes `specialArgs = { inherit steelborePalette stablePkgs; }`
+- Loads modules in order: external (home-manager, nix-flatpak), then host, core, theme, hardware, desktops, login, packages
+- Sets `steelbore.hardware.intel.marchLevel` from the `marchLevel` parameter
+- Configures Home Manager: `useGlobalPkgs = true`, `useUserPackages = true`, `backupFileExtension = "backup"`, passes `steelborePalette` via `extraSpecialArgs`
+
+### 3.4 Overlays
+
+Defined in `overlays/default.nix` and loaded in both `flake.nix` (for `stablePkgs`) and `modules/core/nix.nix` (for the main pkgs).
+
+**sequoia-wot:** Disables failing tests (`doCheck = false`).
+
+**claude-code:** Custom binary derivation:
+- Version: `2.1.94`
+- Fetches platform-specific binary from Google Cloud Storage
+- Platform hashes for: `linux-arm64`, `linux-x64`, `linux-arm64-musl`, `linux-x64-musl`
+- Wrapped with: `DISABLE_AUTOUPDATER=1`, `FORCE_AUTOUPDATE_PLUGINS=1`, `DISABLE_INSTALLATION_CHECKS=1`, `USE_BUILTIN_RIPGREP=0`
+- PATH includes: procps, ripgrep, bubblewrap, socat (Linux)
+
+---
+
+## 4. Steelbore Visual Identity
+
+### 4.1 Color Palette
 
 | Token          | Hex       | RGB                | Role                           |
 |----------------|-----------|--------------------|--------------------------------|
@@ -136,182 +230,754 @@ Hosts toggle modules declaratively:
 
 **`#000027` (Void Navy) is the mandatory background for ALL Steelbore surfaces.**
 
-### 3.2 Typography
+### 4.2 16-Color Terminal Palette Mapping
 
-| Context       | Font             | License | Fallback        |
-|---------------|------------------|---------|-----------------|
-| UI Headers    | Orbitron         | OFL     | Share Tech Mono |
-| Code/Terminal | JetBrains Mono   | OFL     | Cascadia Code   |
-| HUD/Status    | Share Tech Mono  | OFL     | monospace       |
-| Brand/Hero    | Future Earth     | Free    | Orbitron        |
+| Index | Role           | Normal Token   | Bright Token   |
+|-------|----------------|----------------|----------------|
+| 0     | Black          | Void Navy      | Steel Blue     |
+| 1     | Red            | Red Oxide      | Red Oxide      |
+| 2     | Green          | Radium Green   | Radium Green   |
+| 3     | Yellow         | Molten Amber   | Molten Amber   |
+| 4     | Blue           | Steel Blue     | Liquid Coolant |
+| 5     | Magenta        | Steel Blue     | Liquid Coolant |
+| 6     | Cyan           | Liquid Coolant | Liquid Coolant |
+| 7     | White          | Molten Amber   | Molten Amber   |
+
+### 4.3 Typography
+
+| Context       | Font             | License | Fallback           |
+|---------------|------------------|---------|--------------------|
+| UI Headers    | Orbitron         | OFL     | Share Tech Mono    |
+| Code/Terminal | JetBrains Mono   | OFL     | CaskaydiaMono NF   |
+| HUD/Status    | Share Tech Mono  | OFL     | monospace          |
+
+**Font packages installed:** `orbitron`, `jetbrains-mono`, `nerd-fonts.jetbrains-mono`, `nerd-fonts.caskaydia-mono`, Share Tech Mono (custom derivation from Google Fonts).
+
+**Fontconfig defaults:**
+- Monospace: JetBrains Mono, CaskaydiaMono Nerd Font, Share Tech Mono
+- Sans-serif: Orbitron
+- Serif: Orbitron
+
+### 4.4 Theme Environment Variables
+
+Exported system-wide via `modules/theme/default.nix`:
+
+```
+STEELBORE_BACKGROUND = #000027
+STEELBORE_TEXT       = #D98E32
+STEELBORE_ACCENT     = #4B7EB0
+STEELBORE_SUCCESS    = #50FA7B
+STEELBORE_WARNING    = #FF5C5C
+STEELBORE_INFO       = #8BE9FD
+```
+
+### 4.5 TTY/Virtual Console Colors
+
+Set via `console.colors` -- 16 hex values without `#` prefix, in order: normal 0-7 then bright 8-15.
+
+```
+000027 FF5C5C 50FA7B D98E32 4B7EB0 4B7EB0 8BE9FD D98E32
+4B7EB0 FF5C5C 50FA7B D98E32 8BE9FD 8BE9FD 8BE9FD D98E32
+```
 
 ---
 
-## 4. Login Manager
+## 5. Core System Modules
 
-### 4.1 greetd + tuigreet
+### 5.1 Nix Settings (`modules/core/nix.nix`)
 
-The system uses `greetd` with `tuigreet` as the display manager:
+- **Experimental features:** `nix-command`, `flakes`
+- **Garbage collection:** automatic, weekly, `--delete-older-than 30d`
+- **nixpkgs.config:** `allowUnfree = true`
+- **Overlays:** claude-code custom derivation and sequoia-wot test fix (duplicated from `overlays/default.nix`)
+
+### 5.2 Boot (`modules/core/boot.nix`)
+
+- **Bootloader:** systemd-boot, EFI variables writable
+- **Kernel:** `linuxPackages_xanmod_latest` (performance-optimized)
+- **Initrd modules:** `xhci_pci`, `nvme`, `usb_storage`, `sd_mod`, `rtsx_pci_sdmmc`
+- **Kernel modules:** `kvm-intel`
+
+### 5.3 Locale (`modules/core/locale.nix`)
+
+- **Timezone:** `Asia/Bahrain`
+- **Default locale:** `en_US.UTF-8`
+- **All LC_* variables:** `en_US.UTF-8` (ADDRESS, IDENTIFICATION, MEASUREMENT, MONETARY, NAME, NUMERIC, PAPER, TELEPHONE, TIME)
+- **Console keymap:** Set per-host (`us`)
+
+### 5.4 Audio (`modules/core/audio.nix`)
+
+- **PulseAudio:** Disabled
+- **PipeWire:** Enabled (ALSA, 32-bit ALSA, PulseAudio compatibility)
+- **RTKit:** Enabled (real-time scheduling privileges)
+- **JACK:** Available but commented out
+
+### 5.5 Security (`modules/core/security.nix`)
+
+- **sudo (C):** Disabled
+- **sudo-rs (Rust):** Enabled, `execWheelOnly = true`
+- **Polkit:** Enabled
+- **SSH agent:** `programs.ssh.startAgent = true`, GNOME keyring SSH agent disabled
+- **Tmpfiles rules:** `/tmp 1777`, `/var/tmp 1777`
+
+---
+
+## 6. Hardware Modules
+
+### 6.1 Fingerprint Reader (`modules/hardware/fingerprint.nix`)
+
+**Option:** `steelbore.hardware.fingerprint.enable`
+
+When enabled: `services.fprintd.enable = true`, package `fprintd` installed.
+
+### 6.2 Intel CPU Optimizations (`modules/hardware/intel.nix`)
+
+**Option:** `steelbore.hardware.intel.enable` with `marchLevel` suboption (enum: v1/v2/v3/v4, default: v4).
+
+**Flag sources:** CachyOS for v1/v3/v4, ALHP for v2.
+
+#### CachyOS Common C Flags (v1, v3, v4):
+```
+-O3 -pipe -fno-plt -fexceptions
+-Wp,-D_FORTIFY_SOURCE=3 -Wformat -Werror=format-security
+-fstack-clash-protection -fcf-protection
+```
+
+#### CachyOS Linker Flags (v1, v3, v4):
+```
+-Wl,-O1 -Wl,--sort-common -Wl,--as-needed
+-Wl,-z,relro -Wl,-z,now -Wl,-z,pack-relative-relocs
+```
+
+#### ALHP Linker Flags (v2 only):
+```
+-Wl,-O1 -Wl,--sort-common -Wl,--as-needed
+-Wl,-z,relro -Wl,-z,now
+```
+
+#### Per-Level Flag Table
+
+| Level | CFLAGS                           | RUSTFLAGS                                     | GOAMD64 |
+|-------|----------------------------------|-----------------------------------------------|---------|
+| v1    | `-march=x86-64 -mtune=native` + CachyOS common + `-flto=auto` | `-C target-cpu=x86-64 -C opt-level=3 -Clink-arg=-z -Clink-arg=pack-relative-relocs` | v1 |
+| v2    | `-march=x86-64-v2 -mtune=native -O3 -mpclmul -falign-functions=32 -flto=auto` | `-Copt-level=3 -Ctarget-cpu=x86-64-v2 -Clink-arg=-z -Clink-arg=pack-relative-relocs` | v2 |
+| v3    | `-march=x86-64-v3 -mtune=native -mpclmul` + CachyOS common + `-flto=auto` | `-C target-cpu=x86-64-v3 -C opt-level=3 -Clink-arg=-z -Clink-arg=pack-relative-relocs` | v3 |
+| v4    | `-march=x86-64-v4 -mtune=native -mpclmul` + CachyOS common + `-flto=auto` | `-C target-cpu=x86-64-v4 -C opt-level=3 -Clink-arg=-z -Clink-arg=pack-relative-relocs` | v4 |
+
+**CXXFLAGS** = `${CFLAGS} -Wp,-D_GLIBCXX_ASSERTIONS` for all levels.
+**LTOFLAGS** = `-flto=auto` for all levels.
+
+**Additional config:** `boot.kernelModules = [ "kvm-intel" ]`, Intel microcode updates enabled.
+
+---
+
+## 7. Host Configuration (`hosts/lattice/`)
+
+### 7.1 Host Settings (`default.nix`)
+
+- **Hostname:** `lattice`
+- **Networking:** NetworkManager enabled
+- **X11:** Enabled (for LeftWM), keyboard layouts `us,ara`, toggle `grp:ctrl_space_toggle`
+- **Console keymap:** `us` (ckbcomp can't resolve multi-layout XKB configs)
+- **Printing:** Enabled
+
+### 7.2 User Account
+
+- **Username:** `mj`
+- **Full name:** Mohamed Hammad
+- **Groups:** `networkmanager`, `wheel`, `input`, `video`, `audio`
+- **Shell:** `pkgs.ion` (Ion -- Rust shell)
+- **Root shell:** `pkgs.brush` (Brush -- Rust Bash-compatible shell)
+- **Valid login shells:** ion, brush (registered via `environment.shells`)
+
+### 7.3 Hardware (`hardware.nix`)
+
+Generated by `nixos-generate-config`. Key details:
+- **Platform:** `x86_64-linux`
+- **Root filesystem:** ext4, `/dev/disk/by-uuid/667c95b9-16ac-449a-b36c-7a4e156620c3`
+- **Boot partition:** vfat, `/dev/disk/by-uuid/30F4-BB7D`, `fmask=0077`, `dmask=0077`
+- **Swap:** None
+- **Microcode updates:** Linked to `hardware.enableRedistributableFirmware`
+
+### 7.4 State Version
+
+`system.stateVersion = "25.11"`
+
+---
+
+## 8. Login Manager (`modules/login/default.nix`)
+
+### 8.1 greetd + tuigreet
+
+```
+tuigreet \
+  --time \
+  --time-format "%Y-%m-%d %H:%M:%S" \
+  --remember \
+  --remember-session \
+  --asterisks \
+  --greeting "STEELBORE :: LATTICE" \
+  --sessions <sessionData>/share/wayland-sessions:<sessionData>/share/xsessions
+```
+
+Running as user `greeter`.
+
+### 8.2 Shell Sessions
+
+Custom shell sessions are built with a `mkShellSession` helper using `pkgs.runCommand` with `passthru.providedSessions`:
+
+| Session Name  | Binary               | Comment              |
+|---------------|----------------------|----------------------|
+| Ion Shell     | `ion`                | Drop to Ion shell    |
+| Nushell       | `nushell`/`nu`       | Drop to Nushell      |
+| Brush Shell   | `brush`              | Drop to Brush shell  |
+
+### 8.3 Registered Session Packages
 
 ```nix
-# modules/login/default.nix
-services.greetd = {
+services.displayManager.sessionPackages = [
+  niri
+  cosmic-session
+  ion-shell-session
+  nushell-session
+  brush-session
+];
+```
+
+Plasma, LeftWM, and GNOME sessions are auto-registered by their respective NixOS modules.
+
+### 8.4 greetd Environments
+
+```
+niri-session
+start-cosmic
+plasma-session
+plasma-x11-session
+gnome-session
+ion
+nu
+brush
+```
+
+### 8.5 PAM
+
+`security.pam.services.greetd.enableGnomeKeyring = true`
+
+---
+
+## 9. Desktop Environments
+
+### 9.1 GNOME (Wayland)
+
+**Option:** `steelbore.desktops.gnome.enable`
+
+**Services:**
+- `services.xserver.enable = true`
+- `services.displayManager.gdm.enable = lib.mkDefault false` (greetd used instead)
+- `services.displayManager.gdm.wayland = true`
+- `services.desktopManager.gnome.enable = true`
+
+**Extensions (14):**
+caffeine, just-perfection, window-gestures, wayland-or-x11, toggler, vim-alt-tab, open-bar, tweaks-in-system-menu, launcher, window-title-is-back, yakuake, forge, tiling-shell, smart-tiling
+
+**Utilities:** gnome-tweaks, dconf-editor, gnome-extension-manager, gnome-browser-connector
+
+**Portals:** xdg-desktop-portal-gnome, xdg-desktop-portal-gtk
+
+**Excluded packages:** gnome-tour, gnome-music, epiphany, geary, totem
+
+### 9.2 COSMIC (Wayland)
+
+**Option:** `steelbore.desktops.cosmic.enable`
+
+**Services:**
+- `services.desktopManager.cosmic.enable = true`
+- `services.displayManager.cosmic-greeter.enable = false` (greetd used)
+
+Fully Rust-based desktop from System76. No additional packages needed.
+
+### 9.3 KDE Plasma 6 (Wayland)
+
+**Option:** `steelbore.desktops.plasma.enable`
+
+**Services:**
+- `services.desktopManager.plasma6.enable = true`
+- `services.displayManager.sddm.enable = lib.mkDefault false` (greetd used)
+- `services.displayManager.sddm.wayland.enable = lib.mkDefault false`
+- `services.xserver.enable = true` (XWayland support)
+- `programs.ssh.askPassword = lib.mkForce "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass"` (avoids askpass conflicts)
+
+**KDE Packages (8):**
+plasma-browser-integration, kdeconnect-kde, plasma-systemmonitor, filelight, kcalc, ark, kate, xdg-desktop-portal-kde
+
+**Excluded packages:** oxygen, elisa, khelpcenter
+
+### 9.4 Niri (Wayland -- Scrolling Tiling)
+
+**Option:** `steelbore.desktops.niri.enable`
+
+**Service:** `programs.niri.enable = true`
+
+**Companion packages (14):**
+niri, swaybg, xwayland-satellite, ironbar, waybar, anyrun, onagre, wired, swaylock, swayidle, wl-clipboard, wl-clipboard-rs, grim, slurp
+
+**Niri Configuration** (`/etc/niri/config.kdl`):
+
+Layout: gaps 8, focus-ring width 2 (active: Molten Amber, inactive: Steel Blue), borders off, default column width 50%, center-focused-column on-overflow.
+
+Startup: swaybg (Void Navy solid color), ironbar, wired.
+
+Input: keyboard layouts `us,ar` with `grp:ctrl_space_toggle`, touchpad with tap/natural-scroll/accel-speed 0.3.
+
+Key bindings (Mod = Super):
+- **Session:** `Mod+Shift+E` quit, `Mod+Shift+L` lock (swaylock, Void Navy)
+- **Applications:** `Mod+Return` alacritty, `Mod+D` onagre, `Mod+Shift+D` anyrun
+- **Windows:** `Mod+Q` close, `Mod+F` maximize, `Mod+Shift+F` fullscreen
+- **Focus:** `Mod+H/J/K/L` or `Mod+Arrows` (Vim + CUA)
+- **Move:** `Mod+Shift+H/J/K/L` or `Mod+Shift+Arrows`
+- **Workspaces:** `Mod+1-5` focus, `Mod+Shift+1-5` move
+- **Resize:** `Mod+R` preset, `Mod+Minus/Equal` +/-10%
+- **Screenshots:** `Print` full, `Mod+Print` window, `Mod+Shift+Print` screen
+
+**Ironbar Configuration** (`/etc/ironbar/config.yaml`):
+- Position: top, height 32, anchor to edges
+- Start: workspaces, focused window
+- Center: clock (`%H:%M:%S :: %Y-%m-%d`)
+- End: sys_info (CPU%/RAM%, 1s interval), tray
+
+**Ironbar Stylesheet** (`/etc/ironbar/style.css`):
+- Font: Share Tech Mono / JetBrains Mono, 14px
+- Window: Void Navy background, Molten Amber text, Steel Blue bottom border
+- Workspaces: Steel Blue buttons, Molten Amber active with underline
+- Clock: Molten Amber bold
+- Sys info: Radium Green
+
+### 9.5 LeftWM (X11 -- Tiling WM)
+
+**Option:** `steelbore.desktops.leftwm.enable`
+
+**Services:** `services.xserver.enable = true`, `services.xserver.windowManager.leftwm.enable = true`
+
+**Companion packages (15):**
+leftwm, leftwm-theme, leftwm-config, rlaunch, rofi, dmenu, polybar, picom, feh, dunst, xclip, xsel, maim, xdotool, numlockx
+
+**LeftWM Configuration** (`/etc/leftwm/config.ron`):
+- Modkey: Mod4 (Super), mousekey: Mod4
+- Tags: 1-9
+- Layouts: MainAndVertStack, MainAndHorizontalStack, MainAndDeck, GridHorizontal, EvenHorizontal, EvenVertical, Fibonacci, Monocle
+- Layout mode: Tag, insert behavior: Bottom
+- Focus: Sloppy, focus new windows, sloppy mouse follows focus
+- Scratchpad: "Terminal" (alacritty, 1200x800)
+
+Key bindings:
+- **Session:** `Mod+Shift+E` kill session
+- **Applications:** `Mod+Return` alacritty, `Mod+D` rlaunch, `Mod+Shift+D` rofi
+- **Windows:** `Mod+Q` close, `Mod+F` fullscreen, `Mod+Shift+F` float
+- **Focus:** `Mod+H/J/K/L` or `Mod+Arrows` (Vim + CUA)
+- **Move:** `Mod+Shift+H/J/K/L`
+- **Layouts:** `Mod+Space` next, `Mod+Shift+Space` previous
+- **Workspaces:** `Mod+1-9` goto, `Mod+Shift+1-9` move
+- **Resize:** `Mod+Equal/Minus` +/-5
+- **Scratchpad:** `Mod+Grave` toggle terminal
+
+**Theme** (`/etc/leftwm/themes/current/theme.ron`):
+- Border width: 2, margin: 8, workspace margin: 8
+- Default border: Steel Blue, floating border: Liquid Coolant, focused border: Molten Amber
+
+**Startup Script** (`up`): feh (Void Navy background), picom, dunst, polybar steelbore, numlockx on
+
+**Shutdown Script** (`down`): kills polybar, picom, dunst
+
+**Polybar Configuration** (`polybar.ini`):
+- Bar height: 32, fixed-center, Void Navy background
+- Fonts: Share Tech Mono 12, JetBrainsMono Nerd Font 12
+- Modules: leftwm-tags (left), date `%H:%M:%S :: %Y-%m-%d` (center), cpu/memory/network (right)
+- Colors: success (Radium Green), info (Liquid Coolant), warning (Red Oxide)
+
+**Polybar Tag Template** (`template.liquid`):
+- Active tag: Molten Amber with underline
+- Visible tag: Liquid Coolant
+- Busy tag: Steel Blue
+- Empty tag: Steel Blue at 50% opacity
+
+**Picom** (`picom.conf`): GLX backend, vsync, inactive opacity 0.95, fading (delta 5), no shadows, no rounded corners.
+
+**Dunst** (`dunstrc`): 350x150, top-right, 10x40 offset, Share Tech Mono 12, Steel Blue frame. Urgency colors: low (Liquid Coolant), normal (Molten Amber), critical (Red Oxide with Red Oxide frame, no timeout).
+
+---
+
+## 10. Terminal Emulators (`modules/packages/terminals.nix`)
+
+All terminals are themed with the Steelbore palette. System-level configs use Ion as the default shell; user-level configs (in `home.nix`) use Nushell.
+
+### 10.1 Terminal Package List
+
+| Terminal       | Language | Category   |
+|----------------|----------|------------|
+| Alacritty      | Rust     | Primary    |
+| WezTerm        | Rust     | Primary    |
+| Rio            | Rust     | Primary    |
+| Ghostty        | Zig      | Primary    |
+| Ptyxis         | C (VTE)  | GNOME      |
+| WaveTerm       | Go       | AI-native  |
+| Warp           | Rust     | AI-powered |
+| Termius        | Various  | SSH client |
+| COSMIC Term    | Rust     | COSMIC     |
+| Konsole        | C++      | KDE        |
+| Yakuake        | C++      | KDE        |
+| GNOME Console  | C        | GNOME      |
+| Foot           | C        | Wayland    |
+| XTerm          | C        | X11        |
+| XFCE4 Terminal | C        | XFCE       |
+
+### 10.2 System-Level Configuration Files
+
+Each terminal has a system-level config placed in `/etc/` with the full Steelbore palette. The following are generated:
+
+| Terminal       | Config Path                                      | Format  |
+|----------------|--------------------------------------------------|---------|
+| Alacritty      | `/etc/alacritty/alacritty.toml`                  | TOML    |
+| WezTerm        | `/etc/wezterm/wezterm.lua`                       | Lua     |
+| Rio            | `/etc/rio/config.toml`                           | TOML    |
+| Ghostty        | `/etc/ghostty/config`                            | Custom  |
+| COSMIC Term    | `/etc/cosmic/com.system76.CosmicTerm/v1/syntax_theme_dark` | Text |
+| Ptyxis/VTE     | `/etc/gtk-4.0/gtk.css`                           | CSS     |
+| WaveTerm       | `/etc/waveterm/config.json`                      | JSON    |
+| Warp           | `/etc/warp/themes/steelbore.yaml`                | YAML    |
+| Konsole        | `/etc/xdg/konsole/Steelbore.colorscheme`         | INI     |
+| Konsole        | `/etc/xdg/konsole/Steelbore.profile`             | INI     |
+| Konsole        | `/etc/xdg/konsolerc`                             | INI     |
+| Yakuake        | `/etc/xdg/yakuakerc`                             | INI     |
+| Foot           | `/etc/xdg/foot/foot.ini`                         | INI     |
+| XTerm          | `/etc/X11/Xresources`                            | Xresources |
+| XFCE4          | `/etc/xdg/xfce4/terminal/terminalrc`             | INI     |
+
+### 10.3 Common Terminal Settings
+
+- **Font:** JetBrains Mono (12pt for most, 14pt for Rio)
+- **Background opacity:** 0.95
+- **Padding:** 10px
+- **System shell:** Ion (via `${pkgs.ion}/bin/ion`)
+- **User shell:** Nushell (via `${pkgs.nushell}/bin/nu` in home.nix configs)
+- **Foot quirk:** Uses hex colors without `#` prefix (handled by helper `h = c: builtins.substring 1 (builtins.stringLength c - 1) c`)
+- **Rio font config:** Uses `weight = N` integers (400 regular, 700 bold) -- no `style` key
+- **Konsole:** Full colorscheme with Normal/Faint/Intense variants, profile with 160x48 geometry, blinking cursor
+- **Yakuake:** Height 50%, width 100%, no keep-open, no animation, inherits Konsole Steelbore profile
+
+### 10.4 User-Level Configs (Home Manager)
+
+Home Manager additionally generates user-level configs in `~/.config/` for: niri, ironbar (config.yaml + style.css), wezterm, rio, ghostty, foot, xfce4-terminal, konsole (rc + colorscheme + profile via xdg.dataFile), yakuake, and xresources. The user-level Alacritty config is managed via `programs.alacritty` with structured Nix settings. Ptyxis and GNOME Console are configured via `dconf.settings`.
+
+---
+
+## 11. Package Inventory
+
+### 11.1 Browsers (`modules/packages/browsers.nix`)
+
+- **Firefox** (system-managed via `programs.firefox.enable`)
+- google-chrome, brave, microsoft-edge, librewolf
+
+### 11.2 Editors (`modules/packages/editors.nix`)
+
+**Linting:** markdownlint-cli2
+
+**TUI Editors (Rust):** helix, amp, msedit (MS-DOS style)
+
+**TUI Editors (Standard):** neovim, vim, mg (micro Emacs), mc (Midnight Commander)
+
+**GUI Editors (Rust):** zed-editor, lapce, neovide, cosmic-edit
+
+**GUI Editors (Standard):** emacs-pgtk, vscode-fhs, gedit
+
+### 11.3 Development (`modules/packages/development.nix`)
+
+**Git & VCS:** git, gitui (Rust), delta (Rust), jujutsu/jj (Rust), gh (Go), github-desktop
+
+**Rust Toolchain:** rustup, cargo, cargo-update
+
+**Build & Task (Rust):** just, sad, pueue, tokei
+
+**Environment:** lorri (Rust), dotter (Rust)
+
+**Languages:** jdk, php
+
+**Nix Ecosystem:** nixfmt (Rust), cachix, nix, guix, emacsPackages.guix
+
+**Git system config:** `init.defaultBranch = "main"`, `core.editor = msedit`, `color.ui = true`
+
+### 11.4 Security (`modules/packages/security.nix`)
+
+**Encryption:** age (Rust), rage (Rust), sops (Go)
+
+**Sequoia PGP Stack (Rust):** sequoia-sq, sequoia-chameleon-gnupg, sequoia-wot, sequoia-sqv, sequoia-sqop
+
+**Password Managers:** rbw (Rust, Bitwarden CLI), bitwarden-cli, bitwarden-desktop, authenticator (Rust, 2FA/OTP)
+
+**SSH:** openssh_hpn
+
+**Backup:** pika-backup (Rust, Borg frontend)
+
+**Secure Boot:** sbctl (Rust)
+
+### 11.5 Networking (`modules/packages/networking.nix`)
+
+**Network Mgmt:** impala (Rust, iwd TUI), iwd
+
+**HTTP Clients:** xh (Rust), monolith (Rust), curlFull, wget2
+
+**Diagnostics (Rust):** gping, trippy, lychee, rustscan, sniffglue, bandwhich
+
+**GUI Apps (Rust):** sniffnet, mullvad-vpn, rqbit
+
+**Download Managers:** aria2, uget
+
+**Clipboard:** wl-clipboard, wl-clipboard-rs (Rust)
+
+**DNS & Services:** dnsmasq, atftp, adguardhome
+
+### 11.6 Multimedia (`modules/packages/multimedia.nix`)
+
+**Video Players:** mpv, vlc, cosmic-player (Rust)
+
+**Audio Players (Rust):** amberol, termusic, ncspot, psst, shortwave
+
+**Image Viewers (Rust):** loupe, viu, emulsion
+
+**Audio Recognition:** mousai (Rust)
+
+**Processing (Rust):** rav1e, gifski, oxipng, video-trimmer, ffmpeg
+
+**Downloaders:** yt-dlp
+
+### 11.7 Productivity (`modules/packages/productivity.nix`)
+
+**Knowledge Mgmt (Rust):** appflowy, affine
+
+**Office Suites:** libreoffice-fresh, onlyoffice-desktopeditors
+
+**Utilities:** qalculate-gtk
+
+**Communication:** fractal (Rust, Matrix), newsflash (Rust, RSS), tutanota-desktop, onedriver (Go, OneDrive)
+
+### 11.8 System Utilities (`modules/packages/system.nix`)
+
+**Modern Unix (Rust):** fd, ripgrep, bat, eza, sd, zoxide, procs, dust, dua
+
+**Coreutils (Rust):** uutils-coreutils, uutils-diffutils, uutils-findutils
+
+**File Management:** yazi (Rust), broot (Rust), superfile (Go), spacedrive (Rust), fclones (Rust), kondo (Rust), pipe-rename (Rust), ouch (Rust)
+
+**Disk Management:** gptman (Rust)
+
+**System Monitoring:** bottom (Rust), kmon (Rust), macchina (Rust), bandwhich (Rust), mission-center (Rust), htop, btop, gotop, fastfetch, i7z, hw-probe
+
+**Text Processing (Rust):** jaq, teip, htmlq, skim, tealdeer, mdcat, difftastic
+
+**Shells:** nushell (Rust), brush (Rust), ion (Rust), starship (Rust), atuin (Rust), pipr (Rust), moor (Rust), powershell
+
+**Multiplexers:** zellij (Rust), screen
+
+**Recording:** t-rec (Rust)
+
+**Containers & Virtualization:** distrobox, boxbuddy (Rust), host-spawn, podman, runc, youki (Rust), oxker (Rust), qemu, flatpak, bubblewrap
+
+**System Management:** topgrade (Rust), paru (Rust), doas, os-prober, kbd, numlockx, xremap (Rust), input-leap
+
+**Archiving:** p7zip, zip, unzip
+
+**ZFS:** zfs, antigravity (Rust)
+
+**Benchmarking:** phoronix-test-suite, perf
+
+### 11.9 AI (`modules/packages/ai.nix`)
+
+**Rust:** aichat, gemini-cli
+
+**Other:** opencode (Go), codex, github-copilot-cli, gpt-cli, mcp-nixos, `stablePkgs.claude-code` (pinned to stable -- unstable npm tarball is broken)
+
+### 11.10 Flatpak (`modules/packages/flatpak.nix`)
+
+**Remote:** flathub (`https://dl.flathub.org/repo/flathub.flatpakrepo`)
+
+**Packages (41):**
+
+| Category            | App IDs                                              |
+|---------------------|------------------------------------------------------|
+| Terminals           | app.devsuite.Ptyxis                                  |
+| Browsers            | app.zen_browser.zen, com.microsoft.Edge, com.opera.Opera |
+| Communication       | com.discordapp.Discord, im.riot.Riot, io.wavebox.Wavebox |
+| Security & Remote   | com.bitwarden.desktop, com.rustdesk.RustDesk         |
+| Development         | com.jetbrains.RustRover, com.visualstudio.code, dev.zed.Zed, io.github.shiftey.Desktop |
+| System & Utilities  | com.github.tchx84.Flatseal, io.github.dvlv.boxbuddyrs, io.github.prateekmedia.appimagepool, it.mijorus.gearlever, org.adishatz.Screenshot, org.flameshot.Flameshot |
+| Gaming              | com.heroicgameslauncher.hgl, com.usebottles.bottles, com.valvesoftware.Steam, info.beyondallreason.bar, net.openra.OpenRA, net.wz2100.wz2100, org.libretro.RetroArch, org.openttd.OpenTTD |
+| Retro / Classic     | com.dosbox.DOSBox, com.dosbox_x.DOSBox-X, com.play0ad.zeroad, com.remnantsoftheprecursors.ROTP, eu.jumplink.Learn6502, io.github.dosbox-staging, io.github.jotd666.gods-deluxe, io.github.dman95.SASM, org.seul.crimson, org.zdoom.UZDoom, rs.ruffle.Ruffle |
+| Productivity        | io.github.Qalculate, org.kde.yakuake                 |
+
+---
+
+## 12. Virtualization & Containers
+
+### 12.1 Podman
+
+```nix
+virtualisation.podman = {
   enable = true;
+  dockerCompat = true;       # docker -> podman drop-in alias
+  extraPackages = [ pkgs.youki pkgs.runc ];
+};
+```
+
+### 12.2 Flatpak
+
+```nix
+services.flatpak.enable = true;
+```
+
+### 12.3 AppImage
+
+```nix
+programs.appimage = {
+  enable = true;
+  binfmt = true;  # auto-run via binfmt
+};
+```
+
+### 12.4 Container User Config
+
+```ini
+# ~/.config/containers/containers.conf
+[engine]
+runtime = "runc"
+```
+
+---
+
+## 13. User Configuration (Home Manager)
+
+### 13.1 Basic Settings (`users/mj/home.nix`)
+
+- **Username:** mj
+- **Home:** `/home/mj`
+- **State version:** 25.11
+- **Symlink:** `~/steelbore` -> `/steelbore` (out-of-store symlink)
+
+### 13.2 Keyboard Layout
+
+```nix
+home.keyboard = {
+  layout = "us,ara";
+  options = [ "grp:ctrl_space_toggle" ];
+};
+```
+
+### 13.3 Session Variables
+
+```
+EDITOR = msedit/bin/edit
+VISUAL = msedit/bin/edit
+STEELBORE_THEME = true
+```
+
+### 13.4 User Packages
+
+`sequoia-chameleon-gnupg`
+
+### 13.5 Git Configuration
+
+```nix
+programs.git = {
+  enable = true;
+  lfs.enable = true;
   settings = {
-    default_session = {
-      command = ''
-        ${pkgs.greetd.tuigreet}/bin/tuigreet \
-          --time \
-          --time-format "%Y-%m-%d %H:%M:%S" \
-          --remember \
-          --remember-session \
-          --asterisks \
-          --greeting "STEELBORE :: LATTICE" \
-          --sessions ${sessionPaths}
-      '';
-      user = "greeter";
-    };
+    user.name = "UnbreakableMJ";
+    user.email = "34196588+UnbreakableMJ@users.noreply.github.com";
+    user.signingkey = "~/.ssh/id_ed25519.pub";
+    gpg.format = "ssh";
+    commit.gpgsign = true;
+    init.defaultBranch = "main";
   };
 };
 ```
 
-**Features:**
-- ISO 8601 date/time format
-- Session memory (remembers last selected session)
-- Password asterisks for visual feedback
-- Steelbore branding in greeting message
-- All four desktop sessions available
+### 13.6 Starship Prompt (Tokyo Night Preset)
 
----
-
-## 5. Terminal Emulators
-
-All terminal emulators are configured with the Steelbore color palette:
-
-### 5.1 Supported Terminals
-
-| Terminal     | Language | Config Location                    | Theme Status |
-|--------------|----------|-------------------------------------|--------------|
-| Alacritty    | Rust     | `/etc/alacritty/alacritty.toml`    | Configured   |
-| WezTerm      | Rust     | `/etc/wezterm/wezterm.lua`         | Configured   |
-| Rio          | Rust     | `/etc/rio/config.toml`             | Configured   |
-| Ghostty      | Zig      | `/etc/ghostty/config`              | Configured   |
-| COSMIC Term  | Rust     | COSMIC settings                     | Configured   |
-| Ptyxis       | C (VTE)  | dconf/gsettings                     | Configured   |
-| WaveTerm     | Go       | `/etc/waveterm/config.json`        | Configured   |
-| Warp         | Rust     | `/etc/warp/themes/steelbore.yaml`  | Configured   |
-| Termius      | Various  | In-app settings                     | Manual       |
-
-### 5.2 Common Configuration
-
-All terminals share these settings:
-- Font: JetBrains Mono 12pt
-- Background opacity: 95%
-- Padding: 10px
-- Full Steelbore 16-color palette
-
----
-
-## 6. Desktop Environments
-
-### 6.1 Niri (Wayland — Scrolling Tiling)
-
-**Components:**
-- Compositor: Niri
-- Status Bar: Ironbar
-- Launcher: onagre / anyrun
-- Notifications: wired
-- Background: swaybg
-
-**Key Bindings:** See USER_MANUAL.md for complete reference.
-
-### 6.2 LeftWM (X11 — Tiling WM)
-
-**Components:**
-- Window Manager: LeftWM
-- Status Bar: Polybar
-- Launcher: rlaunch / rofi / dmenu
-- Notifications: Dunst
-- Compositor: Picom
-
-**Key Bindings:** See USER_MANUAL.md for complete reference.
-
-### 6.3 COSMIC (Wayland — Full Desktop)
-
-**Components:**
-- Full COSMIC desktop environment from System76
-- Native cosmic-panel, cosmic-launcher, cosmic-notifications
-- cosmic-term with Steelbore theming
-
-### 6.4 GNOME (Wayland — Full Desktop)
-
-**Components:**
-- GNOME Shell on Wayland
-- Selected extensions for customization
-- Ptyxis terminal with Steelbore profile
-- GDM disabled (uses greetd)
-
----
-
-## 7. Keyboard Layout
-
-- Primary: US English (`us`)
-- Secondary: Arabic (`ara`)
-- Toggle: Ctrl+Space (`grp:ctrl_space_toggle`)
-
-Configuration location: `hosts/lattice/default.nix`
-
----
-
-## 8. Hardware Modules
-
-### 8.1 Fingerprint Reader
-
-```nix
-config = lib.mkIf config.steelbore.hardware.fingerprint.enable {
-  services.fprintd.enable = true;
-  environment.systemPackages = [ pkgs.fprintd ];
-};
+Format string:
+```
+[blk](#a3aed2)[  ](bg:#a3aed2 fg:#090c0c)[](bg:#769ff0 fg:#a3aed2)$directory[](fg:#769ff0 bg:#394260)$git_branch$git_status[](fg:#394260 bg:#212736)$nodejs$rust$golang$php[](fg:#212736 bg:#1d2230)$time[ ](fg:#1d2230)\n$character
 ```
 
-### 8.2 Intel Optimizations
+(Where `blk` represents the unicode block characters.)
+
+Module configurations: directory (truncation 3, icon substitutions), git_branch (symbol), git_status, nodejs/rust/golang/php (version info in dark segment), time (`%R` format).
+
+### 13.7 Nushell Configuration
 
 ```nix
-config = lib.mkIf config.steelbore.hardware.intel.enable {
-  boot.kernelModules = [ "kvm-intel" ];
-  hardware.cpu.intel.updateMicrocode = true;
-  environment.sessionVariables = {
-    RUSTFLAGS = "-C target-cpu=x86-64-v4 -C opt-level=3";
-    GOAMD64 = "v4";
-    CFLAGS = "-march=x86-64-v4 -O3 -pipe -fno-plt -flto=auto";
-    CXXFLAGS = "-march=x86-64-v4 -O3 -pipe -fno-plt -flto=auto";
-  };
-};
+programs.nushell.enable = true;
 ```
 
+Config includes: `show_banner: false`, `ls_colors: true`, `clickable_links: true`, block cursor shapes.
+
+**Steelbore Telemetry Aliases:**
+- `ll` = `ls -l`
+- `lla` = `ls -la`
+- `telemetry` = `macchina`
+- `sensors` = `watch -n 1 sensors`
+- `sys-logs` = `journalctl -p 3 -xb`
+- `network-diag` = `gping google.com`
+- `top-processes` = `bottom`
+- `disk-telemetry` = `yazi`
+- `edit` = `msedit`
+
+**`steelbore` command:** Prints Steelbore identity banner (STATUS: ACTIVE, LOAD: NOMINAL, INTEGRITY: VERIFIED).
+
+### 13.8 Ion Shell Init (`~/.config/ion/initrc`)
+
+- Starship prompt integration: `eval $(starship init ion)`
+- Same aliases as Nushell (ll, lla, telemetry, sensors, sys-logs, top-processes, disk-telemetry, edit)
+
+### 13.9 Alacritty (Home Manager)
+
+Managed via `programs.alacritty.enable = true` with structured Nix settings. Shell: Nushell. Full Steelbore palette via `steelborePalette` variable references.
+
+### 13.10 dconf Settings
+
+**Ptyxis:**
+- Default profile UUID: `steelbore`
+- Font: JetBrains Mono 12, custom command: Nushell
+- Full 16-color palette from steelborePalette
+- Background: Void Navy, foreground: Molten Amber, opacity: 0.95
+
+**GNOME Console:**
+- Theme: night
+- Font: JetBrains Mono 12
+
 ---
 
-## 9. Package Categories
+## 14. Keyboard Layout
 
-| Category     | Rust | Other | Total |
-|--------------|------|-------|-------|
-| Browsers     | 0    | 5     | 5     |
-| Terminals    | 4    | 5     | 9     |
-| Editors      | 6    | 9     | 15    |
-| Development  | 10   | 8     | 18    |
-| Security     | 9    | 4     | 13    |
-| Networking   | 12   | 8     | 20    |
-| Multimedia   | 12   | 3     | 15    |
-| Productivity | 4    | 5     | 9     |
-| System       | 45   | 20    | 65    |
-| AI           | 2    | 5     | 7     |
-| **Total**    | **104** | **72** | **176** |
+- **Primary:** US English (`us`)
+- **Secondary:** Arabic (`ara`)
+- **Toggle:** `Ctrl+Space` (`grp:ctrl_space_toggle`)
+- **Configuration:** Set in `hosts/lattice/default.nix` (system), `users/mj/home.nix` (user), `modules/desktops/niri.nix` (Niri XKB)
 
 ---
 
-## 10. Verification Plan
+## 15. Desktop Environment Summary
 
-### 10.1 Build Verification
+| Desktop | Protocol | Bar      | Launcher        | Notification          |
+|---------|----------|----------|-----------------|----------------------|
+| GNOME   | Wayland  | Shell    | GNOME           | GNOME                |
+| COSMIC  | Wayland  | Panel    | cosmic-launcher | cosmic-notifications |
+| Plasma  | Wayland  | Panel    | KRunner         | KDE Notifications    |
+| Niri    | Wayland  | Ironbar  | onagre/anyrun   | wired                |
+| LeftWM  | X11      | Polybar  | rlaunch/rofi    | dunst                |
+
+---
+
+## 16. Verification Plan
+
+### 16.1 Build Verification
 
 ```bash
 # Check flake validity
@@ -328,40 +994,35 @@ nixos-rebuild build --flake .#lattice
 
 # Switch to new configuration
 sudo nixos-rebuild switch --flake .#lattice
+
+# Build specific profile
+sudo nixos-rebuild switch --flake .#lattice-v3
+sudo nixos-rebuild switch --flake .#lattice-unstable-v3
 ```
 
-### 10.2 Desktop Environment Verification
+### 16.2 Desktop Environment Verification
 
-| Desktop | Verification Command       | Expected Result              |
-|---------|----------------------------|------------------------------|
-| GNOME   | `gnome-session --version`  | Session starts on Wayland    |
-| COSMIC  | `cosmic-session --version` | Session starts with panel    |
-| Niri    | `niri --version`           | WM starts with Ironbar       |
-| LeftWM  | `leftwm --version`         | WM starts with Polybar       |
+| Desktop | Verification Command       | Expected Result               |
+|---------|----------------------------|-------------------------------|
+| GNOME   | `gnome-session --version`  | Session starts on Wayland     |
+| COSMIC  | `cosmic-session --version` | Session starts with panel     |
+| Plasma  | `plasmashell --version`    | Session starts on Wayland     |
+| Niri    | `niri --version`           | WM starts with Ironbar        |
+| LeftWM  | `leftwm --version`         | WM starts with Polybar        |
 
-### 10.3 Steelbore Standard Compliance
+### 16.3 Steelbore Standard Compliance
 
-- [x] **§2** Metallurgical naming: `Lattice` (crystal structure)
-- [x] **§3.1** Memory safety: Rust-first packages, sudo-rs
-- [x] **§3.2** Performance: XanMod kernel, x86-64-v4 flags
-- [x] **§3.3** Security: Sequoia PGP, polkit, secure boot ready
-- [x] **§4** License: GPL-3.0-or-later, SPDX headers
-- [x] **§6** PFA: No telemetry, local storage default
-- [x] **§7** Key bindings: CUA + Vim (hjkl) in all WMs
-- [x] **§8** Color palette: Void Navy background everywhere
-- [x] **§9** Typography: Share Tech Mono, JetBrains Mono
-- [x] **§11** Date/Time: ISO 8601, 24h, UTC
-
----
-
-## 11. Desktop Environment Summary
-
-| Desktop | Protocol | Bar      | Launcher        | Notification          |
-|---------|----------|----------|-----------------|----------------------|
-| GNOME   | Wayland  | Shell    | GNOME           | GNOME                |
-| COSMIC  | Wayland  | Panel    | cosmic-launcher | cosmic-notifications |
-| Niri    | Wayland  | Ironbar  | onagre/anyrun   | wired                |
-| LeftWM  | X11      | Polybar  | rlaunch/rofi    | dunst                |
+- [x] **Metallurgical naming:** Lattice (crystal structure)
+- [x] **Memory safety:** Rust-first packages, sudo-rs, Sequoia PGP, Ion/Brush shells
+- [x] **Performance:** XanMod kernel, x86-64-v1/v2/v3/v4 flags (CachyOS/ALHP sourced)
+- [x] **Security:** Sequoia PGP, polkit, sudo-rs execWheelOnly, secure boot ready (sbctl)
+- [x] **License:** GPL-3.0-or-later, SPDX headers on all files
+- [x] **Privacy:** No telemetry, local storage default
+- [x] **Key bindings:** CUA + Vim (hjkl) in all tiling WMs (Niri, LeftWM)
+- [x] **Color palette:** Void Navy background on all surfaces (TTY, terminals, bars, notifications)
+- [x] **Typography:** Share Tech Mono (HUD), JetBrains Mono (code), Orbitron (headers)
+- [x] **Date/Time:** ISO 8601 (`%Y-%m-%d %H:%M:%S`), 24h format in all bars and tuigreet
+- [x] **Containers:** Podman (not Docker) with runc default runtime and Youki (Rust) available
 
 ---
 
