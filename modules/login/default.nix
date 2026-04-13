@@ -3,32 +3,40 @@
 { config, lib, pkgs, steelborePalette, ... }:
 
 let
-  ion-shell-session = pkgs.writeTextDir "share/wayland-sessions/ion-shell.desktop" ''
+  mkShellSession = { name, sessionName, exec, comment }: (pkgs.runCommand name {
+    passthru.providedSessions = [ sessionName ];
+  } ''
+    mkdir -p $out/share/wayland-sessions
+    cat > $out/share/wayland-sessions/${sessionName}.desktop <<EOF
     [Desktop Entry]
-    Name=Ion Shell
-    Comment=Drop to Ion shell
-    Exec=${pkgs.ion}/bin/ion
+    Name=${name}
+    Comment=${comment}
+    Exec=${exec}
     Type=Application
-    DesktopNames=ion-shell
-  '';
+    DesktopNames=${sessionName}
+    EOF
+  '');
 
-  nushell-session = pkgs.writeTextDir "share/wayland-sessions/nushell-session.desktop" ''
-    [Desktop Entry]
-    Name=Nushell
-    Comment=Drop to Nushell
-    Exec=${pkgs.nushell}/bin/nu
-    Type=Application
-    DesktopNames=nushell
-  '';
+  ion-shell-session = mkShellSession {
+    name = "Ion Shell";
+    sessionName = "ion-shell";
+    exec = "${pkgs.ion}/bin/ion";
+    comment = "Drop to Ion shell";
+  };
 
-  brush-session = pkgs.writeTextDir "share/wayland-sessions/brush-session.desktop" ''
-    [Desktop Entry]
-    Name=Brush Shell
-    Comment=Drop to Brush shell
-    Exec=${pkgs.brush}/bin/brush
-    Type=Application
-    DesktopNames=brush
-  '';
+  nushell-session = mkShellSession {
+    name = "Nushell";
+    sessionName = "nushell";
+    exec = "${pkgs.nushell}/bin/nu";
+    comment = "Drop to Nushell";
+  };
+
+  brush-session = mkShellSession {
+    name = "Brush Shell";
+    sessionName = "brush";
+    exec = "${pkgs.brush}/bin/brush";
+    comment = "Drop to Brush shell";
+  };
 in
 {
   # greetd display manager with tuigreet
