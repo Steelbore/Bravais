@@ -2,6 +2,34 @@
 # Steelbore Lattice — greetd + tuigreet Login Manager
 { config, lib, pkgs, steelborePalette, ... }:
 
+let
+  ion-shell-session = pkgs.writeTextDir "share/wayland-sessions/ion-shell.desktop" ''
+    [Desktop Entry]
+    Name=Ion Shell
+    Comment=Drop to Ion shell
+    Exec=${pkgs.ion}/bin/ion
+    Type=Application
+    DesktopNames=ion-shell
+  '';
+
+  nushell-session = pkgs.writeTextDir "share/wayland-sessions/nushell-session.desktop" ''
+    [Desktop Entry]
+    Name=Nushell
+    Comment=Drop to Nushell
+    Exec=${pkgs.nushell}/bin/nu
+    Type=Application
+    DesktopNames=nushell
+  '';
+
+  brush-session = pkgs.writeTextDir "share/wayland-sessions/brush-session.desktop" ''
+    [Desktop Entry]
+    Name=Brush Shell
+    Comment=Drop to Brush shell
+    Exec=${pkgs.brush}/bin/brush
+    Type=Application
+    DesktopNames=brush
+  '';
+in
 {
   # greetd display manager with tuigreet
   services.greetd = {
@@ -30,14 +58,20 @@
   services.displayManager.sessionPackages = with pkgs; [
     niri
     cosmic-session
+    ion-shell-session
+    nushell-session
+    brush-session
   ];
 
-  # tuigreet configuration directory with Steelbore theming
+  # Available sessions for greetd environments
   # Note: LeftWM sessions are auto-discovered from xsessions directory
   environment.etc."greetd/environments".text = ''
     niri-session
     start-cosmic
     gnome-session
+    ion
+    nu
+    brush
   '';
 
   environment.systemPackages = with pkgs; [
