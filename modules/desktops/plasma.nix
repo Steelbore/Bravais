@@ -16,6 +16,9 @@
     # X server required for XWayland support
     services.xserver.enable = true;
 
+    # Avoid askpass conflicts when multiple desktop modules are enabled.
+    programs.ssh.askPassword = lib.mkForce "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
+
     environment.systemPackages = with pkgs; [
       kdePackages.plasma-browser-integration
       kdePackages.kdeconnect-kde
