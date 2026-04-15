@@ -103,7 +103,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [x] Install companion packages (14: swaybg, xwayland-satellite, ironbar, waybar, etc.)
 - [x] Write `/etc/niri/config.kdl` with Steelbore palette
 - [x] Write `/etc/ironbar/config.yaml` and `/etc/ironbar/style.css`
-- [x] Configure keybindings (Vim-style + CUA arrows)
+- [x] Configure keybindings (Vim-style + CUA arrows); `Mod+Return` → rio (default terminal)
 - [x] Configure workspaces 1-5
 - [x] Configure startup applications (swaybg, ironbar, wired)
 - [x] Configure input (keyboard `us,ar` with `grp:ctrl_space_toggle`, touchpad)
@@ -113,7 +113,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [x] Define `steelbore.desktops.leftwm` option
 - [x] Enable X11 and LeftWM, configure XKB layout (`us,ar`)
 - [x] Install companion packages (15: rlaunch, rofi, dmenu, polybar, picom, etc.)
-- [x] Write `/etc/leftwm/config.ron` with keybindings
+- [x] Write `/etc/leftwm/config.ron` with keybindings; `Mod+Return` → rio (default terminal)
 - [x] Write theme files (`theme.ron`, `up`, `down`, `polybar.ini`, `template.liquid`, `picom.conf`)
 - [x] Write `/etc/dunst/dunstrc` with Steelbore theme
 

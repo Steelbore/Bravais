@@ -64,7 +64,7 @@
           layout_mode: Tag,
           insert_behavior: Bottom,
           scratchpad: [
-              (name: "Terminal", value: "alacritty", x: 50, y: 50, width: 1200, height: 800),
+              (name: "Terminal", value: "rio", x: 50, y: 50, width: 1200, height: 800),
           ],
           window_rules: [],
           disable_current_tag_swap: false,
@@ -80,7 +80,7 @@
               (command: Execute, value: "loginctl kill-session $XDG_SESSION_ID", modifier: ["modkey", "Shift"], key: "e"),
 
               // Applications
-              (command: Execute, value: "alacritty", modifier: ["modkey"], key: "Return"),
+              (command: Execute, value: "rio", modifier: ["modkey"], key: "Return"),
               (command: Execute, value: "rlaunch", modifier: ["modkey"], key: "d"),
               (command: Execute, value: "rofi -show drun", modifier: ["modkey", "Shift"], key: "d"),
 

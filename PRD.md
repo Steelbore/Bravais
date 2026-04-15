@@ -81,7 +81,7 @@ lattice/
 |       +-- default.nix            # System-level user config
 |       +-- home.nix               # Home Manager configuration
 +-- overlays/                      # Package overlays
-    +-- default.nix                # sequoia-wot fix, claude-code binary
+    +-- default.nix                # sequoia-wot fix (doCheck = false)
 ```
 
 ### 2.2 Module Design Pattern
@@ -283,7 +283,7 @@ Set via `console.colors` -- 16 hex values without `#` prefix, in order: normal 0
 - **Experimental features:** `nix-command`, `flakes`
 - **Garbage collection:** automatic, weekly, `--delete-older-than 30d`
 - **nixpkgs.config:** `allowUnfree = true`
-- **Overlays:** claude-code custom derivation and sequoia-wot test fix (duplicated from `overlays/default.nix`)
+- **Overlays:** sequoia-wot test fix (`doCheck = false`), loaded from `overlays/default.nix`
 
 ### 5.2 Boot (`modules/core/boot.nix`)
 
@@ -525,7 +525,7 @@ Input: keyboard layouts `us,ar` with `grp:ctrl_space_toggle`, touchpad with tap/
 
 Key bindings (Mod = Super):
 - **Session:** `Mod+Shift+E` quit, `Mod+Shift+L` lock (swaylock, Void Navy)
-- **Applications:** `Mod+Return` alacritty, `Mod+D` onagre, `Mod+Shift+D` anyrun
+- **Applications:** `Mod+Return` rio (default terminal), `Mod+D` onagre, `Mod+Shift+D` anyrun
 - **Windows:** `Mod+Q` close, `Mod+F` maximize, `Mod+Shift+F` fullscreen
 - **Focus:** `Mod+H/J/K/L` or `Mod+Arrows` (Vim + CUA)
 - **Move:** `Mod+Shift+H/J/K/L` or `Mod+Shift+Arrows`
@@ -565,7 +565,7 @@ leftwm, leftwm-theme, leftwm-config, rlaunch, rofi, dmenu, polybar, picom, feh, 
 
 Key bindings:
 - **Session:** `Mod+Shift+E` kill session
-- **Applications:** `Mod+Return` alacritty, `Mod+D` rlaunch, `Mod+Shift+D` rofi
+- **Applications:** `Mod+Return` rio (default terminal), `Mod+D` rlaunch, `Mod+Shift+D` rofi
 - **Windows:** `Mod+Q` close, `Mod+F` fullscreen, `Mod+Shift+F` float
 - **Focus:** `Mod+H/J/K/L` or `Mod+Arrows` (Vim + CUA)
 - **Move:** `Mod+Shift+H/J/K/L`
@@ -787,7 +787,7 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **Rust:** aichat, gemini-cli
 
-**Other:** opencode (Go), codex, github-copilot-cli, gpt-cli, mcp-nixos, claude-code (channel-appropriate: stable on stable, unstable on unstable)
+**Other:** opencode (Go), codex, github-copilot-cli, gpt-cli, mcp-nixos, task-master-ai, claude-code (channel-appropriate: stable on stable, unstable on unstable)
 
 ### 11.10 Flatpak (`modules/packages/flatpak.nix`)
 

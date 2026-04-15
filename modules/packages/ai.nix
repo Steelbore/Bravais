@@ -19,6 +19,7 @@
       github-copilot-cli
       gpt-cli
       mcp-nixos
+      task-master-ai             # AI task management (Claude-based)
       claude-code                # Uses channel-appropriate package (stable or unstable)
     ];
   };

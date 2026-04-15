@@ -86,7 +86,7 @@
           Mod+Shift+L { spawn "swaylock" "-c" "${steelborePalette.voidNavy}"; }
 
           // Applications
-          Mod+Return { spawn "alacritty"; }
+          Mod+Return { spawn "rio"; }
           Mod+D { spawn "onagre"; }
           Mod+Shift+D { spawn "anyrun"; }
 
