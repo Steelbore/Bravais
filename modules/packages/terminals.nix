@@ -105,7 +105,7 @@ in
       white = "${steelborePalette.moltenAmber}"
 
       [terminal.shell]
-      program = "${pkgs.ion}/bin/ion"
+      program = "${pkgs.nushell}/bin/nu"
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -125,7 +125,7 @@ in
       config.window_padding = { left = 10, right = 10, top = 10, bottom = 10 }
       config.enable_tab_bar = true
       config.hide_tab_bar_if_only_one_tab = true
-      config.default_prog = { "${pkgs.ion}/bin/ion" }
+      config.default_prog = { "${pkgs.nushell}/bin/nu" }
 
       -- Steelbore color scheme
       config.colors = {
@@ -247,7 +247,7 @@ in
       white = '${steelborePalette.moltenAmber}'
 
       [shell]
-      program = "${pkgs.ion}/bin/ion"
+      program = "${pkgs.nushell}/bin/nu"
       args = []
     '';
 
@@ -293,7 +293,7 @@ in
       palette = 15=${steelborePalette.moltenAmber}
 
       # Shell — launches ion
-      command = ${pkgs.ion}/bin/ion
+      command = ${pkgs.nushell}/bin/nu
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -521,7 +521,7 @@ in
       Font=JetBrains Mono,12,-1,5,50,0,0,0,0,0
 
       [General]
-      Command=${pkgs.ion}/bin/ion
+      Command=${pkgs.nushell}/bin/nu
       Name=Steelbore
       Parent=FALLBACK/
       TerminalColumns=160
@@ -569,7 +569,7 @@ in
 
       [main]
       font=JetBrains Mono:size=12
-      shell=${pkgs.ion}/bin/ion
+      shell=${pkgs.nushell}/bin/nu
       term=xterm-256color
 
       [colors]
@@ -649,7 +649,7 @@ in
       FontName=JetBrains Mono 12
       MiscDefaultGeometry=160x48
       RunCustomCommand=TRUE
-      CustomCommand=${pkgs.ion}/bin/ion
+      CustomCommand=${pkgs.nushell}/bin/nu
       BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
       BackgroundDarkness=0.95
       ColorBackground=${steelborePalette.voidNavy}

@@ -262,8 +262,8 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [x] **`default.nix`**: Console keymap `us`
 - [x] **`default.nix`**: Enable printing
 - [x] **`default.nix`**: Create user `mj` with groups (networkmanager, wheel, input, video, audio)
-- [x] **`default.nix`**: Set user shell to Ion (Rust), root shell to Brush (Rust)
-- [x] **`default.nix`**: Register Ion and Brush as valid login shells
+- [x] **`default.nix`**: Set user shell to Nushell (Rust), root shell to Brush (Rust)
+- [x] **`default.nix`**: Register Nushell, Brush, Ion as valid login shells; bash disabled (`programs.bash.enable = false`)
 - [x] **`default.nix`**: Enable all steelbore desktop modules (gnome, cosmic, plasma, niri, leftwm)
 - [x] **`default.nix`**: Enable all steelbore hardware modules (fingerprint, intel)
 - [x] **`default.nix`**: Enable all steelbore package modules (12 modules including flatpak)

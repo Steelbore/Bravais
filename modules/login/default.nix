@@ -79,9 +79,9 @@ in
     plasma-session
     plasma-x11-session
     gnome-session
-    ion
     nu
     brush
+    ion
   '';
 
   environment.systemPackages = with pkgs; [

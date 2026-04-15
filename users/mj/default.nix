@@ -7,6 +7,6 @@
     isNormalUser = true;
     description = "Mohamed Hammad";
     extraGroups = [ "networkmanager" "wheel" "input" "video" "audio" ];
-    shell = pkgs.ion;
+    shell = pkgs.nushell;
   };
 }

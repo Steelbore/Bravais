@@ -21,7 +21,7 @@ Lattice is a flake-based NixOS configuration implementing the Steelbore Standard
 - 14+ terminal emulators, all themed with the Steelbore palette
 - Declarative Flatpak management via nix-flatpak
 - Podman (not Docker) with runc as default runtime and Youki (Rust) available
-- Ion (Rust) as default user shell; Brush (Rust) as root shell
+- Nushell (Rust) as default user shell; Brush (Rust, Bash-compatible) as root shell; Bash disabled as login shell
 
 ---
 
@@ -380,9 +380,9 @@ When enabled: `services.fprintd.enable = true`, package `fprintd` installed.
 - **Username:** `mj`
 - **Full name:** Mohamed Hammad
 - **Groups:** `networkmanager`, `wheel`, `input`, `video`, `audio`
-- **Shell:** `pkgs.ion` (Ion -- Rust shell)
+- **Shell:** `pkgs.nushell` (Nushell -- Rust shell)
 - **Root shell:** `pkgs.brush` (Brush -- Rust Bash-compatible shell)
-- **Valid login shells:** ion, brush (registered via `environment.shells`)
+- **Valid login shells:** nushell, brush, ion (registered via `environment.shells`); bash disabled (`programs.bash.enable = false`)
 
 ### 7.3 Hardware (`hardware.nix`)
 
@@ -420,11 +420,11 @@ Running as user `greeter`.
 
 Custom shell sessions are built with a `mkShellSession` helper using `pkgs.runCommand` with `passthru.providedSessions`:
 
-| Session Name  | Binary               | Comment              |
-|---------------|----------------------|----------------------|
-| Ion Shell     | `ion`                | Drop to Ion shell    |
-| Nushell       | `nushell`/`nu`       | Drop to Nushell      |
-| Brush Shell   | `brush`              | Drop to Brush shell  |
+| Session Name  | Binary               | Comment                          |
+|---------------|----------------------|----------------------------------|
+| Nushell       | `nushell`/`nu`       | Default user shell               |
+| Brush Shell   | `brush`              | Rust Bash-compatible (root)      |
+| Ion Shell     | `ion`                | Available as optional shell      |
 
 ### 8.3 Registered Session Packages
 
@@ -602,7 +602,7 @@ Key bindings:
 
 ## 10. Terminal Emulators (`modules/packages/terminals.nix`)
 
-All terminals are themed with the Steelbore palette. System-level configs use Ion as the default shell; user-level configs (in `home.nix`) use Nushell.
+All terminals are themed with the Steelbore palette. Both system-level and user-level configs use Nushell (`nu`) as the default shell.
 
 ### 10.1 Terminal Package List
 
@@ -651,7 +651,7 @@ Each terminal has a system-level config placed in `/etc/` with the full Steelbor
 - **Font:** JetBrains Mono (12pt for most, 14pt for Rio)
 - **Background opacity:** 0.95
 - **Padding:** 10px
-- **System shell:** Ion (via `${pkgs.ion}/bin/ion`)
+- **System shell:** Nushell (via `${pkgs.nushell}/bin/nu`)
 - **User shell:** Nushell (via `${pkgs.nushell}/bin/nu` in home.nix configs)
 - **Foot quirk:** Uses hex colors without `#` prefix (handled by helper `h = c: builtins.substring 1 (builtins.stringLength c - 1) c`)
 - **Rio font config:** Uses `weight = N` integers (400 regular, 700 bold) -- no `style` key
@@ -1007,7 +1007,7 @@ sudo nixos-rebuild switch --flake .#lattice-unstable-v3
 ### 16.3 Steelbore Standard Compliance
 
 - [x] **Metallurgical naming:** Lattice (crystal structure)
-- [x] **Memory safety:** Rust-first packages, sudo-rs, Sequoia PGP, Ion/Brush shells
+- [x] **Memory safety:** Rust-first packages, sudo-rs, Sequoia PGP, Nushell/Brush shells; bash disabled as login shell
 - [x] **Performance:** XanMod kernel, x86-64-v1/v2/v3/v4 flags (CachyOS/ALHP sourced)
 - [x] **Security:** Sequoia PGP, polkit, sudo-rs execWheelOnly, secure boot ready (sbctl)
 - [x] **License:** GPL-3.0-or-later, SPDX headers on all files

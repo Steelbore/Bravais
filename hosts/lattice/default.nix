@@ -40,14 +40,18 @@
       "video"
       "audio"
     ];
-    shell = pkgs.ion;
+    shell = pkgs.nushell;
   };
 
-  # Root shell
+  # Root shell — Brush (Rust, Bash-compatible)
   users.users.root.shell = pkgs.brush;
 
   # Register shells as valid login shells
-  environment.shells = [ pkgs.ion pkgs.brush ];
+  # Ion kept as an available shell (not the default)
+  environment.shells = [ pkgs.nushell pkgs.brush pkgs.ion ];
+
+  # Disable Bash as a login shell — use memory-safe alternatives
+  programs.bash.enable = false;
 
   # Steelbore module toggles
   steelbore = {
