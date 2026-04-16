@@ -201,11 +201,13 @@ mkLattice = { marchLevel, channel ? "stable" }: ...
 
 ### 3.4 Overlays
 
-Defined in `overlays/default.nix` and loaded in `modules/core/nix.nix`.
+Defined in `overlays/default.nix` — the single authoritative overlay source. Imported into the NixOS module system via `imports = [ ../../overlays/default.nix ]` in `modules/core/nix.nix`.
 
 **sequoia-wot:** Disables failing tests (`doCheck = false`).
 
 **claude-code:** Uses the standard nixpkgs package (`pkgs.claude-code`). On stable configurations this pulls from nixos-25.11; on unstable it pulls from nixos-unstable. No custom overlay required.
+
+**bash→brush (not implemented):** Replacing `pkgs.bash` via a nixpkgs overlay is architecturally infeasible — every nixpkgs derivation uses `final.bash` as its build shell via stdenv, creating an unavoidable bootstrapping cycle. Bash is excluded from all login shell assignments; users get Nushell and root gets Brush.
 
 ---
 
@@ -283,7 +285,7 @@ Set via `console.colors` -- 16 hex values without `#` prefix, in order: normal 0
 - **Experimental features:** `nix-command`, `flakes`
 - **Garbage collection:** automatic, weekly, `--delete-older-than 30d`
 - **nixpkgs.config:** `allowUnfree = true`
-- **Overlays:** sequoia-wot test fix (`doCheck = false`), loaded from `overlays/default.nix`
+- **Overlays:** loaded via `imports = [ ../../overlays/default.nix ]`; sequoia-wot test fix (`doCheck = false`)
 
 ### 5.2 Boot (`modules/core/boot.nix`)
 
@@ -382,7 +384,7 @@ When enabled: `services.fprintd.enable = true`, package `fprintd` installed.
 - **Groups:** `networkmanager`, `wheel`, `input`, `video`, `audio`
 - **Shell:** `pkgs.nushell` (Nushell -- Rust shell)
 - **Root shell:** `pkgs.brush` (Brush -- Rust Bash-compatible shell)
-- **Valid login shells:** nushell, brush, ion (registered via `environment.shells`); bash disabled (`programs.bash.enable = false`)
+- **Valid login shells:** nushell, brush, ion (registered via `environment.shells`); bash excluded from `environment.shells` and not assigned to any user — NixOS internals require the bash module to remain enabled
 
 ### 7.3 Hardware (`hardware.nix`)
 
@@ -1007,7 +1009,7 @@ sudo nixos-rebuild switch --flake .#lattice-unstable-v3
 ### 16.3 Steelbore Standard Compliance
 
 - [x] **Metallurgical naming:** Lattice (crystal structure)
-- [x] **Memory safety:** Rust-first packages, sudo-rs, Sequoia PGP, Nushell/Brush shells; bash disabled as login shell
+- [x] **Memory safety:** Rust-first packages, sudo-rs, Sequoia PGP, Nushell/Brush shells; bash excluded from login shells (NixOS module kept enabled for PAM/activation script compatibility)
 - [x] **Performance:** XanMod kernel, x86-64-v1/v2/v3/v4 flags (CachyOS/ALHP sourced)
 - [x] **Security:** Sequoia PGP, polkit, sudo-rs execWheelOnly, secure boot ready (sbctl)
 - [x] **License:** GPL-3.0-or-later, SPDX headers on all files

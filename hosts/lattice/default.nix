@@ -47,11 +47,12 @@
   users.users.root.shell = pkgs.brush;
 
   # Register shells as valid login shells
-  # Ion kept as an available shell (not the default)
+  # Ion kept as available; bash is present in NixOS internals but not a user shell
   environment.shells = [ pkgs.nushell pkgs.brush pkgs.ion ];
-
-  # Disable Bash as a login shell — use memory-safe alternatives
-  programs.bash.enable = false;
+  # Note: programs.bash.enable is intentionally left at its default (true) because
+  # NixOS activation scripts and PAM tooling (userdel, useradd, etc.) depend on the
+  # bash module being active. Bash is excluded from user shells via shell= and
+  # environment.shells — no user or root has bash as their login shell.
 
   # Steelbore module toggles
   steelbore = {

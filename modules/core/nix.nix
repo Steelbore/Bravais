@@ -3,6 +3,10 @@
 { config, lib, pkgs, ... }:
 
 {
+  imports = [
+    ../../overlays/default.nix
+  ];
+
   # Enable flakes and nix-command
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -15,14 +19,4 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  # Overlays
-  nixpkgs.overlays = [
-    (final: prev: {
-      # Disable failing tests for sequoia-wot
-      sequoia-wot = prev.sequoia-wot.overrideAttrs (old: {
-        doCheck = false;
-      });
-    })
-  ];
 }
