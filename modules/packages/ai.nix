@@ -19,7 +19,7 @@
       github-copilot-cli
       gpt-cli
       mcp-nixos
-      task-master-ai             # AI task management (Claude-based)
+      # task-master-ai           # Disabled — npm build broken in nixpkgs
       claude-code                # Uses channel-appropriate package (stable or unstable)
     ];
   };
