@@ -1,7 +1,7 @@
 # Lattice -- Product Requirements Document
 
 **Project:** Lattice (A Steelbore NixOS Distribution)
-**Version:** 3.0 | **Date:** 2026-04-13
+**Version:** 3.1 | **Date:** 2026-04-20
 **Author:** Mohamed Hammad | **License:** GPL-3.0-or-later
 **Status:** Implemented
 
@@ -205,7 +205,7 @@ Defined inline in `modules/core/nix.nix` via `nixpkgs.overlays`. A reference cop
 
 **sequoia-wot:** Disables failing tests (`doCheck = false`).
 
-**claude-code:** Pinned to latest npm release via `overrideAttrs` overlay — overrides `version`, `src`, `npmDepsHash`, and `postPatch` (pointing to `overlays/claude-code-package-lock.json`). This bypasses the lag between npm releases and nixpkgs packaging.
+**claude-code:** Pinned to latest npm release (2.1.113) via `overrideAttrs` overlay. Overrides `version`, `src` (built via `runCommand` to bake `overlays/claude-code-package-lock.json` into the source tree), `npmDepsHash`, and `npmDeps` (explicit `fetchNpmDeps` call — `overrideAttrs` does not propagate `src`/`npmDepsHash` into the internal `fetchNpmDeps`). Since ~2.1.113, claude-code ships a native binary via optional dependency `@anthropic-ai/claude-code-linux-x64`; `bin/claude.exe` is a placeholder replaced at install time. Because `buildNpmPackage` does not run `postinstall`, the overlay's `postInstall` copies the native binary from `node_modules` over the placeholder and relinks `$out/bin/claude`. `autoPatchelfHook` patches the ELF interpreter/RPATHs for NixOS, with `autoPatchelfIgnoreMissingDeps = [ "libc.musl-x86_64.so.1" ]` so the unused musl variant doesn't fail the build. This bypasses the lag between npm releases and nixpkgs packaging.
 
 **bash→brush (not implemented):** Replacing `pkgs.bash` via a nixpkgs overlay is architecturally infeasible — every nixpkgs derivation uses `final.bash` as its build shell via stdenv, creating an unavoidable bootstrapping cycle. Bash is excluded from all login shell assignments; users get Nushell and root gets Brush.
 
@@ -681,7 +681,7 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **TUI Editors (Standard):** neovim, vim, mg (micro Emacs), mc (Midnight Commander)
 
-**GUI Editors (Rust):** zed-editor, lapce, neovide, cosmic-edit
+**GUI Editors (Rust):** zed-editor-fhs (FHS variant), lapce, neovide, cosmic-edit
 
 **GUI Editors (Standard):** emacs-pgtk, vscode-fhs, gedit
 
@@ -689,11 +689,15 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **Git & VCS:** git, gitui (Rust), delta (Rust), jujutsu/jj (Rust), gh (Go), github-desktop
 
+**Forgejo (self-hosted Git):** forgejo (Go), forgejo-cli (Rust), forgejo-runner (Go)
+
 **Rust Toolchain:** rustup, cargo, cargo-update
 
 **Build & Task (Rust):** just, sad, pueue, tokei
 
 **Environment:** lorri (Rust), dotter (Rust)
+
+**Cloud CLIs:** google-cloud-sdk, azure-cli, awscli
 
 **Languages:** jdk, php
 
@@ -749,6 +753,8 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **Knowledge Mgmt (Rust):** appflowy, affine
 
+**Note-taking:** nb (CLI note-taking & knowledge base)
+
 **Office Suites:** libreoffice-fresh, onlyoffice-desktopeditors
 
 **Utilities:** qalculate-gtk
@@ -763,7 +769,7 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **File Management:** yazi (Rust), broot (Rust), superfile (Go), spacedrive (Rust), fclones (Rust), kondo (Rust), pipe-rename (Rust), ouch (Rust)
 
-**Disk Management:** gptman (Rust)
+**Disk Management:** gptman (Rust), parted, tparted (TUI), gparted (GUI)
 
 **System Monitoring:** bottom (Rust), kmon (Rust), macchina (Rust), bandwhich (Rust), mission-center (Rust), htop, btop, gotop, fastfetch, i7z, hw-probe
 
@@ -781,7 +787,7 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **Archiving:** p7zip, zip, unzip
 
-**ZFS:** zfs, antigravity (Rust)
+**ZFS:** zfs, antigravity-fhs (Rust — FHS variant)
 
 **Benchmarking:** phoronix-test-suite, perf
 
@@ -795,7 +801,7 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **Remote:** flathub (`https://dl.flathub.org/repo/flathub.flatpakrepo`)
 
-**Packages (41):**
+**Packages (42):**
 
 | Category            | App IDs                                              |
 |---------------------|------------------------------------------------------|
@@ -804,7 +810,7 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 | Communication       | com.discordapp.Discord, im.riot.Riot, io.wavebox.Wavebox |
 | Security & Remote   | com.bitwarden.desktop, com.rustdesk.RustDesk         |
 | Development         | com.jetbrains.RustRover, com.visualstudio.code, dev.zed.Zed, io.github.shiftey.Desktop |
-| System & Utilities  | com.github.tchx84.Flatseal, io.github.dvlv.boxbuddyrs, io.github.prateekmedia.appimagepool, it.mijorus.gearlever, org.adishatz.Screenshot, org.flameshot.Flameshot |
+| System & Utilities  | com.github.tchx84.Flatseal, io.github.dvlv.boxbuddyrs, io.github.prateekmedia.appimagepool, it.mijorus.gearlever, org.adishatz.Screenshot, org.flameshot.Flameshot, org.gnome.baobab |
 | Gaming              | com.heroicgameslauncher.hgl, com.usebottles.bottles, com.valvesoftware.Steam, info.beyondallreason.bar, net.openra.OpenRA, net.wz2100.wz2100, org.libretro.RetroArch, org.openttd.OpenTTD |
 | Retro / Classic     | com.dosbox.DOSBox, com.dosbox_x.DOSBox-X, com.play0ad.zeroad, com.remnantsoftheprecursors.ROTP, eu.jumplink.Learn6502, io.github.dosbox-staging, io.github.jotd666.gods-deluxe, io.github.dman95.SASM, org.seul.crimson, org.zdoom.UZDoom, rs.ruffle.Ruffle |
 | Productivity        | io.github.Qalculate, org.kde.yakuake                 |

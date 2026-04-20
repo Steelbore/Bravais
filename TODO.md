@@ -148,7 +148,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [✓] Install linting (markdownlint-cli2)
 - [✓] Install Rust TUI editors (Helix, Amp, msedit)
 - [✓] Install standard TUI editors (Neovim, Vim, mg, mc)
-- [✓] Install Rust GUI editors (Zed, Lapce, Neovide, cosmic-edit)
+- [✓] Install Rust GUI editors (zed-editor-fhs, Lapce, Neovide, cosmic-edit)
 - [✓] Install standard GUI editors (Emacs-pgtk, VSCode-FHS, gedit)
 
 ### development.nix
@@ -156,9 +156,11 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [✓] Define `steelbore.packages.development` option
 - [✓] Install Git and Rust VCS tools (gitui, delta, jujutsu)
 - [✓] Install gh and github-desktop
+- [✓] Install Forgejo stack (forgejo, forgejo-cli, forgejo-runner)
 - [✓] Install Rust toolchain (rustup, cargo, cargo-update)
 - [✓] Install build tools (just, sad, pueue, tokei)
 - [✓] Install environment tools (lorri, dotter)
+- [✓] Install Cloud CLIs (google-cloud-sdk, azure-cli, awscli)
 - [✓] Install languages (JDK, PHP)
 - [✓] Install Nix ecosystem (nixfmt, cachix, nix, guix)
 - [✓] Configure system Git defaults (`init.defaultBranch`, `core.editor`)
@@ -200,6 +202,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 
 - [✓] Define `steelbore.packages.productivity` option
 - [✓] Install Rust knowledge tools (AppFlowy, Affine)
+- [✓] Install CLI note-taking (nb)
 - [✓] Install office suites (LibreOffice, OnlyOffice)
 - [✓] Install utilities (qalculate-gtk)
 - [✓] Install communication (Fractal, NewsFlash, Tutanota, Onedriver)
@@ -210,7 +213,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [✓] Install modern Unix (fd, ripgrep, bat, eza, sd, zoxide, procs, dust, dua)
 - [✓] Install uutils (coreutils, diffutils, findutils)
 - [✓] Install file managers (yazi, broot, superfile, spacedrive, fclones, kondo, pipe-rename, ouch)
-- [✓] Install disk tools (gptman)
+- [✓] Install disk tools (gptman, parted, tparted, gparted)
 - [✓] Install monitoring (bottom, kmon, macchina, bandwhich, mission-center, htop, btop, gotop, fastfetch, i7z, hw-probe)
 - [✓] Install text processing (jaq, teip, htmlq, skim, tealdeer, mdcat, difftastic)
 - [✓] Install Rust shells (nushell, brush, ion, starship, atuin, pipr, moor, powershell)
@@ -219,7 +222,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [✓] Install containers (steam-run, distrobox, boxbuddy, host-spawn, podman, runc, youki, oxker, qemu, flatpak, bubblewrap)
 - [✓] Install system management (topgrade, paru, doas, os-prober, kbd, numlockx, xremap, input-leap)
 - [✓] Install archiving (p7zip, zip, unzip)
-- [✓] Install ZFS tools and antigravity
+- [✓] Install ZFS tools and antigravity-fhs
 - [✓] Install benchmarking (phoronix-test-suite, perf)
 - [✓] Enable Flatpak and AppImage (binfmt) services
 - [✓] Enable Podman with `dockerCompat`, runc + youki runtimes
@@ -237,7 +240,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 
 - [✓] Define `steelbore.packages.flatpak` option
 - [✓] Configure Flathub remote
-- [✓] Declare Flatpak packages (60+ apps across terminals, browsers, communication, security, development, gaming, retro, productivity)
+- [✓] Declare Flatpak packages (42+ apps across terminals, browsers, communication, security, development, gaming, retro, productivity, incl. org.gnome.baobab disk usage analyzer)
 
 ---
 
@@ -291,7 +294,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 ## Phase 9: Overlays (`overlays/default.nix`)
 
 - [✓] **sequoia-wot**: Disable failing tests (`doCheck = false`)
-- [✓] **claude-code**: Pinned to latest npm release via `overrideAttrs` overlay (overrides version, src, npmDepsHash, postPatch with `overlays/claude-code-package-lock.json`)
+- [✓] **claude-code**: Pinned to 2.1.113 via `overrideAttrs` overlay; `src` built with `runCommand` to bake `overlays/claude-code-package-lock.json` into the source tree; `npmDeps` explicitly overridden (workaround for `overrideAttrs` not propagating into internal `fetchNpmDeps`); `postInstall` copies native binary from `@anthropic-ai/claude-code-linux-x64` over the placeholder `bin/claude.exe`; `autoPatchelfHook` + `autoPatchelfIgnoreMissingDeps = [ "libc.musl-x86_64.so.1" ]` for ELF patching on NixOS
 - [✓] **overlay location**: Defined inline in `modules/core/nix.nix`; reference copy in `overlays/default.nix`
 - [✓] **bash→brush overlay**: Investigated and found infeasible — nixpkgs bootstrapping cycle prevents overriding `pkgs.bash` via any overlay
 
@@ -336,7 +339,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 
 1. **COSMIC packages**: Uses native nixpkgs module (no third-party flake). `useFetchCargoVendor` deprecation warnings come from upstream nixpkgs packages — harmless.
 
-2. **claude-code**: Pinned to latest npm release via `overrideAttrs` overlay in `modules/core/nix.nix`. Lock file stored at `overlays/claude-code-package-lock.json`.
+2. **claude-code**: Pinned to 2.1.113 via `overrideAttrs` overlay in `modules/core/nix.nix`. Lock file stored at `overlays/claude-code-package-lock.json`. Native-binary architecture (since ~2.1.113) requires explicit `npmDeps` override, `postInstall` copy from `@anthropic-ai/claude-code-linux-x64`, and `autoPatchelfHook`. See `CLAUDE.md` constraint #4 for full gotchas and update procedure.
 
 3. **XanMod kernel**: Sourced from unstable channel for latest version.
 
@@ -369,4 +372,4 @@ This document tracks the implementation status of the Lattice NixOS distribution
 
 ---
 
-*Last updated: 2026-04-18*
+*Last updated: 2026-04-20*

@@ -21,6 +21,13 @@ in
   # Steelbore project symlink
   home.file."steelbore".source = config.lib.file.mkOutOfStoreSymlink "/steelbore";
 
+  # Brush (Rust Bash-compatible) — share init with Bash via ~/.bashrc
+  home.file.".brushrc".text = ''
+    # Steelbore Brush shell init — sources Home Manager's bashrc so Bash and Brush
+    # share aliases, env, and SSH key auto-loading.
+    [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+  '';
+
   # Keyboard layout
   home.keyboard = {
     layout = "us,ara";
@@ -51,10 +58,22 @@ in
         user.name = "UnbreakableMJ";
         user.email = "34196588+UnbreakableMJ@users.noreply.github.com";
         user.signingkey = "~/.ssh/id_ed25519.pub";
+        gpg.program = "${pkgs.sequoia-chameleon-gnupg}/bin/gpg-sq";
         gpg.format = "ssh";
         commit.gpgsign = true;
         init.defaultBranch = "main";
       };
+    };
+
+    # Bash/Brush — auto-load SSH key on interactive shell start
+    bash = {
+      enable = true;
+      bashrcExtra = ''
+        # Auto-load SSH key into ssh-agent (no-op if already loaded)
+        if [ -n "$PS1" ] && [ -f "$HOME/.ssh/id_ed25519" ]; then
+          ssh-add -l >/dev/null 2>&1 || ssh-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
+        fi
+      '';
     };
 
     # Starship prompt (Tokyo Night preset)
@@ -153,6 +172,13 @@ in
           print "  INTEGRITY :: VERIFIED"
           print "============================================================"
         }
+
+        # Auto-load SSH key into ssh-agent (no-op if already loaded)
+        try {
+          if (^ssh-add -l | complete).exit_code != 0 {
+            ^ssh-add ($env.HOME | path join ".ssh/id_ed25519") out+err>| ignore
+          }
+        }
       '';
     };
 
@@ -247,6 +273,11 @@ in
       alias top-processes = bottom
       alias disk-telemetry = yazi
       alias edit = ${pkgs.msedit}/bin/edit
+
+      # Auto-load SSH key into ssh-agent (no-op if already loaded)
+      if not ssh-add -l &> /dev/null
+          ssh-add ~/.ssh/id_ed25519
+      end
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
