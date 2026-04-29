@@ -796,7 +796,7 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **Rust:** aichat, gemini-cli
 
-**Other:** opencode (Go), codex, github-copilot-cli, gpt-cli, mcp-nixos, task-master-ai (disabled — npm build broken in nixpkgs), claude-code (pinned to latest npm release via overlay)
+**Other:** opencode (Go), codex, github-copilot-cli, gpt-cli, mcp-nixos, task-master (npx wrapper — nixpkgs `task-master-ai` is unfixable, see CLAUDE.md), claude-code (pinned to latest npm release via overlay)
 
 ### 11.10 Flatpak (`modules/packages/flatpak.nix`)
 

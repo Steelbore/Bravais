@@ -235,7 +235,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [✓] Install Rust AI tools (aichat, gemini-cli)
 - [✓] Install opencode (Go)
 - [✓] Install AI tools (codex, copilot-cli, gpt-cli, mcp-nixos)
-- [✓] Install task-master-ai
+- [✓] Install task-master (npx wrapper; nixpkgs `task-master-ai` unfixable — see CLAUDE.md note 3)
 - [✓] Install claude-code from channel-appropriate `pkgs` (stable on stable, unstable on unstable)
 
 ### flatpak.nix
@@ -352,6 +352,8 @@ This document tracks the implementation status of the Lattice NixOS distribution
 6. **Bash cannot be replaced via nixpkgs overlay**: Every nixpkgs derivation uses `final.bash` as its build shell via stdenv. Overriding `pkgs.bash` in an overlay creates an unavoidable bootstrapping cycle (`final.bash → prev.bash.stdenv.shell = "${final.bash}/bin/bash" → final.bash`). Bash is excluded from login shells but `programs.bash.enable` must remain `true` for NixOS PAM and activation script generation. Users get Nushell; root gets Brush.
 
 7. **Overlays** are defined inline in `modules/core/nix.nix`. `overlays/default.nix` exists as a reference copy.
+
+8. **task-master-ai**: nixpkgs build is unfixable via overlay — upstream's `package-lock.json` omits the platform-specific optionalDependencies of `@biomejs/biome` and `esbuild`, and `npm ci`'s lockfile validation runs before any `--omit=optional` or fetcher-v2 logic. `modules/packages/ai.nix` ships a `task-master` shell wrapper that runs `npx -y --package=task-master-ai task-master "$@"` against `pkgs.nodejs` instead. See `CLAUDE.md` constraint #3.
 
 ---
 
