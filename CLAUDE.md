@@ -15,6 +15,21 @@ sudo nixos-rebuild switch --flake .#lattice-v3      # Stable v3
 sudo nixos-rebuild switch --flake .#lattice-unstable # Unstable v4
 ```
 
+## Rebuild commands (user's actual workflow)
+
+These target `lattice-unstable-v3` and stage `/etc/nixos/` from the working
+tree before rebuilding. Run as the user, not as root.
+
+```nu
+# Nushell
+sudo nix-collect-garbage --verbose -d ; sudo journalctl --vacuum-time=7d ; sudo cp --verbose -r ...(glob /steelbore/lattice/*) /etc/nixos/ ; print "cd /etc/nixos/" ; cd /etc/nixos/ ; sudo rm --verbose -r ...( [v0 "*.md" "flake.*" LICENSE "*.docx" hosts lib modules overlays users "*.txt"] | each { |p| glob $p } | flatten ) ; cd /steelbore/lattice/ ; sudo nix-channel --verbose --update ; sudo nixos-rebuild switch --flake .#lattice-unstable-v3 --show-trace --verbose
+```
+
+```sh
+# Brush / Bash
+sudo nix-collect-garbage --verbose -d ; sudo journalctl --vacuum-time=7d ; sudo cp --verbose -r /steelbore/Lattice/* /etc/nixos/ ; pwd ; echo "cd /etc/nixos/" ; cd /etc/nixos/ ; pwd ; sudo rm --verbose -r v0 *.md flake.* LICENSE *.docx hosts lib modules overlays users *.txt ; sudo cp --verbose -r /steelbore/Lattice/* /etc/nixos/ ; sudo nix-channel --verbose --update ; cd /steelbore/lattice/ ; sudo nixos-rebuild switch --flake .#lattice-unstable-v3 --show-trace --verbose
+```
+
 ## Architecture
 
 - **Flake inputs**: nixpkgs (25.11), nixpkgs-unstable, home-manager (release-25.11), home-manager-unstable, nix-flatpak. No third-party flakes for DEs.
@@ -43,6 +58,23 @@ overlays/                  # Reference overlay + claude-code-package-lock.json
 lib/default.nix            # mkSteelboreModule helper, palette
 ```
 
+## First-time bootstrap
+
+The Steelbore Skills repo (`github:Steelbore/Skills`) lives at
+`/steelbore/skills/` and is symlinked per-skill into every supported AI tool
+dir (`~/.claude/skills/`, `~/.codex/skills/`, `~/.gemini/skills/`,
+`~/.copilot/skills/`, `~/.opencode/skills/`, `~/.aichat/skills/`) by Home
+Manager — see `users/mj/home.nix:19-44`. On a fresh machine, clone it before
+the first `nixos-rebuild`:
+
+```sh
+sudo mkdir -p /steelbore && sudo chown $USER /steelbore
+git clone git@github.com:Steelbore/Skills.git /steelbore/skills
+```
+
+To pull updates later, run `skills-sync` (Nushell command). Sync is
+intentionally decoupled from rebuild — rebuild stays offline-clean.
+
 ## Adding packages
 
 Add to the appropriate `modules/packages/*.nix` file. Group by category, prefer Rust packages, add a comment with language. Example:
@@ -67,7 +99,7 @@ After adding, update `PRD.md` (package inventory section) and `TODO.md` (relevan
 
 1. **bash cannot be replaced via overlay** -- `pkgs.bash` is used by stdenv for building every derivation. Overriding it creates an infinite recursion. Workaround: exclude from login shells, assign Nushell/Brush instead.
 2. **`programs.bash.enable` must stay true** -- Disabling it breaks PAM builds (`userdel.pam`). NixOS activation scripts depend on the bash module.
-3. **task-master-ai** -- npm build is broken in nixpkgs (npm `ci` fails in nix sandbox). Currently commented out in `modules/packages/ai.nix`.
+3. **task-master-ai** -- npm build is broken in nixpkgs and unfixable via overlay. Upstream's `package-lock.json` omits the platform-specific optionalDependencies of `@biomejs/biome` (devDep) and `esbuild` (workspace devDep). `npm ci` validates the lockfile against package.json before any `--omit=optional` or fetcher-v2 logic kicks in, so it always fails. Workaround: `modules/packages/ai.nix` ships a `task-master` shell wrapper that runs `npx -y --package=task-master-ai task-master "$@"` against `pkgs.nodejs`. First invocation populates `~/.npm/_npx`; later ones are near-instant. The nixpkgs `task-master-ai` line stays commented out.
 4. **claude-code overlay** -- Pinned to latest npm release via `overrideAttrs` in `modules/core/nix.nix`. Lock file at `overlays/claude-code-package-lock.json`. Key gotchas: (a) Must explicitly override `npmDeps` (not just `npmDepsHash`) because `buildNpmPackage`'s internal `fetchNpmDeps` does not pick up overridden `src`/`npmDepsHash` from `overrideAttrs`. (b) Since ~2.1.113, claude-code uses a native binary architecture -- `bin/claude.exe` is a placeholder replaced by `install.cjs` (postinstall). Since `buildNpmPackage` doesn't run postinstall, the overlay runs `node install.cjs` in `postInstall`. (c) `package-lock.json` must be baked into `src` via `runCommand` so `fetchNpmDeps` can see it. To update: prefetch new tarball hash, regenerate lock file with `npm install --package-lock-only`, recompute `npmDepsHash` with `prefetch-npm-deps`, update the four values in the overlay (version, src hash, npmDepsHash, npmDeps).
 5. **xfce4-terminal namespace** -- Needs `pkgs.xfce.xfce4-terminal` on stable, top-level on unstable. Current config uses stable form.
 6. **`useFetchCargoVendor` warnings** -- Come from upstream COSMIC packages. Harmless, cannot be suppressed from user config.

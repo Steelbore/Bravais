@@ -13,11 +13,12 @@ let
   # Foot requires hex colors without the '#' prefix
   h = c: builtins.substring 1 (builtins.stringLength c - 1) c;
 
-  # User-authored AI skills — single source of truth at users/mj/ai-skills/.
-  # Symlinked individually (not whole-dir) so Codex's bundled .system/ namespace
-  # under .codex/skills/ stays untouched.
+  # User-authored AI skills — single source of truth at /steelbore/skills/
+  # (separate GitHub repo). Symlinked individually (not whole-dir) so Codex's
+  # bundled .system/ namespace under .codex/skills/ stays untouched.
   aiSkillNames = [
     "rust-guidelines"
+    "steelbore-agentic-cli"
     "steelbore-brand-guidelines"
     "steelbore-cli-preference"
     "steelbore-cli-shell"
@@ -27,12 +28,19 @@ let
     "steelbore-standard"
     "steelbore-theme-factory"
   ];
-  aiSkillToolDirs = [ ".claude/skills" ".codex/skills" ".gemini/skills" ];
+  aiSkillToolDirs = [
+    ".claude/skills"
+    ".codex/skills"
+    ".gemini/skills"
+    ".copilot/skills"
+    ".opencode/skills"
+    ".aichat/skills"
+  ];
   aiSkillLinks = builtins.listToAttrs (lib.flatten (
     map (toolDir: map (skill: {
       name = "${toolDir}/${skill}";
       value.source = config.lib.file.mkOutOfStoreSymlink
-        "/steelbore/lattice/users/mj/ai-skills/${skill}";
+        "/steelbore/skills/${skill}";
     }) aiSkillNames) aiSkillToolDirs
   ));
 in
@@ -207,6 +215,13 @@ in
           if (^gitway-add -l | complete).exit_code != 0 {
             ^gitway-add ($env.HOME | path join ".ssh/id_ed25519") out+err>| ignore
           }
+        }
+
+        # Pull latest AI skills from /steelbore/skills (decoupled from rebuild)
+        def skills-sync [] {
+          cd /steelbore/skills
+          git pull --ff-only
+          print $"(date now | format date '%Y-%m-%d %H:%M:%S') skills synced"
         }
       '';
     };
