@@ -13,6 +13,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [✓] Configure home-manager input (stable `release-25.11`, follows nixpkgs)
 - [✓] Configure home-manager-unstable input (follows nixpkgs-unstable)
 - [✓] Configure nix-flatpak input
+- [✓] Configure gitway input (`github:Steelbore/Gitway`, tracks `main`; threaded via `specialArgs` / `extraSpecialArgs`)
 - [✓] Define `mkLattice` function with `marchLevel` and `channel` parameters
 - [✓] Generate 10 `nixosConfigurations` (5 stable + 5 unstable, v1-v4 each)
 - [✓] Set up `steelborePalette` in specialArgs
@@ -172,7 +173,8 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [✓] Install sops for secrets
 - [✓] Install Sequoia PGP stack (sq, chameleon, wot, sqv, sqop)
 - [✓] Install password managers (rbw, bitwarden-cli/desktop, authenticator)
-- [✓] Install SSH tools (openssh_hpn)
+- [✓] Install SSH tools (openssh_hpn — general-purpose fallback)
+  - [✓] Add gitway as primary git-SSH stack (flake input — `gitway-agent` owns `$SSH_AUTH_SOCK`, `gitway-keygen` signs commits, `gitway-add` in shell init)
 - [✓] Install pika-backup (Rust, Borg frontend)
 - [✓] Install sydbox (process sandboxing)
 - [✓] Install sbctl (Secure Boot)

@@ -16,7 +16,7 @@ Lattice is a flake-based NixOS configuration implementing the Steelbore Standard
 - Memory-safe tooling preferred (Rust-first ecosystem)
 - Opt-in modularity via `lib.mkEnableOption` in the `steelbore.*` namespace
 - Steelbore Color Palette applied universally to all visual surfaces
-- Self-sufficient flake configuration (no external dependencies beyond nixpkgs, home-manager, and nix-flatpak)
+- Self-sufficient flake configuration (no external dependencies beyond nixpkgs, home-manager, nix-flatpak, and gitway)
 - Dual-channel support (stable nixos-25.11 / unstable rolling) with four x86-64 microarchitecture profiles (v1-v4)
 - 14+ terminal emulators, all themed with the Steelbore palette
 - Declarative Flatpak management via nix-flatpak
@@ -171,6 +171,7 @@ Ten `nixosConfigurations` are generated (5 stable + 5 unstable):
 | `nixpkgs-unstable`       | `github:nixos/nixpkgs/nixos-unstable`                 | --             |
 | `home-manager-unstable`  | `github:nix-community/home-manager`                   | `nixpkgs-unstable` |
 | `nix-flatpak`            | `github:gmodena/nix-flatpak`                          | --             |
+| `gitway`                 | `github:Steelbore/Gitway` (tracks `main`)             | `nixpkgs-unstable` |
 
 ### 3.2 Steelbore Color Palette Definition
 
@@ -194,7 +195,7 @@ mkLattice = { marchLevel, channel ? "stable" }: ...
 ```
 
 - Selects nixpkgs and home-manager inputs based on `channel`
-- Passes `specialArgs = { inherit steelborePalette; }`
+- Passes `specialArgs = { inherit steelborePalette gitway; }`
 - Loads modules in order: external (home-manager, nix-flatpak), then host, core, theme, hardware, desktops, login, packages
 - Sets `steelbore.hardware.intel.marchLevel` from the `marchLevel` parameter
 - Configures Home Manager: `useGlobalPkgs = true`, `useUserPackages = true`, `backupFileExtension = "backup"`, passes `steelborePalette` via `extraSpecialArgs`
@@ -713,7 +714,7 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **Password Managers:** rbw (Rust, Bitwarden CLI), bitwarden-cli, bitwarden-desktop, authenticator (Rust, 2FA/OTP)
 
-**SSH:** openssh_hpn
+**SSH:** openssh_hpn (general-purpose fallback), gitway (Steelbore SSH transport for Git, via flake input — primary path; `gitway-agent` owns `$SSH_AUTH_SOCK`, `gitway-keygen` is git's `gpg.ssh.program`, `gitway-add` replaces `ssh-add` in shell init)
 
 **Backup:** pika-backup (Rust, Borg frontend)
 

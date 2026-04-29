@@ -5,28 +5,56 @@
   pkgs,
   lib,
   steelborePalette,
+  gitway,
   ...
 }:
 
 let
   # Foot requires hex colors without the '#' prefix
   h = c: builtins.substring 1 (builtins.stringLength c - 1) c;
+
+  # User-authored AI skills — single source of truth at users/mj/ai-skills/.
+  # Symlinked individually (not whole-dir) so Codex's bundled .system/ namespace
+  # under .codex/skills/ stays untouched.
+  aiSkillNames = [
+    "rust-guidelines"
+    "steelbore-brand-guidelines"
+    "steelbore-cli-preference"
+    "steelbore-cli-shell"
+    "steelbore-cli-standard"
+    "steelbore-document-format"
+    "steelbore-missing-pkg"
+    "steelbore-standard"
+    "steelbore-theme-factory"
+  ];
+  aiSkillToolDirs = [ ".claude/skills" ".codex/skills" ".gemini/skills" ];
+  aiSkillLinks = builtins.listToAttrs (lib.flatten (
+    map (toolDir: map (skill: {
+      name = "${toolDir}/${skill}";
+      value.source = config.lib.file.mkOutOfStoreSymlink
+        "/steelbore/lattice/users/mj/ai-skills/${skill}";
+    }) aiSkillNames) aiSkillToolDirs
+  ));
 in
 
 {
+  imports = [ gitway.homeManagerModules.default ];
+
   home.username = "mj";
   home.homeDirectory = "/home/mj";
   home.stateVersion = "25.11";
 
-  # Steelbore project symlink
-  home.file."steelbore".source = config.lib.file.mkOutOfStoreSymlink "/steelbore";
+  home.file = aiSkillLinks // {
+    # Steelbore project symlink
+    "steelbore".source = config.lib.file.mkOutOfStoreSymlink "/steelbore";
 
-  # Brush (Rust Bash-compatible) — share init with Bash via ~/.bashrc
-  home.file.".brushrc".text = ''
-    # Steelbore Brush shell init — sources Home Manager's bashrc so Bash and Brush
-    # share aliases, env, and SSH key auto-loading.
-    [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
-  '';
+    # Brush (Rust Bash-compatible) — share init with Bash via ~/.bashrc
+    ".brushrc".text = ''
+      # Steelbore Brush shell init — sources Home Manager's bashrc so Bash and Brush
+      # share aliases, env, and gitway-agent key auto-loading.
+      [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+    '';
+  };
 
   # Keyboard layout
   home.keyboard = {
@@ -60,6 +88,7 @@ in
         user.signingkey = "~/.ssh/id_ed25519.pub";
         gpg.program = "${pkgs.sequoia-chameleon-gnupg}/bin/gpg-sq";
         gpg.format = "ssh";
+        gpg.ssh.program = "${gitway.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/gitway-keygen";
         commit.gpgsign = true;
         init.defaultBranch = "main";
       };
@@ -69,9 +98,9 @@ in
     bash = {
       enable = true;
       bashrcExtra = ''
-        # Auto-load SSH key into ssh-agent (no-op if already loaded)
+        # Auto-load SSH key into gitway-agent (no-op if already loaded)
         if [ -n "$PS1" ] && [ -f "$HOME/.ssh/id_ed25519" ]; then
-          ssh-add -l >/dev/null 2>&1 || ssh-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
+          gitway-add -l >/dev/null 2>&1 || gitway-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
         fi
       '';
     };
@@ -173,10 +202,10 @@ in
           print "============================================================"
         }
 
-        # Auto-load SSH key into ssh-agent (no-op if already loaded)
+        # Auto-load SSH key into gitway-agent (no-op if already loaded)
         try {
-          if (^ssh-add -l | complete).exit_code != 0 {
-            ^ssh-add ($env.HOME | path join ".ssh/id_ed25519") out+err>| ignore
+          if (^gitway-add -l | complete).exit_code != 0 {
+            ^gitway-add ($env.HOME | path join ".ssh/id_ed25519") out+err>| ignore
           }
         }
       '';
@@ -248,6 +277,39 @@ in
     pinentry.package = pkgs.pinentry-qt;
   };
 
+  # Gitway agent — owns $SSH_AUTH_SOCK; replaces system ssh-agent for git workflows
+  services.gitway-agent = {
+    enable = true;
+    defaultLifetime = 86400;   # 24 h TTL per loaded key
+  };
+
+  # Make SSH_AUTH_SOCK visible to every child of `systemd --user`, so
+  # non-interactive shells (Claude Code's `bash -c ...`), GUI apps, cron, and
+  # user services all reach gitway-agent — not just login shells via .profile.
+  xdg.configFile."environment.d/10-gitway-agent.conf".text = ''
+    SSH_AUTH_SOCK=''${XDG_RUNTIME_DIR}/gitway-agent.sock
+  '';
+
+  # One-shot: load ~/.ssh/id_ed25519 into gitway-agent right after the agent
+  # starts. RemainAfterExit makes re-runs a no-op for the rest of the session.
+  # If the key has a passphrase and no SSH_ASKPASS is wired, this unit fails
+  # silently and the shell-init `gitway-add` prompts on the next interactive
+  # shell instead.
+  systemd.user.services.gitway-agent-addkey = {
+    Unit = {
+      Description = "Load SSH signing key into gitway-agent";
+      Requires    = [ "gitway-agent.service" ];
+      After       = [ "gitway-agent.service" ];
+    };
+    Service = {
+      Type            = "oneshot";
+      RemainAfterExit = true;
+      Environment     = [ "SSH_AUTH_SOCK=%t/gitway-agent.sock" ];
+      ExecStart       = "${gitway.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/gitway-add %h/.ssh/id_ed25519";
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   # XDG config files
   xdg.configFile = {
     "containers/containers.conf".text = ''
@@ -274,9 +336,9 @@ in
       alias disk-telemetry = yazi
       alias edit = ${pkgs.msedit}/bin/edit
 
-      # Auto-load SSH key into ssh-agent (no-op if already loaded)
-      if not ssh-add -l &> /dev/null
-          ssh-add ~/.ssh/id_ed25519
+      # Auto-load SSH key into gitway-agent (no-op if already loaded)
+      if not gitway-add -l &> /dev/null
+          gitway-add ~/.ssh/id_ed25519
       end
     '';
 

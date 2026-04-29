@@ -23,6 +23,10 @@
 
     # Declarative Flatpak management
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+
+    # Gitway — Steelbore's SSH transport for Git (tracks main)
+    gitway.url = "github:Steelbore/Gitway";
+    gitway.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
   outputs =
@@ -33,6 +37,7 @@
       nixpkgs-unstable,
       home-manager-unstable,
       nix-flatpak,
+      gitway,
       ...
     }:
     let
@@ -76,7 +81,7 @@
         in
         ch.pkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit steelborePalette; };
+          specialArgs = { inherit steelborePalette gitway; };
           modules = [
             # External modules
             ch.hm.nixosModules.home-manager
@@ -98,7 +103,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = { inherit steelborePalette; };
+              home-manager.extraSpecialArgs = { inherit steelborePalette gitway; };
               home-manager.users.mj = import ./users/mj/home.nix;
             }
           ];

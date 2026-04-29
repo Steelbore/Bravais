@@ -20,9 +20,11 @@
   # Polkit for privilege escalation
   security.polkit.enable = true;
 
-  # SSH agent (for SSH key-based git signing)
-  programs.ssh.startAgent = true;
-  services.gnome.gcr-ssh-agent.enable = false;
+  # SSH agent — provided by gitway-agent (Home Manager). Disable system OpenSSH
+  # ssh-agent.service so it doesn't race gitway-agent for $SSH_AUTH_SOCK. The
+  # OpenSSH CLI tools remain available as a fallback for non-Git SSH workflows.
+  programs.ssh.startAgent = false;
+  services.gnome.gcr-ssh-agent.enable = false;   # guard against GCR clobbering the socket
 
   # Tmpfiles rules
   systemd.tmpfiles.rules = [

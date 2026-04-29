@@ -109,6 +109,7 @@
     * **delta** 🦀 `[CLI ⌨️]` *(Syntax-highlighting pager for git diffs)*
     * **jujutsu (jj)** 🦀 `[CLI ⌨️]` *(Git-compatible DVCS with a focus on simplicity)*
     * **cpx** 🦀 `[CLI ⌨️]` *(Competitive Programming Helper tool)*
+    * **Gitway** 🦀 `[CLI ⌨️]` *(Steelbore SSH transport for Git — drop-in for ssh-add / ssh-keygen / GIT_SSH_COMMAND)*
 * **Containers**
     * **Podman** 🐹 `[CLI ⌨️]` *(Daemonless, Docker-compatible container engine)*
 * **Toolchains & Env**
