@@ -79,6 +79,9 @@
       # ── Productivity ───────────────────────────────────────────────────────
       { appId = "io.github.Qalculate";                origin = "flathub"; }
       { appId = "org.kde.yakuake";                    origin = "flathub"; }
+
+      # ── AI ─────────────────────────────────────────────────────────────────
+      { appId = "com.jeffser.Alpaca";                 origin = "flathub"; }
     ];
   };
 }

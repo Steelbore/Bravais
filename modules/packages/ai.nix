@@ -19,8 +19,20 @@
       github-copilot-cli
       gpt-cli
       mcp-nixos
-      # task-master-ai           # Disabled — npm build broken in nixpkgs
+      # task-master-ai is disabled — its npm build is broken in nixpkgs (lockfile
+      # omits @biomejs/biome and esbuild platform-specific optionalDependencies,
+      # which `npm ci` refuses to ignore even with --omit=optional or fetcher v2).
+      # Workaround: ship a `task-master` wrapper that runs the package via npx.
+      # First invocation populates ~/.npm/_npx; subsequent ones are near-instant.
+      (writeShellApplication {
+        name = "task-master";
+        runtimeInputs = [ nodejs ];
+        text = ''exec npx -y --package=task-master-ai task-master "$@"'';
+      })
       claude-code                # Uses channel-appropriate package (stable or unstable)
+
+      # Local LLM runtime
+      ollama-cpu                 # Go — CPU-only Ollama (local LLM server)
     ];
   };
 }

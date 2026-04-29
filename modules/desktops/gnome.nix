@@ -44,6 +44,7 @@
       gnomeExtensions.forge
       gnomeExtensions.tiling-shell
       gnomeExtensions.smart-tiling
+      gnomeExtensions.ollama-indicator
 
       # Portal
       xdg-desktop-portal-gnome
