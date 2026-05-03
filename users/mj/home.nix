@@ -29,6 +29,9 @@ let
     "steelbore-theme-factory"
   ];
   aiSkillToolDirs = [
+    ".agent/skills"
+    ".agents/skills"
+    ".ai/skills"
     ".claude/skills"
     ".codex/skills"
     ".gemini/skills"
