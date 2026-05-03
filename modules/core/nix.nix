@@ -71,7 +71,7 @@
           # Replace npm's Node.js launcher with a direct symlink to the native binary
           rm -f $out/bin/claude
           ln -s $out/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe $out/bin/claude
-          ${old.postInstall}
+          ${old.postInstall or ""}
         '';
       });
     })

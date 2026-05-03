@@ -45,6 +45,7 @@
       # Languages
       jdk
       php
+      nodejs                     # JavaScript runtime (Node 24 LTS — provides node/npm/npx)
 
       # Nix Ecosystem
       nixfmt                     # Rust — Nix formatter
