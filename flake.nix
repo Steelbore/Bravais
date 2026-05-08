@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 {
-  description = "Lattice — A Steelbore NixOS Distribution";
+  description = "Bravais — A Steelbore NixOS Distribution";
 
   inputs = {
     # Core (Stable — 25.11)
@@ -60,19 +60,19 @@
         unstable = { pkgs = nixpkgs-unstable; hm = home-manager-unstable; };
       };
 
-      # ── mkLattice ────────────────────────────────────────────────────────
-      # Build a Lattice NixOS configuration for a given x86-64 march level
+      # ── mkBravais ────────────────────────────────────────────────────────
+      # Build a Bravais NixOS configuration for a given x86-64 march level
       # and nixpkgs channel.
       #
-      # Usage:  nixos-rebuild switch --flake .#lattice-v3
-      #         nixos-rebuild switch --flake .#lattice-unstable-v3
+      # Usage:  nixos-rebuild switch --flake .#bravais-v3
+      #         nixos-rebuild switch --flake .#bravais-unstable-v3
       #
       #   channel — "stable" (25.11) or "unstable" (rolling)
       #   v1 — baseline x86-64 (SSE2)        broadest compatibility
       #   v2 — SSE4.2 / POPCNT / CX16        ~2008+ CPUs
       #   v3 — AVX2 / BMI1/2 / FMA / MOVBE   ~2013+ CPUs (CachyOS default)
       #   v4 — AVX-512F/BW/CD/DQ/VL          Ice Lake+ / Zen 4+
-      mkLattice =
+      mkBravais =
         { marchLevel
         , channel ? "stable"
         }:
@@ -88,8 +88,8 @@
             nix-flatpak.nixosModules.nix-flatpak
             gitway.nixosModules.default
 
-            # Lattice modules
-            ./hosts/lattice
+            # Bravais modules
+            ./hosts/bravais
             ./modules/core
             ./modules/theme
             ./modules/hardware
@@ -114,24 +114,24 @@
     {
       nixosConfigurations = {
         # ── Stable (nixos-25.11) ────────────────────────────────────────────
-        # Default — AVX-512 (same as lattice-v4)
-        lattice    = mkLattice { marchLevel = "v4"; };
+        # Default — AVX-512 (same as bravais-v4)
+        bravais    = mkBravais { marchLevel = "v4"; };
 
         # Explicit stable profiles
-        lattice-v1 = mkLattice { marchLevel = "v1"; };   # baseline x86-64    (SSE2)
-        lattice-v2 = mkLattice { marchLevel = "v2"; };   # x86-64-v2          (SSE4.2)
-        lattice-v3 = mkLattice { marchLevel = "v3"; };   # x86-64-v3  AVX2    (CachyOS default)
-        lattice-v4 = mkLattice { marchLevel = "v4"; };   # x86-64-v4  AVX-512 (Lattice default)
+        bravais-v1 = mkBravais { marchLevel = "v1"; };   # baseline x86-64    (SSE2)
+        bravais-v2 = mkBravais { marchLevel = "v2"; };   # x86-64-v2          (SSE4.2)
+        bravais-v3 = mkBravais { marchLevel = "v3"; };   # x86-64-v3  AVX2    (CachyOS default)
+        bravais-v4 = mkBravais { marchLevel = "v4"; };   # x86-64-v4  AVX-512 (Bravais default)
 
         # ── Unstable (nixos-unstable) ───────────────────────────────────────
-        # Default unstable — AVX-512 (same as lattice-unstable-v4)
-        lattice-unstable    = mkLattice { marchLevel = "v4"; channel = "unstable"; };
+        # Default unstable — AVX-512 (same as bravais-unstable-v4)
+        bravais-unstable    = mkBravais { marchLevel = "v4"; channel = "unstable"; };
 
         # Explicit unstable profiles
-        lattice-unstable-v1 = mkLattice { marchLevel = "v1"; channel = "unstable"; };
-        lattice-unstable-v2 = mkLattice { marchLevel = "v2"; channel = "unstable"; };
-        lattice-unstable-v3 = mkLattice { marchLevel = "v3"; channel = "unstable"; };
-        lattice-unstable-v4 = mkLattice { marchLevel = "v4"; channel = "unstable"; };
+        bravais-unstable-v1 = mkBravais { marchLevel = "v1"; channel = "unstable"; };
+        bravais-unstable-v2 = mkBravais { marchLevel = "v2"; channel = "unstable"; };
+        bravais-unstable-v3 = mkBravais { marchLevel = "v3"; channel = "unstable"; };
+        bravais-unstable-v4 = mkBravais { marchLevel = "v4"; channel = "unstable"; };
       };
     };
 }
