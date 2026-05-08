@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — greetd + tuigreet Login Manager
+# Steelbore Bravais — greetd + tuigreet Login Manager
 { config, lib, pkgs, steelborePalette, ... }:
 
 let
@@ -37,6 +37,28 @@ let
     exec = "${pkgs.brush}/bin/brush";
     comment = "Drop to Brush shell";
   };
+
+  # Unified `start-<de>` launchers. Every desktop in Bravais exposes the same
+  # naming pattern so users (and greetd's environment list) can launch any
+  # session without remembering upstream session-binary names.
+  #
+  # `start-cosmic` is intentionally not defined here — `pkgs.cosmic-session`
+  # already ships `bin/start-cosmic` (with login-shell env loading and
+  # systemd-unit reset that we don't want to skip), and the cosmic NixOS
+  # module pulls cosmic-session into systemPackages. Defining our own would
+  # collide on /run/current-system/sw/bin/start-cosmic.
+  mkStartWrapper = name: command: pkgs.writeShellScriptBin "start-${name}" ''
+    exec ${command} "$@"
+  '';
+
+  start-gnome      = mkStartWrapper "gnome"      "${pkgs.gnome-session}/bin/gnome-session";
+  start-plasma     = mkStartWrapper "plasma"     "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-wayland";
+  start-plasma-x11 = mkStartWrapper "plasma-x11" "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11";
+  start-niri       = mkStartWrapper "niri"       "${pkgs.niri}/bin/niri-session";
+  # pkgs.xorg.xinit emits a deprecation warning on unstable (renamed to
+  # pkgs.xinit) but is the canonical attribute on stable 25.11. Same
+  # stable/unstable split as xfce4-terminal — see CLAUDE.md known constraint #5.
+  start-leftwm     = mkStartWrapper "leftwm"     "${pkgs.xorg.xinit}/bin/startx ${pkgs.leftwm}/bin/leftwm";
 in
 {
   # greetd display manager with tuigreet
@@ -51,7 +73,7 @@ in
             --remember \
             --remember-session \
             --asterisks \
-            --greeting "STEELBORE :: LATTICE" \
+            --greeting "STEELBORE :: BRAVAIS" \
             --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions:${config.services.displayManager.sessionData.desktops}/share/xsessions
         '';
         user = "greeter";
@@ -72,13 +94,14 @@ in
   ];
 
   # Available sessions for greetd environments
-  # Note: LeftWM sessions are auto-discovered from xsessions directory
+  # All desktops share a unified `start-<de>` naming scheme.
   environment.etc."greetd/environments".text = ''
-    niri-session
+    start-niri
     start-cosmic
-    plasma-session
-    plasma-x11-session
-    gnome-session
+    start-plasma
+    start-plasma-x11
+    start-gnome
+    start-leftwm
     nu
     brush
     ion
@@ -86,6 +109,12 @@ in
 
   environment.systemPackages = with pkgs; [
     tuigreet
+  ] ++ [
+    start-gnome
+    start-plasma
+    start-plasma-x11
+    start-niri
+    start-leftwm
   ];
 
   # PAM configuration for greetd

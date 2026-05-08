@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — System Utilities and Modern Unix Tools
+# Steelbore Bravais — System Utilities and Modern Unix Tools
 { config, lib, pkgs, ... }:
 
 {

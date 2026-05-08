@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Declarative Flatpak Applications (via nix-flatpak)
+# Steelbore Bravais — Declarative Flatpak Applications (via nix-flatpak)
 { config, lib, pkgs, ... }:
 
 {

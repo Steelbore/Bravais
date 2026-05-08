@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — AI Coding Assistants and Tools
+# Steelbore Bravais — AI Coding Assistants and Tools
 { config, lib, pkgs, ... }:
 
 {

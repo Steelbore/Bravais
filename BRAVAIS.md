@@ -1,7 +1,7 @@
-# Steelbore Lattice — NixOS Configuration Reference
+# Steelbore Bravais — NixOS Configuration Reference
 
 > **Version:** NixOS 25.11 (Stable)
-> **Host:** `lattice` · `x86_64-linux` · Intel · XanMod Kernel
+> **Host:** `bravais` · `x86_64-linux` · Intel · XanMod Kernel
 > **User:** `mj` · Shell: Nushell · Editor: Helix
 
 ---
@@ -18,11 +18,11 @@
 ## File Map
 
 ```text
-Lattice/
-├── flake.nix                          # Inputs, outputs, nixosConfigurations.lattice
+Bravais/
+├── flake.nix                          # Inputs, outputs, nixosConfigurations.bravais
 ├── flake.lock                         # Pinned dependency hashes
 ├── hosts/
-│   └── lattice/
+│   └── bravais/
 │       ├── default.nix                # Host: hostname, networking, user, steelbore.* toggles
 │       └── hardware.nix               # Disk layout, kernel modules, CPU
 ├── modules/
@@ -57,13 +57,13 @@ Lattice/
 
 ---
 
-## Host: `lattice`
+## Host: `bravais`
 
 | Setting | Value |
 | --------- | ------- |
 | Bootloader | Limine + Lanzaboote (Secure Boot) |
 | Kernel | `linuxPackages_xanmod` |
-| Hostname | `lattice` |
+| Hostname | `bravais` |
 | Timezone | UTC |
 | Locale | `en_US.UTF-8` |
 | Keyboard | `us,ar` (toggle: Ctrl+Space) |
@@ -231,7 +231,7 @@ Manages per-user dotfiles via `xdg.configFile`:
 
 ```bash
 # Rebuild system
-sudo nixos-rebuild switch --flake .#lattice
+sudo nixos-rebuild switch --flake .#bravais
 
 # Update all flake inputs
 nix flake update

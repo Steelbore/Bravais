@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Multimedia Players and Processing Tools
+# Steelbore Bravais — Multimedia Players and Processing Tools
 { config, lib, pkgs, ... }:
 
 {

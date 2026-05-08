@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Host Configuration
+# Steelbore Bravais — Host Configuration
 {
   config,
   pkgs,
@@ -13,7 +13,7 @@
   ];
 
   # Hostname
-  networking.hostName = "lattice";
+  networking.hostName = "bravais";
   networking.networkmanager.enable = true;
 
   # X11 (for LeftWM)

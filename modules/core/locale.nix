@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Locale Configuration
+# Steelbore Bravais — Locale Configuration
 { config, lib, pkgs, ... }:
 
 {
@@ -20,5 +20,5 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Console/TTY keymap is set per-host (see hosts/lattice/default.nix)
+  # Console/TTY keymap is set per-host (see hosts/bravais/default.nix)
 }

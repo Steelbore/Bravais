@@ -1,6 +1,6 @@
-# Lattice Implementation TODO
+# Bravais Implementation TODO
 
-This document tracks the implementation status of the Lattice NixOS distribution based on the [Product Requirements Document (PRD.md)](./PRD.md) v3.0.
+This document tracks the implementation status of the Bravais NixOS distribution based on the [Product Requirements Document (PRD.md)](./PRD.md) v3.0.
 
 ---
 
@@ -14,7 +14,7 @@ This document tracks the implementation status of the Lattice NixOS distribution
 - [✓] Configure home-manager-unstable input (follows nixpkgs-unstable)
 - [✓] Configure nix-flatpak input
 - [✓] Configure gitway input (`github:Steelbore/Gitway`, tracks `main`; threaded via `specialArgs` / `extraSpecialArgs`)
-- [✓] Define `mkLattice` function with `marchLevel` and `channel` parameters
+- [✓] Define `mkBravais` function with `marchLevel` and `channel` parameters
 - [✓] Generate 10 `nixosConfigurations` (5 stable + 5 unstable, v1-v4 each)
 - [✓] Set up `steelborePalette` in specialArgs
 - [✓] ~~Pass `stablePkgs` to modules via specialArgs~~ (removed — claude-code now uses channel-appropriate `pkgs`)
@@ -259,9 +259,9 @@ This document tracks the implementation status of the Lattice NixOS distribution
 
 ## Phase 8: Host & User Configuration
 
-### Host (`hosts/lattice/`)
+### Host (`hosts/bravais/`)
 
-- [✓] **`default.nix`**: Set hostname to `lattice`
+- [✓] **`default.nix`**: Set hostname to `bravais`
 - [✓] **`default.nix`**: Enable NetworkManager
 - [✓] **`default.nix`**: Configure X11 keyboard layout (`us,ara`, `grp:ctrl_space_toggle`)
 - [✓] **`default.nix`**: Console keymap `us`
@@ -306,11 +306,11 @@ This document tracks the implementation status of the Lattice NixOS distribution
 
 - [✓] Run `nix flake check` without errors
 - [✓] Run `nix flake show` and verify 10 configurations listed
-- [✓] Run `nixos-rebuild dry-build --flake .#lattice` successfully
-- [✓] Run `nixos-rebuild build --flake .#lattice` successfully
-- [✓] Run `nixos-rebuild switch --flake .#lattice` successfully
-- [✓] Verify march-level variant build (`nixos-rebuild build --flake .#lattice-v3`)
-- [✓] Verify unstable channel build (`nixos-rebuild build --flake .#lattice-unstable`)
+- [✓] Run `nixos-rebuild dry-build --flake .#bravais` successfully
+- [✓] Run `nixos-rebuild build --flake .#bravais` successfully
+- [✓] Run `nixos-rebuild switch --flake .#bravais` successfully
+- [✓] Verify march-level variant build (`nixos-rebuild build --flake .#bravais-v3`)
+- [✓] Verify unstable channel build (`nixos-rebuild build --flake .#bravais-unstable`)
 - [~] Verify Niri session boots with Ironbar
 - [✓] Verify COSMIC session boots with panel
 - [✓] Verify GNOME session boots on Wayland
@@ -354,6 +354,10 @@ This document tracks the implementation status of the Lattice NixOS distribution
 7. **Overlays** are defined inline in `modules/core/nix.nix`. `overlays/default.nix` exists as a reference copy.
 
 8. **task-master-ai**: nixpkgs build is unfixable via overlay — upstream's `package-lock.json` omits the platform-specific optionalDependencies of `@biomejs/biome` and `esbuild`, and `npm ci`'s lockfile validation runs before any `--omit=optional` or fetcher-v2 logic. `modules/packages/ai.nix` ships a `task-master` shell wrapper that runs `npx -y --package=task-master-ai task-master "$@"` against `pkgs.nodejs` instead. See `CLAUDE.md` constraint #3.
+
+9. **xdg-desktop-portal routing under multi-DE**: With GNOME, COSMIC, Plasma all enabled, each DE's NixOS module registers its own portal backends via `xdg.portal.extraPortals` and `configPackages`. The active backend is selected per-session via `XDG_CURRENT_DESKTOP`. Bravais adds explicit `xdg.portal.config.<de>.default` routing in `modules/desktops/cosmic.nix` and `modules/desktops/gnome.nix` so Screenshot/ScreenCast/FileChooser interfaces resolve deterministically per session — without it, dbus startup popups and PrtSc "server crash" can occur in COSMIC.
+
+10. **Unified `start-<de>` commands**: All desktops expose a `start-<de>` launcher (`start-cosmic`, `start-gnome`, `start-plasma`, `start-plasma-x11`, `start-niri`, `start-leftwm`). `start-cosmic` comes from upstream `pkgs.cosmic-session`; the rest are `writeShellScriptBin` wrappers in `modules/login/default.nix`. `start-leftwm` invokes `startx leftwm` for X11 from a TTY.
 
 ---
 

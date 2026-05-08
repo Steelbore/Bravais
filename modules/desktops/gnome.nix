@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — GNOME Desktop Environment (Wayland)
+# Steelbore Bravais — GNOME Desktop Environment (Wayland)
 {
   config,
   lib,
@@ -45,11 +45,14 @@
       gnomeExtensions.tiling-shell
       gnomeExtensions.smart-tiling
       gnomeExtensions.ollama-indicator
-
-      # Portal
-      xdg-desktop-portal-gnome
-      xdg-desktop-portal-gtk
     ];
+
+    # Portal routing — NixOS's services.desktopManager.gnome.enable already
+    # registers xdg-desktop-portal-gnome + -gtk in xdg.portal.extraPortals.
+    # We add only the explicit per-DE config so multi-DE installs route
+    # interfaces deterministically (avoids spillover from another DE's
+    # configPackages when GNOME is the active session).
+    xdg.portal.config.gnome.default = [ "gnome" "gtk" ];
 
     # Exclude bloat
     environment.gnome.excludePackages = with pkgs; [

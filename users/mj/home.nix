@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Home Manager Configuration
+# Steelbore Bravais — Home Manager Configuration
 {
   config,
   pkgs,
@@ -49,8 +49,6 @@ let
 in
 
 {
-  imports = [ gitway.homeManagerModules.default ];
-
   home.username = "mj";
   home.homeDirectory = "/home/mj";
   home.stateVersion = "25.11";
@@ -185,10 +183,85 @@ in
     nushell = {
       enable = true;
       configFile.text = ''
+        # Steelbore palette — kept in sync with flake.nix steelborePalette.
+        # Nushell needs literals; env-var interpolation isn't available inside
+        # color_config records.
+        let steelbore = {
+          voidNavy:    "#000027"
+          moltenAmber: "#D98E32"
+          steelBlue:   "#4B7EB0"
+          radiumGreen: "#50FA7B"
+          redOxide:    "#FF5C5C"
+          liquidCool:  "#8BE9FD"
+        }
+
         $env.config = {
           show_banner: false,
           ls: { use_ls_colors: true, clickable_links: true },
           cursor_shape: { emacs: block, vi_insert: block, vi_normal: block },
+          color_config: {
+            separator:        $steelbore.steelBlue
+            leading_trailing_space_bg: { attr: "n" }
+            header:           { fg: $steelbore.moltenAmber attr: "b" }
+            empty:            $steelbore.liquidCool
+            bool:             {|v| if $v { $steelbore.radiumGreen } else { $steelbore.redOxide } }
+            int:              $steelbore.moltenAmber
+            filesize:         {|v| if $v == 0b { $steelbore.steelBlue } else if $v < 1mb { $steelbore.liquidCool } else { $steelbore.moltenAmber } }
+            duration:         $steelbore.moltenAmber
+            date:             {|v| (date now) - $v | if $in < 1hr { { fg: $steelbore.radiumGreen attr: "b" } } else if $in < 6hr { $steelbore.radiumGreen } else if $in < 1day { $steelbore.moltenAmber } else if $in < 3day { $steelbore.liquidCool } else if $in < 1wk { { fg: $steelbore.liquidCool attr: "b" } } else if $in < 6wk { $steelbore.steelBlue } else if $in < 52wk { { fg: $steelbore.steelBlue attr: "b" } } else { "dark_gray" } }
+            range:            $steelbore.moltenAmber
+            float:            $steelbore.moltenAmber
+            string:           $steelbore.moltenAmber
+            nothing:          $steelbore.liquidCool
+            binary:           $steelbore.liquidCool
+            cell-path:        $steelbore.steelBlue
+            row_index:        { fg: $steelbore.steelBlue attr: "b" }
+            record:           $steelbore.moltenAmber
+            list:             $steelbore.moltenAmber
+            block:            $steelbore.moltenAmber
+            hints:            "dark_gray"
+            search_result:    { fg: $steelbore.voidNavy bg: $steelbore.moltenAmber }
+
+            shape_and:                { fg: $steelbore.radiumGreen attr: "b" }
+            shape_binary:             { fg: $steelbore.liquidCool attr: "b" }
+            shape_block:              { fg: $steelbore.liquidCool attr: "b" }
+            shape_bool:               $steelbore.radiumGreen
+            shape_closure:            { fg: $steelbore.radiumGreen attr: "b" }
+            shape_custom:             $steelbore.radiumGreen
+            shape_datetime:           { fg: $steelbore.liquidCool attr: "b" }
+            shape_directory:          $steelbore.liquidCool
+            shape_external:           $steelbore.moltenAmber
+            shape_externalarg:        { fg: $steelbore.radiumGreen attr: "b" }
+            shape_external_resolved:  { fg: $steelbore.liquidCool attr: "b" }
+            shape_filepath:           $steelbore.steelBlue
+            shape_flag:               { fg: $steelbore.steelBlue attr: "b" }
+            shape_float:              { fg: $steelbore.moltenAmber attr: "b" }
+            shape_garbage:            { fg: $steelbore.redOxide bg: $steelbore.voidNavy attr: "b" }
+            shape_glob_interpolation: { fg: $steelbore.liquidCool attr: "b" }
+            shape_globpattern:        { fg: $steelbore.liquidCool attr: "b" }
+            shape_int:                { fg: $steelbore.moltenAmber attr: "b" }
+            shape_internalcall:       { fg: $steelbore.moltenAmber attr: "b" }
+            shape_keyword:            { fg: $steelbore.radiumGreen attr: "b" }
+            shape_list:               { fg: $steelbore.liquidCool attr: "b" }
+            shape_literal:            $steelbore.steelBlue
+            shape_match_pattern:      $steelbore.radiumGreen
+            shape_matching_brackets:  { attr: "u" }
+            shape_nothing:            $steelbore.liquidCool
+            shape_operator:           $steelbore.moltenAmber
+            shape_or:                 { fg: $steelbore.radiumGreen attr: "b" }
+            shape_pipe:               { fg: $steelbore.radiumGreen attr: "b" }
+            shape_range:              { fg: $steelbore.moltenAmber attr: "b" }
+            shape_record:             { fg: $steelbore.liquidCool attr: "b" }
+            shape_redirection:        { fg: $steelbore.radiumGreen attr: "b" }
+            shape_signature:          { fg: $steelbore.radiumGreen attr: "b" }
+            shape_string:             $steelbore.steelBlue
+            shape_string_interpolation: { fg: $steelbore.liquidCool attr: "b" }
+            shape_table:              { fg: $steelbore.steelBlue attr: "b" }
+            shape_variable:           $steelbore.steelBlue
+            shape_vardecl:            $steelbore.steelBlue
+            shape_raw_string:         $steelbore.steelBlue
+            shape_garbage_unknown:    { fg: $steelbore.redOxide attr: "b" }
+          }
         }
 
         # Steelbore Telemetry Aliases
@@ -295,18 +368,11 @@ in
     pinentry.package = pkgs.pinentry-qt;
   };
 
-  # Gitway agent — owns $SSH_AUTH_SOCK; replaces system ssh-agent for git workflows
-  services.gitway-agent = {
-    enable = true;
-    defaultLifetime = 86400;   # 24 h TTL per loaded key
-  };
-
-  # Make SSH_AUTH_SOCK visible to every child of `systemd --user`, so
-  # non-interactive shells (Claude Code's `bash -c ...`), GUI apps, cron, and
-  # user services all reach gitway-agent — not just login shells via .profile.
-  xdg.configFile."environment.d/10-gitway-agent.conf".text = ''
-    SSH_AUTH_SOCK=''${XDG_RUNTIME_DIR}/gitway-agent.sock
-  '';
+  # gitway-agent itself is enabled system-wide via services.gitway-agent.enable
+  # in modules/core/security.nix (NixOS module from the gitway flake). That
+  # module also writes /etc/environment.d/10-gitway-agent.conf and registers
+  # the hardened systemd.user.services.gitway-agent unit, so neither needs to
+  # be duplicated here.
 
   # One-shot: load ~/.ssh/id_ed25519 into gitway-agent right after the agent
   # starts. RemainAfterExit makes re-runs a no-op for the rest of the session.

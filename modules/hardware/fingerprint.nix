@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Fingerprint Reader Support
+# Steelbore Bravais — Fingerprint Reader Support
 { config, lib, pkgs, ... }:
 
 {

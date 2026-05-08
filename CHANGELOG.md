@@ -1,11 +1,26 @@
 # Changelog
 
-All notable changes to Lattice are documented in this file.
+All notable changes to Bravais are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+
+## [Unreleased]
+
+### Changed
+
+- **Project renamed: Lattice → Bravais** (full name: *Steelbore OS Bravais*).
+  The crystallography theme is preserved — a Bravais lattice is a kind of
+  lattice — and every identifier follows: `mkLattice` → `mkBravais`, all 10
+  `nixosConfigurations` keys (`bravais`, `bravais-v{1..4}`,
+  `bravais-unstable`, `bravais-unstable-v{1..4}`), `networking.hostName`,
+  the working-tree path (`/steelbore/lattice` → `/steelbore/bravais`), the
+  GitHub repo (`Steelbore/Lattice` → `Steelbore/Bravais`), all module
+  headers, the greetd greeting (`STEELBORE :: BRAVAIS`), and every
+  documentation file. `v0/` is intentionally left untouched as a frozen
+  pre-flake snapshot of the old name; see `v0/README.md`.
 
 ## [2.1.0] — 2026-04-05
 
@@ -119,7 +134,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial NixOS flake configuration
 - Basic GNOME desktop support
 - Home Manager for user configuration
-- Hardware configuration for lattice host
+- Hardware configuration for bravais host
 
 ---
 

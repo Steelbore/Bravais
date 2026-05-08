@@ -1,6 +1,6 @@
-# Lattice -- Product Requirements Document
+# Bravais -- Product Requirements Document
 
-**Project:** Lattice (A Steelbore NixOS Distribution)
+**Project:** Bravais (A Steelbore NixOS Distribution)
 **Version:** 3.1 | **Date:** 2026-04-20
 **Author:** Mohamed Hammad | **License:** GPL-3.0-or-later
 **Status:** Implemented
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-Lattice is a flake-based NixOS configuration implementing the Steelbore Standard. It delivers a complete, reproducible system with a modular, opt-in architecture supporting five desktop environments: GNOME (Wayland), COSMIC (Wayland), KDE Plasma 6 (Wayland), Niri (Wayland), and LeftWM (X11).
+Bravais is a flake-based NixOS configuration implementing the Steelbore Standard. It delivers a complete, reproducible system with a modular, opt-in architecture supporting five desktop environments: GNOME (Wayland), COSMIC (Wayland), KDE Plasma 6 (Wayland), Niri (Wayland), and LeftWM (X11).
 
 **Core Principles:**
 
@@ -30,13 +30,13 @@ Lattice is a flake-based NixOS configuration implementing the Steelbore Standard
 ### 2.1 Directory Structure
 
 ```text
-lattice/
+bravais/
 +-- flake.nix                      # Flake entry point
 +-- flake.lock                     # Pinned dependencies
 +-- lib/                           # Custom Nix helper functions
 |   +-- default.nix                # mkSteelboreModule, color palette
 +-- hosts/                         # Machine-specific configurations
-|   +-- lattice/                   # Primary host
+|   +-- bravais/                   # Primary host
 |       +-- default.nix            # Host traits (boot, locale, user, toggles)
 |       +-- hardware.nix           # Hardware configuration (generated)
 +-- modules/                       # NixOS modules (steelbore.* namespace)
@@ -134,7 +134,7 @@ steelbore = {
 
 ### 2.4 Dual-Channel Design
 
-Lattice supports two nixpkgs channels, selectable per build:
+Bravais supports two nixpkgs channels, selectable per build:
 
 | Channel    | nixpkgs Branch    | Home Manager Branch | Stability |
 |------------|-------------------|---------------------|-----------|
@@ -147,16 +147,16 @@ Ten `nixosConfigurations` are generated (5 stable + 5 unstable):
 
 | Configuration          | Channel  | March Level | CPU Features                      |
 |------------------------|----------|-------------|-----------------------------------|
-| `lattice` (default)    | stable   | v4          | AVX-512F/BW/CD/DQ/VL             |
-| `lattice-v1`           | stable   | v1          | Baseline x86-64 (SSE2)           |
-| `lattice-v2`           | stable   | v2          | SSE4.2 / POPCNT / CX16           |
-| `lattice-v3`           | stable   | v3          | AVX2 / BMI1/2 / FMA / MOVBE      |
-| `lattice-v4`           | stable   | v4          | AVX-512F/BW/CD/DQ/VL             |
-| `lattice-unstable`     | unstable | v4          | AVX-512F/BW/CD/DQ/VL             |
-| `lattice-unstable-v1`  | unstable | v1          | Baseline x86-64 (SSE2)           |
-| `lattice-unstable-v2`  | unstable | v2          | SSE4.2 / POPCNT / CX16           |
-| `lattice-unstable-v3`  | unstable | v3          | AVX2 / BMI1/2 / FMA / MOVBE      |
-| `lattice-unstable-v4`  | unstable | v4          | AVX-512F/BW/CD/DQ/VL             |
+| `bravais` (default)    | stable   | v4          | AVX-512F/BW/CD/DQ/VL             |
+| `bravais-v1`           | stable   | v1          | Baseline x86-64 (SSE2)           |
+| `bravais-v2`           | stable   | v2          | SSE4.2 / POPCNT / CX16           |
+| `bravais-v3`           | stable   | v3          | AVX2 / BMI1/2 / FMA / MOVBE      |
+| `bravais-v4`           | stable   | v4          | AVX-512F/BW/CD/DQ/VL             |
+| `bravais-unstable`     | unstable | v4          | AVX-512F/BW/CD/DQ/VL             |
+| `bravais-unstable-v1`  | unstable | v1          | Baseline x86-64 (SSE2)           |
+| `bravais-unstable-v2`  | unstable | v2          | SSE4.2 / POPCNT / CX16           |
+| `bravais-unstable-v3`  | unstable | v3          | AVX2 / BMI1/2 / FMA / MOVBE      |
+| `bravais-unstable-v4`  | unstable | v4          | AVX-512F/BW/CD/DQ/VL             |
 
 ---
 
@@ -188,10 +188,10 @@ steelborePalette = {
 };
 ```
 
-### 3.3 mkLattice Function
+### 3.3 mkBravais Function
 
 ```nix
-mkLattice = { marchLevel, channel ? "stable" }: ...
+mkBravais = { marchLevel, channel ? "stable" }: ...
 ```
 
 - Selects nixpkgs and home-manager inputs based on `channel`
@@ -368,11 +368,11 @@ When enabled: `services.fprintd.enable = true`, package `fprintd` installed.
 
 ---
 
-## 7. Host Configuration (`hosts/lattice/`)
+## 7. Host Configuration (`hosts/bravais/`)
 
 ### 7.1 Host Settings (`default.nix`)
 
-- **Hostname:** `lattice`
+- **Hostname:** `bravais`
 - **Networking:** NetworkManager enabled
 - **X11:** Enabled (for LeftWM), keyboard layouts `us,ara`, toggle `grp:ctrl_space_toggle`
 - **Console keymap:** `us` (ckbcomp can't resolve multi-layout XKB configs)
@@ -413,7 +413,7 @@ tuigreet \
   --remember \
   --remember-session \
   --asterisks \
-  --greeting "STEELBORE :: LATTICE" \
+  --greeting "STEELBORE :: BRAVAIS" \
   --sessions <sessionData>/share/wayland-sessions:<sessionData>/share/xsessions
 ```
 
@@ -962,7 +962,7 @@ Managed via `programs.alacritty.enable = true` with structured Nix settings. She
 - **Primary:** US English (`us`)
 - **Secondary:** Arabic (`ara`)
 - **Toggle:** `Ctrl+Space` (`grp:ctrl_space_toggle`)
-- **Configuration:** Set in `hosts/lattice/default.nix` (system), `users/mj/home.nix` (user), `modules/desktops/niri.nix` (Niri XKB)
+- **Configuration:** Set in `hosts/bravais/default.nix` (system), `users/mj/home.nix` (user), `modules/desktops/niri.nix` (Niri XKB)
 
 ---
 
@@ -990,17 +990,17 @@ nix flake check
 nix flake show
 
 # Dry-run build
-nixos-rebuild dry-build --flake .#lattice
+nixos-rebuild dry-build --flake .#bravais
 
 # Build without switching
-nixos-rebuild build --flake .#lattice
+nixos-rebuild build --flake .#bravais
 
 # Switch to new configuration
-sudo nixos-rebuild switch --flake .#lattice
+sudo nixos-rebuild switch --flake .#bravais
 
 # Build specific profile
-sudo nixos-rebuild switch --flake .#lattice-v3
-sudo nixos-rebuild switch --flake .#lattice-unstable-v3
+sudo nixos-rebuild switch --flake .#bravais-v3
+sudo nixos-rebuild switch --flake .#bravais-unstable-v3
 ```
 
 ### 16.2 Desktop Environment Verification
@@ -1015,7 +1015,7 @@ sudo nixos-rebuild switch --flake .#lattice-unstable-v3
 
 ### 16.3 Steelbore Standard Compliance
 
-- [x] **Metallurgical naming:** Lattice (crystal structure)
+- [x] **Metallurgical naming:** Bravais (crystal structure)
 - [x] **Memory safety:** Rust-first packages, sudo-rs, Sequoia PGP, Nushell/Brush shells; bash excluded from login shells (NixOS module kept enabled for PAM/activation script compatibility)
 - [x] **Performance:** XanMod kernel, x86-64-v1/v2/v3/v4 flags (CachyOS/ALHP sourced)
 - [x] **Security:** Sequoia PGP, polkit, sudo-rs execWheelOnly, secure boot ready (sbctl)

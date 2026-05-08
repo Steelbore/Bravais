@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Terminal Emulators (All with Steelbore Theme)
+# Steelbore Bravais — Terminal Emulators (All with Steelbore Theme)
 { config, lib, pkgs, steelborePalette, ... }:
 
 let
