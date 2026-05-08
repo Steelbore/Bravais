@@ -1,8 +1,8 @@
-  Not Installed in Lattice
+  Not Installed in Bravais
 
   Available in nixpkgs — can be added
 
-  These exist in nixpkgs but are not currently in any Lattice module:
+  These exist in nixpkgs but are not currently in any Bravais module:
 
   ┌──────────────────┬─────────────────────────────────────────────────────────────────────────┐
   │     Package      │                                  Note                                   │

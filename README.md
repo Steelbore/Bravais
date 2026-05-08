@@ -1,12 +1,12 @@
-# Steelbore Lattice
+# Steelbore Bravais
 
-Lattice is a meticulously crafted, flake-based NixOS configuration implementing the **Steelbore Standard**. Designed from the ground up to be modular, memory-safe, and visually cohesive, it provides a performant, reliable, and highly customizable system architecture for advanced computing workflows.
+Bravais is a meticulously crafted, flake-based NixOS configuration implementing the **Steelbore Standard**. Designed from the ground up to be modular, memory-safe, and visually cohesive, it provides a performant, reliable, and highly customizable system architecture for advanced computing workflows.
 
 ## Core Philosophy
 
-The design of Lattice is guided by four primary tenets:
+The design of Bravais is guided by four primary tenets:
 
-1. **Rust-First Ecosystem (Memory Safety):** Extreme priority is given to tools written in memory-safe languages. Lattice replaces legacy C-based utilities with robust Rust equivalents—ranging from core privilege escalation (`sudo-rs` completely replacing standard `sudo`) to terminal emulators, status bars (`ironbar`), and application launchers (`anyrun`, `onagre`).
+1. **Rust-First Ecosystem (Memory Safety):** Extreme priority is given to tools written in memory-safe languages. Bravais replaces legacy C-based utilities with robust Rust equivalents—ranging from core privilege escalation (`sudo-rs` completely replacing standard `sudo`) to terminal emulators, status bars (`ironbar`), and application launchers (`anyrun`, `onagre`).
 
 2. **Opt-in Modularity:** Every feature, hardware profile, and application set is structurally siloed inside its own module using Nix's `lib.mkEnableOption`. Hosts boot only exactly what they explicitly declare via the `steelbore.*` namespace.
 
@@ -17,13 +17,13 @@ The design of Lattice is guided by four primary tenets:
 ## Directory Structure
 
 ```
-lattice/
-├── flake.nix                      # Flake entry point (mkLattice helper, 10 nixosConfigurations)
+bravais/
+├── flake.nix                      # Flake entry point (mkBravais helper, 10 nixosConfigurations)
 ├── flake.lock                     # Pinned dependencies
 ├── lib/                           # Custom Nix helper functions
 │   └── default.nix                # Color palette definitions
 ├── hosts/                         # Machine-specific configurations
-│   └── lattice/                   # Primary host
+│   └── bravais/                   # Primary host
 │       ├── default.nix            # Host traits & module toggles
 │       └── hardware.nix           # Hardware configuration
 ├── modules/                       # NixOS modules (steelbore.* namespace)
@@ -86,7 +86,7 @@ lattice/
 
 ## Desktop Environments
 
-Lattice officially provisions definitions for four primary desktop targets:
+Bravais officially provisions definitions for four primary desktop targets:
 
 | Desktop | Protocol | Status Bar | Launcher | Description |
 |---------|----------|------------|----------|-------------|
@@ -125,10 +125,10 @@ All levels use `-mtune=native` and include `pack-relative-relocs` in `RUSTFLAGS`
 
 | Profile | ISA additions | Source | CFLAGS `-march` | `GOAMD64` |
 |---------|--------------|--------|-----------------|-----------|
-| `lattice-v1` | SSE2 baseline | CachyOS baseline | `x86-64` | `v1` |
-| `lattice-v2` | SSE4.2 / POPCNT / CX16 | ALHP | `x86-64-v2` | `v2` |
-| `lattice-v3` | AVX2 / BMI1/2 / FMA | CachyOS | `x86-64-v3` | `v3` |
-| `lattice-v4` | AVX-512F/BW/CD/DQ/VL | CachyOS | `x86-64-v4` | `v4` |
+| `bravais-v1` | SSE2 baseline | CachyOS baseline | `x86-64` | `v1` |
+| `bravais-v2` | SSE4.2 / POPCNT / CX16 | ALHP | `x86-64-v2` | `v2` |
+| `bravais-v3` | AVX2 / BMI1/2 / FMA | CachyOS | `x86-64-v3` | `v3` |
+| `bravais-v4` | AVX-512F/BW/CD/DQ/VL | CachyOS | `x86-64-v4` | `v4` |
 
 All profiles share: `-O3 -flto=auto -mpclmul` (v2+) and full security hardening
 (`-D_FORTIFY_SOURCE=3`, `-fstack-clash-protection`, `-fcf-protection`, `-Clink-arg=pack-relative-relocs`).
@@ -187,24 +187,24 @@ nix flake check
 nix flake show
 
 # Dry-run build
-nixos-rebuild dry-build --flake .#lattice
+nixos-rebuild dry-build --flake .#bravais
 
 # Build without switching
-nixos-rebuild build --flake .#lattice
+nixos-rebuild build --flake .#bravais
 
 # Switch to new configuration (default: stable AVX-512 / v4)
-sudo nixos-rebuild switch --flake .#lattice
+sudo nixos-rebuild switch --flake .#bravais
 
 # Switch to a specific stable CPU profile
-sudo nixos-rebuild switch --flake .#lattice-v3   # AVX2
-sudo nixos-rebuild switch --flake .#lattice-v2   # SSE4.2 (ALHP-derived)
-sudo nixos-rebuild switch --flake .#lattice-v1   # Baseline x86-64
-sudo nixos-rebuild switch --flake .#lattice-v4   # AVX-512 (same as .#lattice)
+sudo nixos-rebuild switch --flake .#bravais-v3   # AVX2
+sudo nixos-rebuild switch --flake .#bravais-v2   # SSE4.2 (ALHP-derived)
+sudo nixos-rebuild switch --flake .#bravais-v1   # Baseline x86-64
+sudo nixos-rebuild switch --flake .#bravais-v4   # AVX-512 (same as .#bravais)
 
 # Switch to unstable channel (bleeding-edge packages)
-sudo nixos-rebuild switch --flake .#lattice-unstable       # AVX-512 / v4
-sudo nixos-rebuild switch --flake .#lattice-unstable-v3    # AVX2
-sudo nixos-rebuild switch --flake .#lattice-unstable-v1    # Baseline x86-64
+sudo nixos-rebuild switch --flake .#bravais-unstable       # AVX-512 / v4
+sudo nixos-rebuild switch --flake .#bravais-unstable-v3    # AVX2
+sudo nixos-rebuild switch --flake .#bravais-unstable-v1    # Baseline x86-64
 ```
 
 ## Documentation
@@ -230,4 +230,4 @@ sudo nixos-rebuild switch --flake .#lattice-unstable-v1    # Baseline x86-64
 | **Total** | **107** | **78** | **185** |
 
 ---
-*Lattice (A Steelbore NixOS Distribution)* | *Version 2.0*
+*Bravais (A Steelbore NixOS Distribution)* | *Version 2.0*

@@ -1,4 +1,4 @@
-# Lattice: A Steelbore NixOS Distribution — Implementation Status
+# Bravais: A Steelbore NixOS Distribution — Implementation Status
 
 **Version:** 2.1 | **Date:** 2026-04-05 | **Status:** Implemented
 
@@ -6,7 +6,7 @@
 
 ## 1. Implementation Summary
 
-Lattice is a fully implemented flake-based NixOS configuration following the Steelbore Standard. The system provides a modular, opt-in architecture with four desktop environments, comprehensive terminal theming, and greetd-based login management.
+Bravais is a fully implemented flake-based NixOS configuration following the Steelbore Standard. The system provides a modular, opt-in architecture with four desktop environments, comprehensive terminal theming, and greetd-based login management.
 
 ---
 
@@ -15,14 +15,14 @@ Lattice is a fully implemented flake-based NixOS configuration following the Ste
 ### 2.1 Directory Structure (Implemented)
 
 ```text
-/steelbore/Lattice/
+/steelbore/Bravais/
 ├── flake.nix                    # Main flake configuration
 ├── flake.lock                   # Pinned dependencies
 ├── PRD.md                       # Product Requirements Document
 ├── implementation_plan.md       # This file
 ├── USER_MANUAL.md               # User documentation
 ├── hosts/
-│   └── lattice/
+│   └── bravais/
 │       ├── default.nix          # Host configuration & module toggles
 │       └── hardware.nix         # Hardware-specific settings
 ├── modules/
@@ -217,7 +217,7 @@ All modules follow the `steelbore.*` namespace pattern:
 **Rationale:**
 - Keyboard is host-specific hardware
 - Avoids conflicts between desktop modules
-- Single source of truth in hosts/lattice/default.nix
+- Single source of truth in hosts/bravais/default.nix
 
 ---
 
@@ -225,7 +225,7 @@ All modules follow the `steelbore.*` namespace pattern:
 
 | Section | Requirement | Status |
 |---------|-------------|--------|
-| §2 | Metallurgical naming | Lattice (crystal structure) |
+| §2 | Metallurgical naming | Bravais (crystal structure) |
 | §3.1 | Memory safety (Rust-first) | sudo-rs, Rust terminals |
 | §3.2 | Performance | XanMod kernel, x86-64-v4 |
 | §3.3 | Security | Polkit, Sequoia PGP |
@@ -242,17 +242,17 @@ All modules follow the `steelbore.*` namespace pattern:
 
 ```bash
 # Verify flake
-cd /steelbore/Lattice
+cd /steelbore/Bravais
 nix flake check
 
 # Dry-run build
-nixos-rebuild dry-build --flake .#lattice
+nixos-rebuild dry-build --flake .#bravais
 
 # Full build
-nixos-rebuild build --flake .#lattice
+nixos-rebuild build --flake .#bravais
 
 # Switch to configuration
-sudo nixos-rebuild switch --flake .#lattice
+sudo nixos-rebuild switch --flake .#bravais
 ```
 
 ---

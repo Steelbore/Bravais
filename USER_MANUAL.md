@@ -1,4 +1,4 @@
-# Lattice User Manual
+# Bravais User Manual
 
 **A Steelbore NixOS Distribution**
 **Version:** 2.1 | **Date:** 2026-04-05
@@ -27,7 +27,7 @@
 
 ### 1.1 System Overview
 
-Lattice is a NixOS-based operating system built on the Steelbore Standard. It features:
+Bravais is a NixOS-based operating system built on the Steelbore Standard. It features:
 
 - **Four desktop environments:** Niri, LeftWM, COSMIC, and GNOME
 - **Unified theming:** All applications use the Steelbore color palette
@@ -39,7 +39,7 @@ Lattice is a NixOS-based operating system built on the Steelbore Standard. It fe
 After installation, you will be greeted by the tuigreet login screen:
 
 ```
-STEELBORE :: LATTICE
+STEELBORE :: BRAVAIS
 2026-04-05 14:30:00
 
 Username: _
@@ -442,23 +442,23 @@ The prompt displays:
 
 ### 7.1 Rebuilding the System
 
-After modifying configuration files in `/steelbore/Lattice/`:
+After modifying configuration files in `/steelbore/Bravais/`:
 
 ```bash
 # Navigate to configuration directory
-cd /steelbore/Lattice
+cd /steelbore/Bravais
 
 # Rebuild and switch
-sudo nixos-rebuild switch --flake .#lattice
+sudo nixos-rebuild switch --flake .#bravais
 ```
 
 ### 7.2 Common Operations
 
 | Task                    | Command                                    |
 |-------------------------|--------------------------------------------|
-| Rebuild system          | `sudo nixos-rebuild switch --flake .#lattice` |
-| Test build (no switch)  | `nixos-rebuild build --flake .#lattice`    |
-| Dry-run build           | `nixos-rebuild dry-build --flake .#lattice`|
+| Rebuild system          | `sudo nixos-rebuild switch --flake .#bravais` |
+| Test build (no switch)  | `nixos-rebuild build --flake .#bravais`    |
+| Dry-run build           | `nixos-rebuild dry-build --flake .#bravais`|
 | Update flake inputs     | `nix flake update`                         |
 | Garbage collection      | `sudo nix-collect-garbage -d`              |
 | List generations        | `sudo nix-env --list-generations -p /nix/var/nix/profiles/system` |
@@ -468,10 +468,10 @@ sudo nixos-rebuild switch --flake .#lattice
 
 | Component        | Location                                    |
 |------------------|---------------------------------------------|
-| System config    | `/steelbore/Lattice/`                       |
-| Host config      | `/steelbore/Lattice/hosts/lattice/`         |
-| User config      | `/steelbore/Lattice/users/mj/home.nix`      |
-| Hardware config  | `/steelbore/Lattice/hosts/lattice/hardware.nix` |
+| System config    | `/steelbore/Bravais/`                       |
+| Host config      | `/steelbore/Bravais/hosts/bravais/`         |
+| User config      | `/steelbore/Bravais/users/mj/home.nix`      |
+| Hardware config  | `/steelbore/Bravais/hosts/bravais/hardware.nix` |
 
 ### 7.4 Fingerprint Enrollment
 

@@ -1,4 +1,4 @@
-# Steelbore Lattice — Architecture
+# Steelbore Bravais — Architecture
 
 ## System Architecture Diagram
 
@@ -7,7 +7,7 @@ graph TB
     subgraph FLAKE["flake.nix"]
         direction TB
         INPUTS["Inputs"]
-        OUTPUT["nixosConfigurations.lattice"]
+        OUTPUT["nixosConfigurations.bravais"]
     end
 
     subgraph INPUTS_DETAIL["Flake Inputs"]
@@ -26,9 +26,9 @@ graph TB
     OUTPUT --> COSMIC_MOD["nixos-cosmic module"]
     OUTPUT --> HM_MOD["home-manager module"]
 
-    subgraph HOST["hosts/lattice/"]
+    subgraph HOST["hosts/bravais/"]
         direction TB
-        HOST_DEF["default.nix<br/>━━━━━━━━━━━━━<br/>Hostname: lattice<br/>NetworkManager<br/>User: mj<br/>Shell: nushell<br/>steelbore.* toggles"]
+        HOST_DEF["default.nix<br/>━━━━━━━━━━━━━<br/>Hostname: bravais<br/>NetworkManager<br/>User: mj<br/>Shell: nushell<br/>steelbore.* toggles"]
         HW["hardware.nix<br/>━━━━━━━━━━━━━<br/>ext4 + vfat<br/>Intel KVM<br/>NVMe/USB storage"]
         HOST_DEF --> HW
     end
@@ -145,7 +145,7 @@ graph TB
 │           └─────────────────────┼──────────────────────────┘                │
 │                                 ▼                                           │
 │               ┌─────────────────────────────────────┐                       │
-│               │    nixosConfigurations.lattice      │                       │
+│               │    nixosConfigurations.bravais      │                       │
 │               │    specialArgs: unstable, emacs-ng  │                       │
 │               │                steelborePalette     │                       │
 │               └─────────────────┬───────────────────┘                       │
@@ -154,7 +154,7 @@ graph TB
            ┌──────────────────────┼──────────────────────┐
            ▼                      ▼                      ▼
   ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐
-  │  hosts/lattice  │   │    modules/     │   │  home-manager   │
+  │  hosts/bravais  │   │    modules/     │   │  home-manager   │
   │                 │   │                 │   │                 │
   │ • Hostname      │   │ core/           │   │ users/mj/       │
   │ • User account  │   │ • boot          │   │ • Git + GPG     │
@@ -227,7 +227,7 @@ All modules follow the `steelbore.*` namespace pattern with `lib.mkEnableOption`
 
 ## Dual Channel Strategy
 
-Lattice uses a dual-channel approach for package sourcing:
+Bravais uses a dual-channel approach for package sourcing:
 
 | Channel | Purpose | Examples |
 |---------|---------|----------|

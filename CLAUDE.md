@@ -1,39 +1,39 @@
-# Lattice -- A Steelbore NixOS Distribution
+# Bravais -- A Steelbore NixOS Distribution
 
 ## What this is
 
-A flake-based NixOS configuration implementing the Steelbore Standard. The `mkLattice` function in `flake.nix` generates **10 nixosConfigurations**: 5 stable (nixos-25.11) + 5 unstable (nixos-unstable), each with x86-64 march levels v1-v4. The default `lattice` target is stable v4.
+A flake-based NixOS configuration implementing the Steelbore Standard. The `mkBravais` function in `flake.nix` generates **10 nixosConfigurations**: 5 stable (nixos-25.11) + 5 unstable (nixos-unstable), each with x86-64 march levels v1-v4. The default `bravais` target is stable v4.
 
 ## Build and test commands
 
 ```sh
 nix flake check                                    # Evaluate all 10 configs
 nix flake show                                     # List outputs
-nixos-rebuild dry-build --flake .#lattice           # Dry run
-sudo nixos-rebuild switch --flake .#lattice         # Apply (default: stable v4)
-sudo nixos-rebuild switch --flake .#lattice-v3      # Stable v3
-sudo nixos-rebuild switch --flake .#lattice-unstable # Unstable v4
+nixos-rebuild dry-build --flake .#bravais           # Dry run
+sudo nixos-rebuild switch --flake .#bravais         # Apply (default: stable v4)
+sudo nixos-rebuild switch --flake .#bravais-v3      # Stable v3
+sudo nixos-rebuild switch --flake .#bravais-unstable # Unstable v4
 ```
 
 ## Rebuild commands (user's actual workflow)
 
-These target `lattice-unstable-v3` and stage `/etc/nixos/` from the working
+These target `bravais-unstable-v3` and stage `/etc/nixos/` from the working
 tree before rebuilding. Run as the user, not as root.
 
 ```nu
 # Nushell
-sudo nix-collect-garbage --verbose -d ; sudo journalctl --vacuum-time=7d ; sudo cp --verbose -r ...(glob /steelbore/lattice/*) /etc/nixos/ ; print "cd /etc/nixos/" ; cd /etc/nixos/ ; sudo rm --verbose -r ...( [v0 "*.md" "flake.*" LICENSE "*.docx" hosts lib modules overlays users "*.txt"] | each { |p| glob $p } | flatten ) ; cd /steelbore/lattice/ ; sudo nix-channel --verbose --update ; sudo nixos-rebuild switch --flake .#lattice-unstable-v3 --show-trace --verbose
+sudo nix-collect-garbage --verbose -d ; sudo journalctl --vacuum-time=7d ; sudo cp --verbose -r ...(glob /steelbore/bravais/*) /etc/nixos/ ; print "cd /etc/nixos/" ; cd /etc/nixos/ ; sudo rm --verbose -r ...( [v0 "*.md" "flake.*" LICENSE "*.docx" hosts lib modules overlays users "*.txt"] | each { |p| glob $p } | flatten ) ; cd /steelbore/bravais/ ; sudo nix-channel --verbose --update ; sudo nixos-rebuild switch --flake .#bravais-unstable-v3 --show-trace --verbose
 ```
 
 ```sh
 # Brush / Bash
-sudo nix-collect-garbage --verbose -d ; sudo journalctl --vacuum-time=7d ; sudo cp --verbose -r /steelbore/Lattice/* /etc/nixos/ ; pwd ; echo "cd /etc/nixos/" ; cd /etc/nixos/ ; pwd ; sudo rm --verbose -r v0 *.md flake.* LICENSE *.docx hosts lib modules overlays users *.txt ; sudo cp --verbose -r /steelbore/Lattice/* /etc/nixos/ ; sudo nix-channel --verbose --update ; cd /steelbore/lattice/ ; sudo nixos-rebuild switch --flake .#lattice-unstable-v3 --show-trace --verbose
+sudo nix-collect-garbage --verbose -d ; sudo journalctl --vacuum-time=7d ; sudo cp --verbose -r /steelbore/Bravais/* /etc/nixos/ ; pwd ; echo "cd /etc/nixos/" ; cd /etc/nixos/ ; pwd ; sudo rm --verbose -r v0 *.md flake.* LICENSE *.docx hosts lib modules overlays users *.txt ; sudo cp --verbose -r /steelbore/Bravais/* /etc/nixos/ ; sudo nix-channel --verbose --update ; cd /steelbore/bravais/ ; sudo nixos-rebuild switch --flake .#bravais-unstable-v3 --show-trace --verbose
 ```
 
 ## Architecture
 
 - **Flake inputs**: nixpkgs (25.11), nixpkgs-unstable, home-manager (release-25.11), home-manager-unstable, nix-flatpak. No third-party flakes for DEs.
-- **Module namespace**: All opt-in modules use `steelbore.*` with `lib.mkEnableOption`. Toggled in `hosts/lattice/default.nix`.
+- **Module namespace**: All opt-in modules use `steelbore.*` with `lib.mkEnableOption`. Toggled in `hosts/bravais/default.nix`.
 - **Color palette**: Defined as `steelborePalette` in `flake.nix`, passed via `specialArgs` and `extraSpecialArgs` to all modules and Home Manager.
 - **Overlays**: Defined inline in `modules/core/nix.nix` (not imported from `overlays/default.nix`, which is a reference copy).
 - **Home Manager**: Single user `mj`, config at `users/mj/home.nix`. Uses `useGlobalPkgs`, `useUserPackages`, `backupFileExtension = "backup"`.
@@ -41,9 +41,9 @@ sudo nix-collect-garbage --verbose -d ; sudo journalctl --vacuum-time=7d ; sudo 
 ## File layout
 
 ```
-flake.nix                  # mkLattice, inputs, palette, 10 configs
-hosts/lattice/default.nix  # Host: user, shell, steelbore.* toggles
-hosts/lattice/hardware.nix # Generated hardware config
+flake.nix                  # mkBravais, inputs, palette, 10 configs
+hosts/bravais/default.nix  # Host: user, shell, steelbore.* toggles
+hosts/bravais/hardware.nix # Generated hardware config
 modules/core/              # Always-on: nix.nix, boot.nix, locale.nix, audio.nix, security.nix
 modules/core/nix.nix       # Overlays live here (inline)
 modules/theme/             # Palette env vars, TTY colors, fonts
@@ -103,7 +103,7 @@ After adding, update `PRD.md` (package inventory section) and `TODO.md` (relevan
 4. **claude-code overlay** -- Pinned to latest npm release via `overrideAttrs` in `modules/core/nix.nix`. Lock file at `overlays/claude-code-package-lock.json`. Key gotchas: (a) Must explicitly override `npmDeps` (not just `npmDepsHash`) because `buildNpmPackage`'s internal `fetchNpmDeps` does not pick up overridden `src`/`npmDepsHash` from `overrideAttrs`. (b) Since ~2.1.113, claude-code uses a native binary architecture -- `bin/claude.exe` is a placeholder replaced by `install.cjs` (postinstall). Since `buildNpmPackage` doesn't run postinstall, the overlay runs `node install.cjs` in `postInstall`. (c) `package-lock.json` must be baked into `src` via `runCommand` so `fetchNpmDeps` can see it. To update: prefetch new tarball hash, regenerate lock file with `npm install --package-lock-only`, recompute `npmDepsHash` with `prefetch-npm-deps`, update the four values in the overlay (version, src hash, npmDepsHash, npmDeps).
 5. **xfce4-terminal namespace** -- Needs `pkgs.xfce.xfce4-terminal` on stable, top-level on unstable. Current config uses stable form.
 6. **`useFetchCargoVendor` warnings** -- Come from upstream COSMIC packages. Harmless, cannot be suppressed from user config.
-7. **External flakes are threaded via `specialArgs` / `extraSpecialArgs`** -- `gitway` (`github:Steelbore/Gitway`, tracks `main`) is the canonical example. Add the input in `flake.nix`, append it to the `outputs = { ... }` arg list, and inject it into both `specialArgs = { inherit steelborePalette gitway; }` and `home-manager.extraSpecialArgs = { inherit steelborePalette gitway; }` in `mkLattice`. Modules that consume it accept `gitway` in their function signature (e.g., `{ config, lib, pkgs, gitway, ... }:`) and reference its package as `gitway.packages.${pkgs.system}.default`. Do this for any future flake-input-derived package -- do NOT use overlays for it.
+7. **External flakes are threaded via `specialArgs` / `extraSpecialArgs`** -- `gitway` (`github:Steelbore/Gitway`, tracks `main`) is the canonical example. Add the input in `flake.nix`, append it to the `outputs = { ... }` arg list, and inject it into both `specialArgs = { inherit steelborePalette gitway; }` and `home-manager.extraSpecialArgs = { inherit steelborePalette gitway; }` in `mkBravais`. Modules that consume it accept `gitway` in their function signature (e.g., `{ config, lib, pkgs, gitway, ... }:`) and reference its package as `gitway.packages.${pkgs.system}.default`. Do this for any future flake-input-derived package -- do NOT use overlays for it.
 8. **`programs.ssh.startAgent` must stay `false`** -- `gitway-agent` (Home Manager service) owns `$SSH_AUTH_SOCK` at `${XDG_RUNTIME_DIR}/gitway-agent.sock` and conflicts with the system `ssh-agent.service`. Re-enabling `programs.ssh.startAgent` would race gitway-agent for the socket. `openssh_hpn` is still installed for general-purpose `ssh`/`scp`/`sftp`/`rsync -e ssh` against non-GitHub hosts -- those tools talk to `gitway-agent` over the OpenSSH agent wire protocol transparently.
 
 ## Documentation maintenance
