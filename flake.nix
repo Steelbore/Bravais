@@ -86,6 +86,7 @@
             # External modules
             ch.hm.nixosModules.home-manager
             nix-flatpak.nixosModules.nix-flatpak
+            gitway.nixosModules.default
 
             # Lattice modules
             ./hosts/lattice

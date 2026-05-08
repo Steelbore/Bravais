@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Lattice — Security and Encryption Tools
-{ config, lib, pkgs, gitway, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   options.steelbore.packages.security = {
@@ -29,7 +29,8 @@
 
       # SSH
       openssh_hpn                              # Includes OpenSSH tooling; avoid colliding with openssh
-      gitway.packages.${pkgs.stdenv.hostPlatform.system}.default   # Rust — Steelbore SSH transport for Git (primary path)
+      # gitway is installed system-wide by gitway.nixosModules.default
+      # (enabled via services.gitway-agent.enable in modules/core/security.nix).
 
       # Backup
       pika-backup                # Rust — Borg frontend

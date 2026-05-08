@@ -57,6 +57,20 @@ in
     services.desktopManager.cosmic.enable = true;
     services.displayManager.cosmic-greeter.enable = false; # Use greetd
 
+    # NixOS's services.desktopManager.cosmic.enable already wires up
+    # xdg.portal (cosmic + gtk backends), programs.dconf, cosmic-screenshot,
+    # and dbus services for COSMIC. We add only the explicit per-DE portal
+    # routing — without it, when GNOME and Plasma are also enabled their
+    # configPackages can merge ambiguously and Screenshot/Inhibit/FileChooser
+    # interfaces may resolve to the wrong backend, which is what the dbus
+    # popup and PrtSc "server crash" reflect.
+    xdg.portal.config.cosmic = {
+      default = [ "cosmic" "gtk" ];
+      "org.freedesktop.impl.portal.Screenshot" = [ "cosmic" ];
+      "org.freedesktop.impl.portal.ScreenCast" = [ "cosmic" ];
+      "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+    };
+
     # Steelbore-themed Builder overrides for cosmic-theme. cosmic-settings-daemon
     # watches these via inotify, so changes apply without logout. palette /
     # corner_radii / spacing / gaps / active_hint / is_frosted / window_hint /
