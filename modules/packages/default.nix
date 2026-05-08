@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Package Modules Entry Point
+# Steelbore Bravais — Package Modules Entry Point
 { config, lib, pkgs, ... }:
 
 {

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Networking and Internet Tools
+# Steelbore Bravais — Networking and Internet Tools
 { config, lib, pkgs, ... }:
 
 {

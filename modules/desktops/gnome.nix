@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — GNOME Desktop Environment (Wayland)
+# Steelbore Bravais — GNOME Desktop Environment (Wayland)
 {
   config,
   lib,

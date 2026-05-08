@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Library Functions
+# Steelbore Bravais — Library Functions
 { lib, ... }:
 
 {

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — LeftWM Tiling Window Manager (X11)
+# Steelbore Bravais — LeftWM Tiling Window Manager (X11)
 { config, lib, pkgs, steelborePalette, ... }:
 
 {

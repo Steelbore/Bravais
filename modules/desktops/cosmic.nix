@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — COSMIC Desktop Environment (Wayland)
+# Steelbore Bravais — COSMIC Desktop Environment (Wayland)
 { config, lib, pkgs, steelborePalette, ... }:
 
 let

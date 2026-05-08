@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Security and Encryption Tools
+# Steelbore Bravais — Security and Encryption Tools
 { config, lib, pkgs, ... }:
 
 {

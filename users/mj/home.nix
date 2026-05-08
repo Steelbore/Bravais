@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Home Manager Configuration
+# Steelbore Bravais — Home Manager Configuration
 {
   config,
   pkgs,

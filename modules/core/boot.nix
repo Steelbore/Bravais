@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Boot Configuration
+# Steelbore Bravais — Boot Configuration
 { config, lib, pkgs, ... }:
 
 {

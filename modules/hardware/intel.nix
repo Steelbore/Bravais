@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Intel CPU Optimizations
+# Steelbore Bravais — Intel CPU Optimizations
 { config, lib, ... }:
 
 let
@@ -76,7 +76,7 @@ in
           v1 — baseline x86-64 (SSE2)         CachyOS baseline flags
           v2 — SSE4.2 / POPCNT / CX16         ALHP-derived flags
           v3 — AVX2 / BMI1/2 / FMA / MOVBE    CachyOS-derived flags  (CachyOS default)
-          v4 — AVX-512F/BW/CD/DQ/VL           CachyOS-derived flags  (Lattice default)
+          v4 — AVX-512F/BW/CD/DQ/VL           CachyOS-derived flags  (Bravais default)
       '';
     };
   };

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — greetd + tuigreet Login Manager
+# Steelbore Bravais — greetd + tuigreet Login Manager
 { config, lib, pkgs, steelborePalette, ... }:
 
 let
@@ -38,7 +38,7 @@ let
     comment = "Drop to Brush shell";
   };
 
-  # Unified `start-<de>` launchers. Every desktop in Lattice exposes the same
+  # Unified `start-<de>` launchers. Every desktop in Bravais exposes the same
   # naming pattern so users (and greetd's environment list) can launch any
   # session without remembering upstream session-binary names.
   #
@@ -73,7 +73,7 @@ in
             --remember \
             --remember-session \
             --asterisks \
-            --greeting "STEELBORE :: LATTICE" \
+            --greeting "STEELBORE :: BRAVAIS" \
             --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions:${config.services.displayManager.sessionData.desktops}/share/xsessions
         '';
         user = "greeter";

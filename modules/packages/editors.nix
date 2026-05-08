@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Lattice — Text Editors and IDEs
+# Steelbore Bravais — Text Editors and IDEs
 { config, lib, pkgs, ... }:
 
 {
