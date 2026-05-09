@@ -18,7 +18,14 @@
 let
   imgPath  = "/run/media/mj/Expansion/nix-tmp.img";
   mountAt  = "/mnt/nix-tmp";
-  imgSize  = "40G";
+  # 80 GiB chosen because 40 GiB couldn't fit deno-2.7.13 + LTO +
+  # codegen-units=1 + parallel cargo for sibling crates
+  # (deno_core/deno_runtime/test_server/dcore) — peak ~50–55 GiB.
+  # Sparse, so the .img only consumes what builds actually write.
+  # Note: this only governs *fresh* image creation by the oneshot
+  # service below; an already-existing .img must be grown imperatively
+  # via truncate + e2fsck + resize2fs (see CLAUDE.md / Round 11 plan).
+  imgSize  = "80G";
 in
 {
   systemd.tmpfiles.rules = [ "d ${mountAt} 1777 root root -" ];
