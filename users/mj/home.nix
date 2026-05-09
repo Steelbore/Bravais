@@ -115,11 +115,16 @@ in
     };
 
     # Bash/Brush — kept enabled because NixOS internals (PAM, userdel, etc.)
-    # require it. No bashrcExtra: SSH key loading is on-demand via SSH_ASKPASS
-    # (programs.ssh.askPassword in modules/desktops/plasma.nix wires
-    # ksshaskpass system-wide).
+    # require it. The bashrcExtra below ONLY overrides SSH_AUTH_SOCK back to
+    # gitway-agent's socket (PAM's pam_gnome_keyring otherwise pins it to
+    # /run/user/$UID/keyring/ssh, which often points at a non-existent
+    # socket). No SSH-key auto-load — that runs from each WM's session
+    # spawn, see modules/desktops/{niri,leftwm}.nix.
     bash = {
       enable = true;
+      bashrcExtra = ''
+        export SSH_AUTH_SOCK="/run/user/$(id -u)/gitway-agent.sock"
+      '';
     };
 
     # Starship prompt (Tokyo Night preset)
@@ -191,6 +196,14 @@ in
     nushell = {
       enable = true;
       configFile.text = ''
+        # Override SSH_AUTH_SOCK at every interactive shell start. PAM's
+        # pam_gnome_keyring sets it to /run/user/$UID/keyring/ssh under
+        # greetd, which (a) often points at a non-existent socket and
+        # (b) shadows our gitway-agent socket. environment.sessionVariables
+        # only takes effect for login shells; non-login shells (terminals
+        # spawned inside a DE) inherit the PAM-set value.
+        $env.SSH_AUTH_SOCK = $"/run/user/(id -u)/gitway-agent.sock"
+
         # Steelbore palette — kept in sync with flake.nix steelborePalette.
         # Nushell needs literals; env-var interpolation isn't available inside
         # color_config records.
@@ -521,6 +534,11 @@ in
     # ═══════════════════════════════════════════════════════════════════════════
     "ion/initrc".text = ''
       # Steelbore Ion Shell Init
+
+      # Override SSH_AUTH_SOCK back to gitway-agent's socket. PAM's
+      # pam_gnome_keyring otherwise sets it to /run/user/$UID/keyring/ssh.
+      let SSH_AUTH_SOCK = "/run/user/$(id -u)/gitway-agent.sock"
+      export SSH_AUTH_SOCK
 
       # Starship prompt
       eval $(${pkgs.starship}/bin/starship init ion)

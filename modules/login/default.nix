@@ -98,13 +98,28 @@ let
     exec ${pkgs.xorg.xinit}/bin/startx ${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11 "$@"
   '';
 
-  # LeftWM session script (run by startx as the X client). Spawns the
-  # autostart services in the background then execs leftwm. We bypass
-  # leftwm's own `themes/current/up` execution because it has been
-  # producing "Global up script failed: IO error: No such file or
-  # directory" across every layout we've tried (rounds 4–6) and the
-  # apps need to start regardless.
-  leftwm-xinitrc = pkgs.writeShellScript "leftwm-xinitrc" ''
+  # LeftWM session — split into two scripts to avoid shell-quoting hell.
+  #
+  # The OUTER script (`leftwm-xinitrc`) is what startx execs. It sets up
+  # X-only env vars (GDK_BACKEND, fixed SSH_AUTH_SOCK) then exec's
+  # `dbus-run-session` wrapping the INNER script.
+  #
+  # The INNER script (`leftwm-session-inner`) runs under a fresh dbus
+  # session. It spawns the autostart services in the background and
+  # execs leftwm.
+  #
+  # Why dbus-run-session: eww (GTK4) fails to initialize GTK without a
+  # session bus; ~/.cache/eww/eww_*.log shows "Failed to initialize
+  # GTK" otherwise. dbus-run-session also gives picom/dunst a bus for
+  # proper shutdown.
+  #
+  # Why GDK_BACKEND=x11: forces eww/dunst onto X11 without probing
+  # Wayland (we're under leftwm, X11-only).
+  #
+  # leftwm's own `themes/current/up` is left as an `exit 0` stub
+  # (modules/desktops/leftwm.nix); session bring-up runs here, not
+  # there.
+  leftwm-session-inner = pkgs.writeShellScript "leftwm-session-inner" ''
     ${pkgs.xorg.xsetroot}/bin/xsetroot -solid '${steelborePalette.voidNavy}' &
     ${pkgs.picom}/bin/picom &
     ${pkgs.dunst}/bin/dunst &
@@ -112,6 +127,12 @@ let
     ${pkgs.numlockx}/bin/numlockx on &
     ${gitway.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/gitway-add "$HOME/.ssh/id_ed25519" &
     exec ${pkgs.leftwm}/bin/leftwm
+  '';
+
+  leftwm-xinitrc = pkgs.writeShellScript "leftwm-xinitrc" ''
+    export GDK_BACKEND=x11
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gitway-agent.sock"
+    exec ${pkgs.dbus}/bin/dbus-run-session -- ${leftwm-session-inner}
   '';
 
   start-leftwm = pkgs.writeShellScriptBin "start-leftwm" ''
