@@ -78,6 +78,10 @@
       spawn-at-startup "sh" "-c" "sleep 1 && swww clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
       spawn-at-startup "eww" "open" "bar"
       spawn-at-startup "dunst"
+      // Load SSH key into gitway-agent once per session. With no TTY but
+      // DISPLAY/WAYLAND_DISPLAY set, gitway-add uses $SSH_ASKPASS
+      // (ksshaskpass) automatically. Cached for 24 h per the agent TTL.
+      spawn-at-startup "gitway-add" "/home/mj/.ssh/id_ed25519"
 
       // Input configuration
       input {

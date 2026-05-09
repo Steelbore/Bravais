@@ -26,6 +26,10 @@
           dunst &
           eww open bar &
           numlockx on &
+          # Load SSH key into gitway-agent once per session. With no TTY but
+          # DISPLAY set, gitway-add uses $SSH_ASKPASS (ksshaskpass) for the
+          # passphrase. Cached for 24 h per the agent TTL.
+          gitway-add "$HOME/.ssh/id_ed25519" &
         '';
       }
       {

@@ -8,7 +8,7 @@
   };
 
   config = lib.mkIf config.steelbore.packages.ai.enable {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = (with pkgs; [
       # AI Coding Assistants (Rust preferred)
       aichat                     # Rust — Universal chat REPL
       gemini-cli                 # Rust — Gemini CLI
@@ -18,6 +18,8 @@
       codex
       github-copilot-cli
       gpt-cli
+      gorilla-cli                # Python — LLMs for your CLI (Gorilla LLM)
+      llm                        # Python — Simon Willison's universal LLM CLI
       mcp-nixos
       # task-master-ai is disabled — its npm build is broken in nixpkgs (lockfile
       # omits @biomejs/biome and esbuild platform-specific optionalDependencies,
@@ -33,6 +35,9 @@
 
       # Local LLM runtime
       ollama-cpu                 # Go — CPU-only Ollama (local LLM server)
-    ];
+    ])
+    # grok-cli is unstable-only at the moment (added to nixpkgs after 25.11
+    # branched). Include it conditionally so stable builds still evaluate.
+    ++ lib.optional (pkgs ? grok-cli) pkgs.grok-cli;
   };
 }
