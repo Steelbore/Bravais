@@ -80,6 +80,10 @@ in
     # default into a scriptable XDG-compliant path. bw populates data.json
     # itself; we only set the directory.
     BITWARDENCLI_APPDATA_DIR = "${config.xdg.configHome}/bitwarden-cli";
+    # Loop-mounted ext4 image on the Expansion drive — see
+    # modules/core/nix-tmp.nix. Falls back to the local empty dir
+    # transparently if the drive is unplugged.
+    TMPDIR = "/mnt/nix-tmp";
   };
 
   # Refresh the tealdeer (tldr) cache on every home-manager activation.
@@ -124,6 +128,7 @@ in
       enable = true;
       bashrcExtra = ''
         export SSH_AUTH_SOCK="/run/user/$(id -u)/gitway-agent.sock"
+        export TMPDIR="/mnt/nix-tmp"
       '';
     };
 
@@ -203,6 +208,9 @@ in
         # only takes effect for login shells; non-login shells (terminals
         # spawned inside a DE) inherit the PAM-set value.
         $env.SSH_AUTH_SOCK = $"/run/user/(id -u)/gitway-agent.sock"
+
+        # Builder TMPDIR — see modules/core/nix-tmp.nix.
+        $env.TMPDIR = "/mnt/nix-tmp"
 
         # Steelbore palette — kept in sync with flake.nix steelborePalette.
         # Nushell needs literals; env-var interpolation isn't available inside
@@ -425,15 +433,30 @@ in
       compact = false
     '';
 
-    # Suppress ibus-ui-gtk3's session-start notification. The COSMIC fix in
-    # round 2 enabled i18n.inputMethod = ibus to silence its own popup; the
-    # GTK panel that gets started on every Wayland session has its own
-    # notification. We don't actually want the panel for English-only input;
-    # shadow its autostart with Hidden=true.
+    # Suppress IBus autostarts that surface as Wayland-session popups.
+    # i18n.inputMethod = ibus (modules/core/locale.nix) is required to
+    # silence COSMIC's "no input method configured" notification — that
+    # check keys off QT_IM_MODULE / GTK_IM_MODULE / XMODIFIERS, which the
+    # option sets globally. The option also installs two autostart files
+    # that misbehave under non-GNOME Wayland sessions:
+    #   • Panel (Wayland Gtk3) — a tray widget we don't need
+    #   • ibus-daemon          — under Niri, the daemon prints its long
+    #                            "IBus should be called from the desktop
+    #                            session in Wayland..." help text, which
+    #                            dunst surfaces as a notification.
+    # We shadow both with Hidden=true. ibus-daemon dbus-activates on
+    # demand if any client really needs it.
     "autostart/org.freedesktop.IBus.Panel.Wayland.Gtk3.desktop".text = ''
       [Desktop Entry]
       Type=Application
       Name=IBus Panel (Wayland)
+      Hidden=true
+    '';
+
+    "autostart/ibus-daemon.desktop".text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=IBus Daemon
       Hidden=true
     '';
 
@@ -539,6 +562,10 @@ in
       # pam_gnome_keyring otherwise sets it to /run/user/$UID/keyring/ssh.
       let SSH_AUTH_SOCK = "/run/user/$(id -u)/gitway-agent.sock"
       export SSH_AUTH_SOCK
+
+      # Builder TMPDIR — see modules/core/nix-tmp.nix.
+      let TMPDIR = "/mnt/nix-tmp"
+      export TMPDIR
 
       # Starship prompt
       eval $(${pkgs.starship}/bin/starship init ion)
