@@ -81,13 +81,18 @@ let
   # X11 launchers need to bring up Xorg themselves — greetd does NOT start
   # an X server (unlike SDDM/GDM/LightDM). startx is a shell script that
   # internally invokes `xinit`, `xauth`, `xrdb`, and `mcookie` by bare name,
-  # so they must be on PATH. greetd's session env doesn't include xorg.xinit
+  # so they must be on PATH. greetd's session env doesn't include the xinit
   # bin/, hence the explicit prefix below.
   #
-  # pkgs.xorg.xinit emits a deprecation warning on unstable (renamed to
-  # pkgs.xinit) but is the canonical attribute on stable 25.11. Same
-  # stable/unstable split as xfce4-terminal — see CLAUDE.md known constraint #5.
-  startxPath = "${pkgs.xorg.xinit}/bin:${pkgs.xorg.xauth}/bin:${pkgs.xorg.xrdb}/bin:${pkgs.util-linux}/bin";
+  # On unstable these are top-level (pkgs.xinit etc.) and the legacy
+  # pkgs.xorg.* paths warn. On stable 25.11 only the xorg.* paths exist.
+  # The `or`-fallback evaluates clean on both channels — same
+  # stable/unstable split as xfce4-terminal (CLAUDE.md known constraint #5).
+  xinitPkg    = pkgs.xinit    or pkgs.xorg.xinit;
+  xauthPkg    = pkgs.xauth    or pkgs.xorg.xauth;
+  xrdbPkg     = pkgs.xrdb     or pkgs.xorg.xrdb;
+  xsetrootPkg = pkgs.xsetroot or pkgs.xorg.xsetroot;
+  startxPath  = "${xinitPkg}/bin:${xauthPkg}/bin:${xrdbPkg}/bin:${pkgs.util-linux}/bin";
 
   # Pre-create the per-PID xauth file so xauth doesn't print
   # "file ... does not exist" before startx generates it. bash's $$ is
@@ -95,7 +100,7 @@ let
   start-plasma-x11 = pkgs.writeShellScriptBin "start-plasma-x11" ''
     export PATH="${startxPath}:$PATH"
     touch "$HOME/.serverauth.$$"
-    exec ${pkgs.xorg.xinit}/bin/startx ${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11 "$@"
+    exec ${xinitPkg}/bin/startx ${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11 "$@"
   '';
 
   # LeftWM session — split into two scripts to avoid shell-quoting hell.
@@ -120,7 +125,7 @@ let
   # (modules/desktops/leftwm.nix); session bring-up runs here, not
   # there.
   leftwm-session-inner = pkgs.writeShellScript "leftwm-session-inner" ''
-    ${pkgs.xorg.xsetroot}/bin/xsetroot -solid '${steelborePalette.voidNavy}' &
+    ${xsetrootPkg}/bin/xsetroot -solid '${steelborePalette.voidNavy}' &
     ${pkgs.picom}/bin/picom &
     ${pkgs.dunst}/bin/dunst &
     ${pkgs.eww}/bin/eww open bar &
@@ -138,7 +143,7 @@ let
   start-leftwm = pkgs.writeShellScriptBin "start-leftwm" ''
     export PATH="${startxPath}:$PATH"
     touch "$HOME/.serverauth.$$"
-    exec ${pkgs.xorg.xinit}/bin/startx ${leftwm-xinitrc} "$@"
+    exec ${xinitPkg}/bin/startx ${leftwm-xinitrc} "$@"
   '';
 
   leftwm-xsession = mkXSession {

@@ -46,6 +46,15 @@ let
         "/steelbore/skills/${skill}";
     }) aiSkillNames) aiSkillToolDirs
   ));
+
+  # Wallpaper daemon: upstream renamed swww → awww. On unstable both
+  # exist (swww is a deprecation alias that warns); on stable 25.11
+  # only swww. The `or`-fallback picks the right package per channel;
+  # binary names follow the package name (awww/awww-daemon vs
+  # swww/swww-daemon), so wallpaperBin tracks. Mirrors the system-wide
+  # logic in modules/desktops/niri.nix.
+  wallpaperPkg = pkgs.awww or pkgs.swww;
+  wallpaperBin = if pkgs ? awww then "awww" else "swww";
 in
 
 {
@@ -599,9 +608,10 @@ in
       }
 
       // Startup — see system-wide config in modules/desktops/niri.nix for
-      // the full rationale. swww needs its daemon up first.
-      spawn-at-startup "swww-daemon"
-      spawn-at-startup "sh" "-c" "sleep 1 && swww clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
+      // the full rationale. The wallpaper daemon needs to bind its IPC
+      // socket before any client command.
+      spawn-at-startup "${wallpaperPkg}/bin/${wallpaperBin}-daemon"
+      spawn-at-startup "sh" "-c" "sleep 1 && ${wallpaperPkg}/bin/${wallpaperBin} clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
       spawn-at-startup "eww" "open" "bar"
       spawn-at-startup "dunst"
       // Load SSH key into gitway-agent once per session. With no TTY but

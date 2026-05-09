@@ -7,14 +7,24 @@
     enable = lib.mkEnableOption "Niri scrolling tiling compositor (Wayland)";
   };
 
-  config = lib.mkIf config.steelbore.desktops.niri.enable {
+  config = lib.mkIf config.steelbore.desktops.niri.enable (
+    let
+      # Wallpaper daemon: upstream renamed swww → awww. On unstable both
+      # exist (swww is a deprecation alias that warns); on stable 25.11
+      # only swww exists. The `or`-fallback picks the right package per
+      # channel. Binary names follow the package name (awww/awww-daemon
+      # vs swww/swww-daemon), so we derive `wallpaperBin` to match.
+      wallpaperPkg = pkgs.awww or pkgs.swww;
+      wallpaperBin = if pkgs ? awww then "awww" else "swww";
+    in
+    {
     # Enable Niri
     programs.niri.enable = true;
 
     # Niri and companion packages.
     # Stack matches LeftWM where cross-platform (eww, dunst, gtklock) and
     # uses Wayland-only tools where the X11 alternatives don't exist.
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = (with pkgs; [
       niri
       xwayland-satellite        # X11 app support inside Niri
 
@@ -27,9 +37,6 @@
       # Notifications — dunst (cross-platform with LeftWM)
       dunst
 
-      # Wallpaper daemon — swww (Rust, Wayland; uses `swww clear` for solid)
-      swww
-
       # Screen locker — gtklock (cross-platform with LeftWM)
       gtklock
       swayidle                  # Idle management
@@ -39,6 +46,9 @@
       wl-clipboard-rs           # (Rust)
       grim                      # Screenshot
       slurp                     # Region selection
+    ]) ++ [
+      # Wallpaper daemon — awww (renamed from swww upstream).
+      wallpaperPkg
     ];
 
     # System-wide Niri configuration
@@ -71,11 +81,12 @@
       }
 
       // Startup applications.
-      // swww needs the daemon up before any swww command; the inline sleep
-      // gives the daemon a moment to bind its IPC socket before `swww clear`
-      // sets the solid Void Navy wallpaper. Eww and dunst start in parallel.
-      spawn-at-startup "swww-daemon"
-      spawn-at-startup "sh" "-c" "sleep 1 && swww clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
+      // The wallpaper daemon needs to bind its IPC socket before any
+      // client command; the inline sleep gives it a moment before the
+      // `clear` call sets the solid Void Navy wallpaper. Eww and dunst
+      // start in parallel.
+      spawn-at-startup "${wallpaperPkg}/bin/${wallpaperBin}-daemon"
+      spawn-at-startup "sh" "-c" "sleep 1 && ${wallpaperPkg}/bin/${wallpaperBin} clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
       spawn-at-startup "eww" "open" "bar"
       spawn-at-startup "dunst"
       // Load SSH key into gitway-agent once per session. With no TTY but
@@ -163,5 +174,5 @@
     # configured at the home-manager level. Eww config lives in
     # users/mj/home.nix (xdg.configFile."eww/..."); dunst remains at
     # /etc/dunst/dunstrc (set in modules/desktops/leftwm.nix).
-  };
+  });
 }

@@ -38,8 +38,9 @@ in
       foot                       # Wayland terminal (C, lightweight)
       xterm                      # Classic X11 terminal
 
-      # XFCE terminal
-      pkgs.xfce.xfce4-terminal   # XFCE4 terminal (xfce. prefix needed on stable)
+      # XFCE terminal — top-level on unstable, under `xfce.` on stable.
+      # `or`-fallback evaluates clean on both channels.
+      (pkgs.xfce4-terminal or pkgs.xfce.xfce4-terminal)
     ];
 
     # ═══════════════════════════════════════════════════════════════════════════
