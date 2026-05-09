@@ -3,6 +3,12 @@
 { config, lib, pkgs, steelborePalette, ... }:
 
 let
+  # Wrap each shell-as-session in cage (single-app Wayland kiosk) plus rio
+  # (the project's default terminal). Without this wrapper greetd execs the
+  # bare shell binary in a no-TTY no-compositor context: brush blocks on
+  # stdin, ion fails fast, nushell silently swallows its own startup error.
+  # cage gives the missing compositor; rio gives the missing PTY; the shell
+  # gets a real interactive terminal as it expects.
   mkShellSession = { name, sessionName, exec, comment }: (pkgs.runCommand name {
     passthru.providedSessions = [ sessionName ];
   } ''
@@ -11,8 +17,25 @@ let
     [Desktop Entry]
     Name=${name}
     Comment=${comment}
-    Exec=${exec}
+    Exec=${pkgs.cage}/bin/cage -- ${pkgs.rio}/bin/rio -e ${exec}
     Type=Application
+    DesktopNames=${sessionName}
+    EOF
+  '');
+
+  # X11 session entry. Used for window managers that need Xorg started by the
+  # session itself (greetd does not start Xorg). The Exec line should already
+  # bring up an X server — typically via `startx <wm>` from xorg.xinit.
+  mkXSession = { name, sessionName, exec, comment }: (pkgs.runCommand "${name}-xsession" {
+    passthru.providedSessions = [ sessionName ];
+  } ''
+    mkdir -p $out/share/xsessions
+    cat > $out/share/xsessions/${sessionName}.desktop <<EOF
+    [Desktop Entry]
+    Name=${name}
+    Comment=${comment}
+    Exec=${exec}
+    Type=XSession
     DesktopNames=${sessionName}
     EOF
   '');
@@ -53,12 +76,86 @@ let
 
   start-gnome      = mkStartWrapper "gnome"      "${pkgs.gnome-session}/bin/gnome-session";
   start-plasma     = mkStartWrapper "plasma"     "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-wayland";
-  start-plasma-x11 = mkStartWrapper "plasma-x11" "${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11";
   start-niri       = mkStartWrapper "niri"       "${pkgs.niri}/bin/niri-session";
+
+  # X11 launchers need to bring up Xorg themselves — greetd does NOT start
+  # an X server (unlike SDDM/GDM/LightDM). startx is a shell script that
+  # internally invokes `xinit`, `xauth`, `xrdb`, and `mcookie` by bare name,
+  # so they must be on PATH. greetd's session env doesn't include xorg.xinit
+  # bin/, hence the explicit prefix below.
+  #
   # pkgs.xorg.xinit emits a deprecation warning on unstable (renamed to
   # pkgs.xinit) but is the canonical attribute on stable 25.11. Same
   # stable/unstable split as xfce4-terminal — see CLAUDE.md known constraint #5.
-  start-leftwm     = mkStartWrapper "leftwm"     "${pkgs.xorg.xinit}/bin/startx ${pkgs.leftwm}/bin/leftwm";
+  startxPath = "${pkgs.xorg.xinit}/bin:${pkgs.xorg.xauth}/bin:${pkgs.xorg.xrdb}/bin:${pkgs.util-linux}/bin";
+
+  # Pre-create the per-PID xauth file so xauth doesn't print
+  # "file ... does not exist" before startx generates it. bash's $$ is
+  # preserved across exec, so the touched file matches startx's PID.
+  start-plasma-x11 = pkgs.writeShellScriptBin "start-plasma-x11" ''
+    export PATH="${startxPath}:$PATH"
+    touch "$HOME/.serverauth.$$"
+    exec ${pkgs.xorg.xinit}/bin/startx ${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11 "$@"
+  '';
+
+  start-leftwm = pkgs.writeShellScriptBin "start-leftwm" ''
+    export PATH="${startxPath}:$PATH"
+    touch "$HOME/.serverauth.$$"
+    exec ${pkgs.xorg.xinit}/bin/startx ${pkgs.leftwm}/bin/leftwm "$@"
+  '';
+
+  leftwm-xsession = mkXSession {
+    name = "LeftWM";
+    sessionName = "leftwm";
+    exec = "${start-leftwm}/bin/start-leftwm";
+    comment = "LeftWM tiling window manager (X11)";
+  };
+
+  plasma-x11-xsession = mkXSession {
+    name = "Plasma X11";
+    sessionName = "plasma-x11-startx";
+    exec = "${start-plasma-x11}/bin/start-plasma-x11";
+    comment = "KDE Plasma 6 (X11, started via startx)";
+  };
+
+  # Hide the upstream gnome-wayland.desktop alias — it's a duplicate of
+  # gnome.desktop with only a different localized Name. Listed first in
+  # sessionPackages so symlinkJoin's first-wins merge keeps our shadow.
+  # GNOME X11 is not added back: gnome-session 49 ships no xsessions/
+  # directory; reintroducing it would require pinning an older release
+  # which is out of scope for Bravais.
+  gnome-wayland-hidden = pkgs.runCommand "gnome-wayland-hidden" {
+    passthru.providedSessions = [ "gnome-wayland" ];
+  } ''
+    mkdir -p $out/share/wayland-sessions
+    cat > $out/share/wayland-sessions/gnome-wayland.desktop <<EOF
+    [Desktop Entry]
+    Type=Application
+    Name=GNOME on Wayland (hidden)
+    NoDisplay=true
+    Hidden=true
+    Exec=true
+    EOF
+  '';
+
+  # Hide the upstream plasmax11.desktop — its Exec runs `startplasma-x11`
+  # directly without bringing up Xorg, so under greetd it crashes with
+  # "$DISPLAY is not set". Our plasma-x11-xsession (started via startx)
+  # is the working entry. Same first-wins symlinkJoin trick as the GNOME
+  # shadow above.
+  plasmax11-hidden = pkgs.runCommand "plasmax11-hidden" {
+    passthru.providedSessions = [ "plasmax11" ];
+  } ''
+    mkdir -p $out/share/xsessions
+    cat > $out/share/xsessions/plasmax11.desktop <<EOF
+    [Desktop Entry]
+    Type=XSession
+    Name=Plasma (X11) (hidden)
+    NoDisplay=true
+    Hidden=true
+    Exec=true
+    EOF
+  '';
 in
 {
   # greetd display manager with tuigreet
@@ -81,16 +178,26 @@ in
     };
   };
 
-  # Ensure session packages are registered
-  # Note: leftwm is not included here because it lacks passthru.providedSessions.
-  # LeftWM sessions are registered automatically via services.xserver.windowManager.leftwm.enable.
+  # Ensure session packages are registered.
   # GNOME sessions are registered automatically via services.desktopManager.gnome.enable.
-  services.displayManager.sessionPackages = with pkgs; [
+  # LeftWM is registered via our own leftwm-xsession (NOT
+  # services.xserver.windowManager.leftwm.enable — that path generates an
+  # xsession whose Exec runs leftwm directly without an X server, which
+  # crash-loops under greetd).
+  services.displayManager.sessionPackages = [
+    # Listed first so symlinkJoin's first-wins merge keeps our overrides
+    # over the upstream packages' duplicates/broken entries.
+    gnome-wayland-hidden
+    plasmax11-hidden
+  ] ++ (with pkgs; [
     niri
     cosmic-session
     ion-shell-session
     nushell-session
     brush-session
+  ]) ++ [
+    leftwm-xsession
+    plasma-x11-xsession
   ];
 
   # Available sessions for greetd environments

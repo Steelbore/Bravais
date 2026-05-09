@@ -103,15 +103,12 @@ in
       };
     };
 
-    # Bash/Brush — auto-load SSH key on interactive shell start
+    # Bash/Brush — kept enabled because NixOS internals (PAM, userdel, etc.)
+    # require it. No bashrcExtra: SSH key loading is on-demand via SSH_ASKPASS
+    # (programs.ssh.askPassword in modules/desktops/plasma.nix wires
+    # ksshaskpass system-wide).
     bash = {
       enable = true;
-      bashrcExtra = ''
-        # Auto-load SSH key into gitway-agent (no-op if already loaded)
-        if [ -n "$PS1" ] && [ -f "$HOME/.ssh/id_ed25519" ]; then
-          gitway-add -l >/dev/null 2>&1 || gitway-add "$HOME/.ssh/id_ed25519" 2>/dev/null || true
-        fi
-      '';
     };
 
     # Starship prompt (Tokyo Night preset)
@@ -286,12 +283,6 @@ in
           print "============================================================"
         }
 
-        # Auto-load SSH key into gitway-agent (no-op if already loaded)
-        try {
-          if (^gitway-add -l | complete).exit_code != 0 {
-            ^gitway-add ($env.HOME | path join ".ssh/id_ed25519") out+err>| ignore
-          }
-        }
 
         # Pull latest AI skills from /steelbore/skills (decoupled from rebuild)
         def skills-sync [] {
@@ -374,31 +365,119 @@ in
   # the hardened systemd.user.services.gitway-agent unit, so neither needs to
   # be duplicated here.
 
-  # One-shot: load ~/.ssh/id_ed25519 into gitway-agent right after the agent
-  # starts. RemainAfterExit makes re-runs a no-op for the rest of the session.
-  # If the key has a passphrase and no SSH_ASKPASS is wired, this unit fails
-  # silently and the shell-init `gitway-add` prompts on the next interactive
-  # shell instead.
-  systemd.user.services.gitway-agent-addkey = {
-    Unit = {
-      Description = "Load SSH signing key into gitway-agent";
-      Requires    = [ "gitway-agent.service" ];
-      After       = [ "gitway-agent.service" ];
-    };
-    Service = {
-      Type            = "oneshot";
-      RemainAfterExit = true;
-      Environment     = [ "SSH_AUTH_SOCK=%t/gitway-agent.sock" ];
-      ExecStart       = "${gitway.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/gitway-add %h/.ssh/id_ed25519";
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
+  # SSH key loading happens lazily via the bash/brush rc snippet above on the
+  # first interactive shell. A boot-time systemd user unit was tried but
+  # failed silently against passphrase-protected keys without a TTY/SSH_ASKPASS.
 
   # XDG config files
   xdg.configFile = {
+    # Suppress gnome-keyring's SSH component so it doesn't override
+    # SSH_AUTH_SOCK (which gitway-agent points at /run/user/$UID/gitway-agent.sock
+    # via /etc/environment.d/10-gitway-agent.conf). PAM still launches
+    # gnome-keyring-daemon for secrets/keyring; this file shadows the system
+    # autostart and the daemon honors Hidden=true to skip its SSH agent.
+    "autostart/gnome-keyring-ssh.desktop".text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=SSH Key Agent
+      Hidden=true
+    '';
+
     "containers/containers.conf".text = ''
       [engine]
       runtime = "runc"
+    '';
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # EWW — Shared status bar for LeftWM (X11) and Niri (Wayland).
+    # Eww auto-detects X11 vs Wayland; one config drives both. WMs spawn it
+    # via `eww open bar` from their startup scripts.
+    # ═══════════════════════════════════════════════════════════════════════════
+    "eww/eww.yuck".text = ''
+      ;; Steelbore Eww — shared bar widget
+
+      (defpoll time    :interval "1s"  "date '+%Y-%m-%d %H:%M:%S'")
+      (defpoll cpu     :interval "3s"  "top -bn1 -d 0.1 | awk '/^%Cpu/ {printf \"%d\", $2 + $4}'")
+      (defpoll memory  :interval "5s"  "free | awk '/^Mem/ {printf \"%d\", $3 / $2 * 100}'")
+      (defpoll battery :interval "30s" "cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || echo --")
+
+      (defwidget bar []
+        (centerbox :orientation "h"
+          (label :class "title" :text "STEELBORE :: BRAVAIS")
+          (label :class "clock" :text time)
+          (box :orientation "h" :spacing 16 :halign "end" :class "metrics"
+            (label :class "metric" :text "CPU ''${cpu}%")
+            (label :class "metric" :text "RAM ''${memory}%")
+            (label :class "metric" :text "BAT ''${battery}%"))))
+
+      (defwindow bar
+        :monitor 0
+        :geometry (geometry :x      "0"
+                            :y      "0"
+                            :width  "100%"
+                            :height "32px"
+                            :anchor "top center")
+        :stacking  "fg"
+        :exclusive true
+        (bar))
+    '';
+
+    "eww/eww.scss".text = ''
+      $voidNavy:    ${steelborePalette.voidNavy};
+      $moltenAmber: ${steelborePalette.moltenAmber};
+      $steelBlue:   ${steelborePalette.steelBlue};
+      $radiumGreen: ${steelborePalette.radiumGreen};
+      $liquidCool:  ${steelborePalette.liquidCool};
+      $redOxide:    ${steelborePalette.redOxide};
+
+      * {
+          font-family: "Share Tech Mono", "JetBrains Mono", monospace;
+          font-size: 13px;
+          font-weight: bold;
+      }
+
+      window {
+          background-color: $voidNavy;
+          color: $moltenAmber;
+          border-bottom: 2px solid $steelBlue;
+          padding: 0 12px;
+      }
+
+      .title  { color: $moltenAmber; }
+      .clock  { color: $liquidCool; }
+      .metrics { padding-right: 12px; }
+      .metric { color: $radiumGreen; }
+    '';
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # ZELLIJ — Full Steelbore config
+    # User has no custom keybinds; ship a complete config that activates the
+    # Steelbore theme. zellij will write any auto-generated keybinds to its
+    # internal cache; our config.kdl wins because it's at $XDG_CONFIG_HOME.
+    # ═══════════════════════════════════════════════════════════════════════════
+    "zellij/config.kdl".text = ''
+      theme "steelbore"
+      default_shell "${pkgs.nushell}/bin/nu"
+      simplified_ui false
+      pane_frames true
+      mouse_mode true
+      copy_on_select true
+
+      themes {
+          steelbore {
+              fg "${steelborePalette.moltenAmber}"
+              bg "${steelborePalette.voidNavy}"
+              black "${steelborePalette.voidNavy}"
+              red "${steelborePalette.redOxide}"
+              green "${steelborePalette.radiumGreen}"
+              yellow "${steelborePalette.moltenAmber}"
+              blue "${steelborePalette.steelBlue}"
+              magenta "${steelborePalette.steelBlue}"
+              cyan "${steelborePalette.liquidCool}"
+              white "${steelborePalette.moltenAmber}"
+              orange "${steelborePalette.moltenAmber}"
+          }
+      }
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -419,11 +498,6 @@ in
       alias top-processes = bottom
       alias disk-telemetry = yazi
       alias edit = ${pkgs.msedit}/bin/edit
-
-      # Auto-load SSH key into gitway-agent (no-op if already loaded)
-      if not gitway-add -l &> /dev/null
-          gitway-add ~/.ssh/id_ed25519
-      end
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -443,18 +517,21 @@ in
           gaps 8
       }
 
-      spawn-at-startup "swaybg" "-c" "${steelborePalette.voidNavy}"
-      spawn-at-startup "ironbar"
-      spawn-at-startup "wired"
+      // Startup — see system-wide config in modules/desktops/niri.nix for
+      // the full rationale. swww needs its daemon up first.
+      spawn-at-startup "swww-daemon"
+      spawn-at-startup "sh" "-c" "sleep 1 && swww clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
+      spawn-at-startup "eww" "open" "bar"
+      spawn-at-startup "dunst"
 
       binds {
           // Session
           Mod+Shift+E { quit; }
+          Mod+Shift+L { spawn "gtklock"; }
 
           // Applications
-          Mod+Return { spawn "alacritty"; }
-          Mod+D { spawn "onagre"; }
-          Mod+Shift+D { spawn "anyrun"; }
+          Mod+Return { spawn "rio"; }
+          Mod+D { spawn "anyrun"; }
 
           // Window management
           Mod+Q { close-window; }

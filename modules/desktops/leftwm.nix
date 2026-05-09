@@ -8,9 +8,22 @@
   };
 
   config = lib.mkIf config.steelbore.desktops.leftwm.enable {
-    # Enable X11 and LeftWM
+    # Enable X11. LeftWM is intentionally NOT registered via
+    # services.xserver.windowManager.leftwm.enable — that path generates an
+    # xsession .desktop whose Exec just runs `leftwm` directly. greetd does
+    # not start Xorg (unlike SDDM/GDM/LightDM), so leftwm panics with a null
+    # display pointer in a respawn loop. We register our own xsession in
+    # modules/login/default.nix that wraps with startx instead.
     services.xserver.enable = true;
-    services.xserver.windowManager.leftwm.enable = true;
+
+    # Wires up the per-user X plumbing startx needs:
+    #   - /etc/X11/xinit/xserverrc telling xinit how to launch Xorg
+    #   - services.xserver.exportConfiguration → /etc/X11/xorg.conf.d/*
+    #   - xorg.xinit on systemPackages
+    # Without this, `startx` in our session wrappers (start-leftwm,
+    # start-plasma-x11) launches an Xorg that never finishes initializing
+    # and the session hangs indefinitely.
+    services.xserver.displayManager.startx.enable = true;
 
     # LeftWM and companion packages
     environment.systemPackages = with pkgs; [
@@ -18,20 +31,24 @@
       leftwm-theme
       leftwm-config
 
-      # Launcher
-      rlaunch                    # Application launcher (Rust)
-      rofi                       # Alternative launcher
+      # Launcher (rlaunch — Rust, X11)
+      rlaunch
+      rofi                       # Fallback launcher (also useful in scripts)
       dmenu                      # Minimal launcher
 
-      # Bar
-      polybar                    # Status bar
+      # Status bar — Eww (Rust, cross-platform; shared with Niri)
+      eww
+
+      # Status bar — Polybar kept for transition; remove once Eww is stable
+      polybar
 
       # Compositor
       picom                      # Compositor for transparency/effects
 
-      # Utilities
-      feh                        # Background setter
-      dunst                      # Notification daemon
+      # Notifications + utilities (cross-platform with Niri where applicable)
+      dunst                      # Notification daemon (X11 + Wayland)
+      gtklock                    # Lockscreen (X11 + Wayland via GTK)
+      feh                        # Wallpaper / image viewer (X11)
       xclip                      # Clipboard
       xsel                       # Clipboard
       maim                       # Screenshot
@@ -40,7 +57,7 @@
     ];
 
     # LeftWM configuration
-    environment.etc."leftwm/config.ron".text = ''
+    home-manager.users.mj.xdg.configFile."leftwm/config.ron".text = ''
       // Steelbore LeftWM Configuration
       // The Steelbore Standard — X11 Tiling
 
@@ -78,6 +95,7 @@
           keybind: [
               // Session
               (command: Execute, value: "loginctl kill-session $XDG_SESSION_ID", modifier: ["modkey", "Shift"], key: "e"),
+              (command: Execute, value: "gtklock", modifier: ["Control", "Alt"], key: "l"),
 
               // Applications
               (command: Execute, value: "rio", modifier: ["modkey"], key: "Return"),
@@ -143,7 +161,7 @@
     '';
 
     # LeftWM theme (Steelbore)
-    environment.etc."leftwm/themes/current/theme.ron".text = ''
+    home-manager.users.mj.xdg.configFile."leftwm/themes/current/theme.ron".text = ''
       // Steelbore LeftWM Theme
       (
           border_width: 2,
@@ -157,23 +175,26 @@
     '';
 
     # LeftWM autostart (up script)
-    environment.etc."leftwm/themes/current/up" = {
-      mode = "0755";
+    home-manager.users.mj.xdg.configFile."leftwm/themes/current/up" = {
+      executable = true;
       text = ''
         #!/usr/bin/env bash
-        # Steelbore LeftWM Startup Script
+        # Steelbore LeftWM Startup Script.
+        # LEFTWM_THEME_DIR is set by leftwm to the active theme path
+        # ($XDG_CONFIG_HOME/leftwm/themes/current under the new layout).
 
-        # Set background
+        # Wallpaper (X11) — solid Void Navy
         feh --bg-solid "${steelborePalette.voidNavy}" &
 
-        # Start compositor
-        picom --config /etc/leftwm/themes/current/picom.conf &
+        # Compositor
+        picom --config "$LEFTWM_THEME_DIR/picom.conf" &
 
-        # Start notification daemon
+        # Notifications — dunst (cross-platform with Niri)
         dunst &
 
-        # Start polybar
-        polybar steelbore &
+        # Status bar — Eww (cross-platform with Niri)
+        # eww open spawns the daemon if needed.
+        eww open bar &
 
         # Enable NumLock
         numlockx on &
@@ -181,11 +202,12 @@
     };
 
     # LeftWM shutdown (down script)
-    environment.etc."leftwm/themes/current/down" = {
-      mode = "0755";
+    home-manager.users.mj.xdg.configFile."leftwm/themes/current/down" = {
+      executable = true;
       text = ''
         #!/usr/bin/env bash
         # Steelbore LeftWM Shutdown Script
+        eww kill 2>/dev/null
         pkill polybar
         pkill picom
         pkill dunst
@@ -193,7 +215,7 @@
     };
 
     # Polybar configuration (Steelbore theme)
-    environment.etc."leftwm/themes/current/polybar.ini".text = ''
+    home-manager.users.mj.xdg.configFile."leftwm/themes/current/polybar.ini".text = ''
       ; Steelbore Polybar Configuration
 
       [colors]
@@ -268,7 +290,7 @@
     '';
 
     # Polybar template for LeftWM tags
-    environment.etc."leftwm/themes/current/template.liquid".text = ''
+    home-manager.users.mj.xdg.configFile."leftwm/themes/current/template.liquid".text = ''
       {% for tag in workspace.tags %}
       %{A1:leftwm-command "SendWorkspaceToTag {{ workspace.index }} {{ tag.index }}":}
       {% if tag.mine %}
@@ -286,7 +308,7 @@
     '';
 
     # Picom configuration
-    environment.etc."leftwm/themes/current/picom.conf".text = ''
+    home-manager.users.mj.xdg.configFile."leftwm/themes/current/picom.conf".text = ''
       # Steelbore Picom Configuration
       backend = "glx";
       vsync = true;

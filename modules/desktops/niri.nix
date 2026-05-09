@@ -11,20 +11,32 @@
     # Enable Niri
     programs.niri.enable = true;
 
-    # Niri and companion packages
+    # Niri and companion packages.
+    # Stack matches LeftWM where cross-platform (eww, dunst, gtklock) and
+    # uses Wayland-only tools where the X11 alternatives don't exist.
     environment.systemPackages = with pkgs; [
       niri
-      swaybg                    # Background
-      xwayland-satellite        # X11 app support
-      ironbar                   # Status bar (Rust)
-      waybar                    # Alternative bar
-      anyrun                    # Application launcher (Rust)
-      onagre                    # Application launcher (Rust)
-      wired                     # Notification daemon (Rust)
-      swaylock                  # Screen locker
+      xwayland-satellite        # X11 app support inside Niri
+
+      # Status bar — Eww (Rust, X11 + Wayland; shared with LeftWM)
+      eww
+
+      # Launcher — Anyrun (Rust, Wayland)
+      anyrun
+
+      # Notifications — dunst (cross-platform with LeftWM)
+      dunst
+
+      # Wallpaper daemon — swww (Rust, Wayland; uses `swww clear` for solid)
+      swww
+
+      # Screen locker — gtklock (cross-platform with LeftWM)
+      gtklock
       swayidle                  # Idle management
-      wl-clipboard              # Clipboard
-      wl-clipboard-rs           # Clipboard (Rust)
+
+      # Clipboard / screenshot
+      wl-clipboard
+      wl-clipboard-rs           # (Rust)
       grim                      # Screenshot
       slurp                     # Region selection
     ];
@@ -58,10 +70,14 @@
           center-focused-column "on-overflow"
       }
 
-      // Startup applications
-      spawn-at-startup "swaybg" "-c" "${steelborePalette.voidNavy}"
-      spawn-at-startup "ironbar"
-      spawn-at-startup "wired"
+      // Startup applications.
+      // swww needs the daemon up before any swww command; the inline sleep
+      // gives the daemon a moment to bind its IPC socket before `swww clear`
+      // sets the solid Void Navy wallpaper. Eww and dunst start in parallel.
+      spawn-at-startup "swww-daemon"
+      spawn-at-startup "sh" "-c" "sleep 1 && swww clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
+      spawn-at-startup "eww" "open" "bar"
+      spawn-at-startup "dunst"
 
       // Input configuration
       input {
@@ -83,12 +99,11 @@
       binds {
           // Session
           Mod+Shift+E { quit; }
-          Mod+Shift+L { spawn "swaylock" "-c" "${steelborePalette.voidNavy}"; }
+          Mod+Shift+L { spawn "gtklock"; }
 
           // Applications
           Mod+Return { spawn "rio"; }
-          Mod+D { spawn "onagre"; }
-          Mod+Shift+D { spawn "anyrun"; }
+          Mod+D { spawn "anyrun"; }
 
           // Window management
           Mod+Q { close-window; }
@@ -139,81 +154,9 @@
       }
     '';
 
-    # Ironbar configuration (Steelbore Status Bar)
-    environment.etc."ironbar/config.yaml".text = ''
-      # Steelbore Ironbar Configuration
-      anchor_to_edges: true
-      position: top
-      height: 32
-
-      start:
-        - type: workspaces
-        - type: focused
-
-      center:
-        - type: clock
-          format: "%H:%M:%S :: %Y-%m-%d"
-
-      end:
-        - type: sys_info
-          interval: 1
-          format:
-            - "CPU: {cpu_percent}%"
-            - "RAM: {memory_percent}%"
-        - type: tray
-    '';
-
-    environment.etc."ironbar/style.css".text = ''
-      /* Steelbore Ironbar Theme */
-      * {
-          font-family: "Share Tech Mono", "JetBrains Mono", monospace;
-          font-size: 14px;
-          transition: none;
-      }
-
-      window {
-          background-color: ${steelborePalette.voidNavy};
-          color: ${steelborePalette.moltenAmber};
-          border-bottom: 2px solid ${steelborePalette.steelBlue};
-      }
-
-      .widget {
-          padding: 0 10px;
-          border-left: 1px solid ${steelborePalette.steelBlue};
-      }
-
-      .workspaces button {
-          color: ${steelborePalette.steelBlue};
-          border-bottom: 2px solid transparent;
-          padding: 0 8px;
-      }
-
-      .workspaces button.active {
-          color: ${steelborePalette.moltenAmber};
-          border-bottom: 2px solid ${steelborePalette.moltenAmber};
-      }
-
-      .workspaces button:hover {
-          background-color: ${steelborePalette.steelBlue};
-          color: ${steelborePalette.voidNavy};
-      }
-
-      .focused {
-          color: ${steelborePalette.liquidCool};
-      }
-
-      .clock {
-          color: ${steelborePalette.moltenAmber};
-          font-weight: bold;
-      }
-
-      .sys_info {
-          color: ${steelborePalette.radiumGreen};
-      }
-
-      .tray {
-          padding: 0 5px;
-      }
-    '';
+    # Status bar / launcher / notifications / wallpaper / lock are now
+    # configured at the home-manager level. Eww config lives in
+    # users/mj/home.nix (xdg.configFile."eww/..."); dunst remains at
+    # /etc/dunst/dunstrc (set in modules/desktops/leftwm.nix).
   };
 }

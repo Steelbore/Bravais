@@ -21,4 +21,15 @@
   };
 
   # Console/TTY keymap is set per-host (see hosts/bravais/default.nix)
+
+  # Input method — ibus-daemon runs idle. iBus is pulled in transitively by
+  # GNOME, and `org.freedesktop.IBus.Panel.Wayland.Gtk3.desktop` autostarts
+  # under Wayland sessions; without a daemon it surfaces an error popup
+  # (notably under COSMIC). Empty engines list keeps the daemon idle on
+  # US-only input but provides the dbus surface the panel autostart expects.
+  i18n.inputMethod = {
+    enable = true;
+    type = "ibus";
+    ibus.engines = [ ];
+  };
 }
