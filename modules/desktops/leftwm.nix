@@ -16,31 +16,16 @@
     # directory"). Ship the theme as one nix-store derivation and expose
     # it via a single xdg.configFile symlink.
     steelboreTheme = pkgs.linkFarm "leftwm-steelbore-theme" [
+      # up/down are stubs: actual session bring-up happens in
+      # `leftwm-xinitrc` (see modules/login/default.nix). leftwm-theme
+      # tooling expects up/down to exist, so we ship empty no-ops.
       {
         name = "up";
-        path = pkgs.writeShellScript "leftwm-steelbore-up" ''
-          # Steelbore LeftWM Startup Script.
-          # LEFTWM_THEME_DIR is set by leftwm to the active theme path.
-          feh --bg-solid "${steelborePalette.voidNavy}" &
-          picom --config "$LEFTWM_THEME_DIR/picom.conf" &
-          dunst &
-          eww open bar &
-          numlockx on &
-          # Load SSH key into gitway-agent once per session. With no TTY but
-          # DISPLAY set, gitway-add uses $SSH_ASKPASS (ksshaskpass) for the
-          # passphrase. Cached for 24 h per the agent TTL.
-          gitway-add "$HOME/.ssh/id_ed25519" &
-        '';
+        path = pkgs.writeShellScript "leftwm-steelbore-up" "exit 0";
       }
       {
         name = "down";
-        path = pkgs.writeShellScript "leftwm-steelbore-down" ''
-          # Steelbore LeftWM Shutdown Script
-          eww kill 2>/dev/null
-          pkill polybar
-          pkill picom
-          pkill dunst
-        '';
+        path = pkgs.writeShellScript "leftwm-steelbore-down" "exit 0";
       }
       {
         name = "theme.ron";

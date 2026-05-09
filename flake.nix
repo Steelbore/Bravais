@@ -78,10 +78,21 @@
         }:
         let
           ch = channels.${channel};
+          # Always-unstable nixpkgs instantiation, threaded into modules
+          # via specialArgs. Used for claude-code so even stable variants
+          # ship the latest claude-code from nixpkgs-unstable instead of
+          # the (often older) channel-stable build. Re-instantiated with
+          # config so unfree licenses (claude-code is unfree) are accepted
+          # — `nixpkgs.config.allowUnfree` only covers the channel pkgs,
+          # not this separate evaluation.
+          unstablePkgs = import nixpkgs-unstable {
+            inherit system;
+            config.allowUnfree = true;
+          };
         in
         ch.pkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit steelborePalette gitway; };
+          specialArgs = { inherit steelborePalette gitway unstablePkgs; };
           modules = [
             # External modules
             ch.hm.nixosModules.home-manager
@@ -104,7 +115,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = { inherit steelborePalette gitway; };
+              home-manager.extraSpecialArgs = { inherit steelborePalette gitway unstablePkgs; };
               home-manager.users.mj = import ./users/mj/home.nix;
             }
           ];

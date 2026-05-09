@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Bravais — AI Coding Assistants and Tools
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, unstablePkgs, ... }:
 
 {
   options.steelbore.packages.ai = {
@@ -31,11 +31,15 @@
         runtimeInputs = [ nodejs ];
         text = ''exec npx -y --package=task-master-ai task-master "$@"'';
       })
-      claude-code                # Uses channel-appropriate package (stable or unstable)
+      # claude-code intentionally not in this `with pkgs` block — it's
+      # imported from unstablePkgs below so every Bravais variant gets the
+      # latest npm-tracking nixpkgs build, not the channel-stable one.
 
       # Local LLM runtime
       ollama-cpu                 # Go — CPU-only Ollama (local LLM server)
     ])
+    # claude-code: always from nixpkgs-unstable via specialArgs threading.
+    ++ [ unstablePkgs.claude-code ]
     # grok-cli is unstable-only at the moment (added to nixpkgs after 25.11
     # branched). Include it conditionally so stable builds still evaluate.
     ++ lib.optional (pkgs ? grok-cli) pkgs.grok-cli;

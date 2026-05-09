@@ -76,7 +76,18 @@ in
     EDITOR = "${pkgs.msedit}/bin/edit";
     VISUAL = "${pkgs.msedit}/bin/edit";
     STEELBORE_THEME = "true";
+    # Move bw's app-data out from under the literal-space "Bitwarden CLI"
+    # default into a scriptable XDG-compliant path. bw populates data.json
+    # itself; we only set the directory.
+    BITWARDENCLI_APPDATA_DIR = "${config.xdg.configHome}/bitwarden-cli";
   };
+
+  # Refresh the tealdeer (tldr) cache on every home-manager activation.
+  # `tldr --update` pulls the latest pages bundle. Failure is non-fatal so
+  # an offline rebuild still succeeds.
+  home.activation.tldrUpdate = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    $DRY_RUN_CMD ${pkgs.tealdeer}/bin/tldr --update >/dev/null 2>&1 || true
+  '';
 
   # User packages
   home.packages = with pkgs; [
@@ -388,6 +399,31 @@ in
       runtime = "runc"
     '';
 
+    # tealdeer (tldr) — auto-update once a week on first invocation.
+    # The home-manager activation script also forces a refresh on every
+    # nixos-rebuild (see home.activation.tldrUpdate).
+    "tealdeer/config.toml".text = ''
+      [updates]
+      auto_update = true
+      auto_update_interval_hours = 168
+
+      [display]
+      use_pager = false
+      compact = false
+    '';
+
+    # Suppress ibus-ui-gtk3's session-start notification. The COSMIC fix in
+    # round 2 enabled i18n.inputMethod = ibus to silence its own popup; the
+    # GTK panel that gets started on every Wayland session has its own
+    # notification. We don't actually want the panel for English-only input;
+    # shadow its autostart with Hidden=true.
+    "autostart/org.freedesktop.IBus.Panel.Wayland.Gtk3.desktop".text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=IBus Panel (Wayland)
+      Hidden=true
+    '';
+
     # ═══════════════════════════════════════════════════════════════════════════
     # EWW — Shared status bar for LeftWM (X11) and Niri (Wayland).
     # Eww auto-detects X11 vs Wayland; one config drives both. WMs spawn it
@@ -527,6 +563,20 @@ in
       // DISPLAY/WAYLAND_DISPLAY set, gitway-add uses $SSH_ASKPASS
       // (ksshaskpass) automatically. Cached for 24 h per the agent TTL.
       spawn-at-startup "gitway-add" "/home/mj/.ssh/id_ed25519"
+
+      // Input — natural-scroll intentionally absent (presence = enabled).
+      input {
+          keyboard {
+              xkb {
+                  layout "us,ar"
+                  options "grp:ctrl_space_toggle"
+              }
+          }
+          touchpad {
+              tap
+              accel-speed 0.3
+          }
+      }
 
       binds {
           // Session

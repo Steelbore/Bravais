@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Bravais — greetd + tuigreet Login Manager
-{ config, lib, pkgs, steelborePalette, ... }:
+{ config, lib, pkgs, steelborePalette, gitway, ... }:
 
 let
   # Wrap each shell-as-session in cage (single-app Wayland kiosk) plus rio
@@ -98,10 +98,26 @@ let
     exec ${pkgs.xorg.xinit}/bin/startx ${pkgs.kdePackages.plasma-workspace}/bin/startplasma-x11 "$@"
   '';
 
+  # LeftWM session script (run by startx as the X client). Spawns the
+  # autostart services in the background then execs leftwm. We bypass
+  # leftwm's own `themes/current/up` execution because it has been
+  # producing "Global up script failed: IO error: No such file or
+  # directory" across every layout we've tried (rounds 4–6) and the
+  # apps need to start regardless.
+  leftwm-xinitrc = pkgs.writeShellScript "leftwm-xinitrc" ''
+    ${pkgs.xorg.xsetroot}/bin/xsetroot -solid '${steelborePalette.voidNavy}' &
+    ${pkgs.picom}/bin/picom &
+    ${pkgs.dunst}/bin/dunst &
+    ${pkgs.eww}/bin/eww open bar &
+    ${pkgs.numlockx}/bin/numlockx on &
+    ${gitway.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/gitway-add "$HOME/.ssh/id_ed25519" &
+    exec ${pkgs.leftwm}/bin/leftwm
+  '';
+
   start-leftwm = pkgs.writeShellScriptBin "start-leftwm" ''
     export PATH="${startxPath}:$PATH"
     touch "$HOME/.serverauth.$$"
-    exec ${pkgs.xorg.xinit}/bin/startx ${pkgs.leftwm}/bin/leftwm "$@"
+    exec ${pkgs.xorg.xinit}/bin/startx ${leftwm-xinitrc} "$@"
   '';
 
   leftwm-xsession = mkXSession {

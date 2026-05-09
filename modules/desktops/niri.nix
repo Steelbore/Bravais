@@ -94,8 +94,8 @@
 
           touchpad {
               tap
-              natural-scroll
               accel-speed 0.3
+              // natural-scroll intentionally absent (presence = enabled).
           }
       }
 
