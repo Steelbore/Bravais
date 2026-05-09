@@ -50,7 +50,7 @@
           gaps 8
 
           focus-ring {
-              enable
+              // off  — uncomment to disable; presence of the block enables it
               width 2
               active-color "${steelborePalette.moltenAmber}"
               inactive-color "${steelborePalette.steelBlue}"
@@ -125,8 +125,9 @@
           Mod+Shift+Right { move-column-right; }
           Mod+Shift+Up    { move-window-up; }
           Mod+Shift+Down  { move-window-down; }
+          // Mod+Shift+L is reserved for gtklock above; Mod+Shift+Right
+          // covers move-column-right.
           Mod+Shift+H { move-column-left; }
-          Mod+Shift+L { move-column-right; }
           Mod+Shift+K { move-window-up; }
           Mod+Shift+J { move-window-down; }
 

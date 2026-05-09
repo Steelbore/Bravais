@@ -508,12 +508,12 @@ in
 
       layout {
           focus-ring {
-              enable
+              // off  — uncomment to disable; presence of the block enables it
               width 2
               active-color "${steelborePalette.moltenAmber}"
               inactive-color "${steelborePalette.steelBlue}"
           }
-          border { off }
+          border { off; }
           gaps 8
       }
 
@@ -550,9 +550,8 @@ in
           Mod+Up { focus-window-up; }
           Mod+Down { focus-window-down; }
 
-          // Move windows (Vim-style)
+          // Move windows (Vim-style; Mod+Shift+L is reserved for gtklock)
           Mod+Shift+H { move-column-left; }
-          Mod+Shift+L { move-column-right; }
           Mod+Shift+K { move-window-up; }
           Mod+Shift+J { move-window-down; }
 

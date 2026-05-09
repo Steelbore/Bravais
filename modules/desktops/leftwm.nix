@@ -7,7 +7,174 @@
     enable = lib.mkEnableOption "LeftWM tiling window manager (X11)";
   };
 
-  config = lib.mkIf config.steelbore.desktops.leftwm.enable {
+  config = lib.mkIf config.steelbore.desktops.leftwm.enable (let
+    # The LeftWM Themes wiki strongly recommends that
+    # `~/.config/leftwm/themes/current` be a symlink rather than a real
+    # directory — leftwm 0.5.x's path resolution intermittently fails to
+    # find `current/up` when `current` is a directory containing files
+    # (observed: "Global up script failed: IO error: No such file or
+    # directory"). Ship the theme as one nix-store derivation and expose
+    # it via a single xdg.configFile symlink.
+    steelboreTheme = pkgs.linkFarm "leftwm-steelbore-theme" [
+      {
+        name = "up";
+        path = pkgs.writeShellScript "leftwm-steelbore-up" ''
+          # Steelbore LeftWM Startup Script.
+          # LEFTWM_THEME_DIR is set by leftwm to the active theme path.
+          feh --bg-solid "${steelborePalette.voidNavy}" &
+          picom --config "$LEFTWM_THEME_DIR/picom.conf" &
+          dunst &
+          eww open bar &
+          numlockx on &
+        '';
+      }
+      {
+        name = "down";
+        path = pkgs.writeShellScript "leftwm-steelbore-down" ''
+          # Steelbore LeftWM Shutdown Script
+          eww kill 2>/dev/null
+          pkill polybar
+          pkill picom
+          pkill dunst
+        '';
+      }
+      {
+        name = "theme.ron";
+        path = pkgs.writeText "leftwm-steelbore-theme.ron" ''
+          // Steelbore LeftWM Theme
+          (
+              border_width: 2,
+              margin: 8,
+              workspace_margin: Some(8),
+              default_border_color: "${steelborePalette.steelBlue}",
+              floating_border_color: "${steelborePalette.liquidCool}",
+              focused_border_color: "${steelborePalette.moltenAmber}",
+              on_new_window_cmd: None,
+          )
+        '';
+      }
+      {
+        name = "polybar.ini";
+        path = pkgs.writeText "leftwm-steelbore-polybar.ini" ''
+          ; Steelbore Polybar Configuration
+
+          [colors]
+          background = ${steelborePalette.voidNavy}
+          foreground = ${steelborePalette.moltenAmber}
+          accent = ${steelborePalette.steelBlue}
+          success = ${steelborePalette.radiumGreen}
+          warning = ${steelborePalette.redOxide}
+          info = ${steelborePalette.liquidCool}
+
+          [bar/steelbore]
+          width = 100%
+          height = 32
+          fixed-center = true
+
+          background = ''${colors.background}
+          foreground = ''${colors.foreground}
+
+          line-size = 2
+          line-color = ''${colors.accent}
+
+          border-bottom-size = 2
+          border-bottom-color = ''${colors.accent}
+
+          padding-left = 2
+          padding-right = 2
+          module-margin = 1
+
+          font-0 = "Share Tech Mono:size=12;2"
+          font-1 = "JetBrainsMono Nerd Font:size=12;2"
+
+          modules-left = leftwm-tags
+          modules-center = date
+          modules-right = cpu memory network
+
+          cursor-click = pointer
+          cursor-scroll = ns-resize
+
+          [module/leftwm-tags]
+          type = custom/script
+          exec = leftwm-state -w "$LEFTWM_STATE_SOCKET" -t "$LEFTWM_THEME_DIR/template.liquid"
+          tail = true
+
+          [module/date]
+          type = internal/date
+          interval = 1
+          date = "%Y-%m-%d"
+          time = "%H:%M:%S"
+          label = "%time% :: %date%"
+          label-foreground = ''${colors.foreground}
+
+          [module/cpu]
+          type = internal/cpu
+          interval = 1
+          label = "CPU: %percentage%%"
+          label-foreground = ''${colors.success}
+
+          [module/memory]
+          type = internal/memory
+          interval = 1
+          label = "RAM: %percentage_used%%"
+          label-foreground = ''${colors.success}
+
+          [module/network]
+          type = internal/network
+          interface-type = wireless
+          interval = 1
+          label-connected = "%essid%"
+          label-connected-foreground = ''${colors.info}
+          label-disconnected = "Offline"
+          label-disconnected-foreground = ''${colors.warning}
+        '';
+      }
+      {
+        name = "template.liquid";
+        path = pkgs.writeText "leftwm-steelbore-template.liquid" ''
+          {% for tag in workspace.tags %}
+          %{A1:leftwm-command "SendWorkspaceToTag {{ workspace.index }} {{ tag.index }}":}
+          {% if tag.mine %}
+          %{F${steelborePalette.moltenAmber}}%{+u}
+          {% elsif tag.visible %}
+          %{F${steelborePalette.liquidCool}}
+          {% elsif tag.busy %}
+          %{F${steelborePalette.steelBlue}}
+          {% else %}
+          %{F${steelborePalette.steelBlue}50}
+          {% endif %}
+            {{ tag.name }}
+          %{-u}%{F-}%{A}
+          {% endfor %}
+        '';
+      }
+      {
+        name = "picom.conf";
+        path = pkgs.writeText "leftwm-steelbore-picom.conf" ''
+          # Steelbore Picom Configuration
+          backend = "glx";
+          vsync = true;
+
+          # Opacity
+          active-opacity = 1.0;
+          inactive-opacity = 0.95;
+          frame-opacity = 1.0;
+
+          # Fading
+          fading = true;
+          fade-delta = 5;
+          fade-in-step = 0.03;
+          fade-out-step = 0.03;
+
+          # Rounded corners
+          corner-radius = 0;
+
+          # Shadows
+          shadow = false;
+        '';
+      }
+    ];
+  in {
     # Enable X11. LeftWM is intentionally NOT registered via
     # services.xserver.windowManager.leftwm.enable — that path generates an
     # xsession .desktop whose Exec just runs `leftwm` directly. greetd does
@@ -160,176 +327,10 @@
       )
     '';
 
-    # LeftWM theme (Steelbore)
-    home-manager.users.mj.xdg.configFile."leftwm/themes/current/theme.ron".text = ''
-      // Steelbore LeftWM Theme
-      (
-          border_width: 2,
-          margin: 8,
-          workspace_margin: Some(8),
-          default_border_color: "${steelborePalette.steelBlue}",
-          floating_border_color: "${steelborePalette.liquidCool}",
-          focused_border_color: "${steelborePalette.moltenAmber}",
-          on_new_window_cmd: None,
-      )
-    '';
-
-    # LeftWM autostart (up script)
-    home-manager.users.mj.xdg.configFile."leftwm/themes/current/up" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        # Steelbore LeftWM Startup Script.
-        # LEFTWM_THEME_DIR is set by leftwm to the active theme path
-        # ($XDG_CONFIG_HOME/leftwm/themes/current under the new layout).
-
-        # Wallpaper (X11) — solid Void Navy
-        feh --bg-solid "${steelborePalette.voidNavy}" &
-
-        # Compositor
-        picom --config "$LEFTWM_THEME_DIR/picom.conf" &
-
-        # Notifications — dunst (cross-platform with Niri)
-        dunst &
-
-        # Status bar — Eww (cross-platform with Niri)
-        # eww open spawns the daemon if needed.
-        eww open bar &
-
-        # Enable NumLock
-        numlockx on &
-      '';
-    };
-
-    # LeftWM shutdown (down script)
-    home-manager.users.mj.xdg.configFile."leftwm/themes/current/down" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        # Steelbore LeftWM Shutdown Script
-        eww kill 2>/dev/null
-        pkill polybar
-        pkill picom
-        pkill dunst
-      '';
-    };
-
-    # Polybar configuration (Steelbore theme)
-    home-manager.users.mj.xdg.configFile."leftwm/themes/current/polybar.ini".text = ''
-      ; Steelbore Polybar Configuration
-
-      [colors]
-      background = ${steelborePalette.voidNavy}
-      foreground = ${steelborePalette.moltenAmber}
-      accent = ${steelborePalette.steelBlue}
-      success = ${steelborePalette.radiumGreen}
-      warning = ${steelborePalette.redOxide}
-      info = ${steelborePalette.liquidCool}
-
-      [bar/steelbore]
-      width = 100%
-      height = 32
-      fixed-center = true
-
-      background = ''${colors.background}
-      foreground = ''${colors.foreground}
-
-      line-size = 2
-      line-color = ''${colors.accent}
-
-      border-bottom-size = 2
-      border-bottom-color = ''${colors.accent}
-
-      padding-left = 2
-      padding-right = 2
-      module-margin = 1
-
-      font-0 = "Share Tech Mono:size=12;2"
-      font-1 = "JetBrainsMono Nerd Font:size=12;2"
-
-      modules-left = leftwm-tags
-      modules-center = date
-      modules-right = cpu memory network
-
-      cursor-click = pointer
-      cursor-scroll = ns-resize
-
-      [module/leftwm-tags]
-      type = custom/script
-      exec = leftwm-state -w "$LEFTWM_STATE_SOCKET" -t "$LEFTWM_THEME_DIR/template.liquid"
-      tail = true
-
-      [module/date]
-      type = internal/date
-      interval = 1
-      date = "%Y-%m-%d"
-      time = "%H:%M:%S"
-      label = "%time% :: %date%"
-      label-foreground = ''${colors.foreground}
-
-      [module/cpu]
-      type = internal/cpu
-      interval = 1
-      label = "CPU: %percentage%%"
-      label-foreground = ''${colors.success}
-
-      [module/memory]
-      type = internal/memory
-      interval = 1
-      label = "RAM: %percentage_used%%"
-      label-foreground = ''${colors.success}
-
-      [module/network]
-      type = internal/network
-      interface-type = wireless
-      interval = 1
-      label-connected = "%essid%"
-      label-connected-foreground = ''${colors.info}
-      label-disconnected = "Offline"
-      label-disconnected-foreground = ''${colors.warning}
-    '';
-
-    # Polybar template for LeftWM tags
-    home-manager.users.mj.xdg.configFile."leftwm/themes/current/template.liquid".text = ''
-      {% for tag in workspace.tags %}
-      %{A1:leftwm-command "SendWorkspaceToTag {{ workspace.index }} {{ tag.index }}":}
-      {% if tag.mine %}
-      %{F${steelborePalette.moltenAmber}}%{+u}
-      {% elsif tag.visible %}
-      %{F${steelborePalette.liquidCool}}
-      {% elsif tag.busy %}
-      %{F${steelborePalette.steelBlue}}
-      {% else %}
-      %{F${steelborePalette.steelBlue}50}
-      {% endif %}
-        {{ tag.name }}
-      %{-u}%{F-}%{A}
-      {% endfor %}
-    '';
-
-    # Picom configuration
-    home-manager.users.mj.xdg.configFile."leftwm/themes/current/picom.conf".text = ''
-      # Steelbore Picom Configuration
-      backend = "glx";
-      vsync = true;
-
-      # Opacity
-      active-opacity = 1.0;
-      inactive-opacity = 0.95;
-      frame-opacity = 1.0;
-
-      # Fading
-      fading = true;
-      fade-delta = 5;
-      fade-in-step = 0.03;
-      fade-out-step = 0.03;
-
-      # Rounded corners
-      corner-radius = 0;
-
-      # Shadows
-      shadow = false;
-    '';
+    # LeftWM theme — single symlink to a nix-store directory containing
+    # all theme files. See the steelboreTheme let-binding above.
+    home-manager.users.mj.xdg.configFile."leftwm/themes/current".source =
+      steelboreTheme;
 
     # Dunst notification configuration
     environment.etc."dunst/dunstrc".text = ''
@@ -374,5 +375,5 @@
       frame_color = "${steelborePalette.redOxide}"
       timeout = 0
     '';
-  };
+  });
 }
