@@ -6,6 +6,11 @@
   # Enable flakes and nix-command
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Hardlink-deduplicate identical files in /nix/store. Costs a small
+  # amount of CPU on every store add (and on the periodic optimise
+  # service), saves disk on / which sits at 88 % full on this host.
+  nix.settings.auto-optimise-store = true;
+
   # Garbage collection
   nix.gc = {
     automatic = true;

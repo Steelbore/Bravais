@@ -13,6 +13,11 @@
 # the drive unplugged, /mnt/nix-tmp is the empty local tmpfiles dir
 # and builds fall back to the system disk transparently. With the
 # drive plugged in, the same path resolves to the loop ext4.
+#
+# Mode is 0755 root:root (NOT 1777). Nix 2.31+ refuses a world-writable
+# `build-dir` for security; only nix-daemon (root) needs to write here,
+# and it creates per-build subdirs as the nixbld* sandbox users itself.
+# This dir is *not* a user-level TMPDIR.
 { config, lib, pkgs, ... }:
 
 let
@@ -28,7 +33,7 @@ let
   imgSize  = "80G";
 in
 {
-  systemd.tmpfiles.rules = [ "d ${mountAt} 1777 root root -" ];
+  systemd.tmpfiles.rules = [ "d ${mountAt} 0755 root root -" ];
 
   systemd.paths.nix-tmp-loop = {
     description = "Watch for Expansion drive auto-mount, then bring up nix-tmp loop";
@@ -52,7 +57,7 @@ in
         fi
         ${pkgs.util-linux}/bin/mountpoint -q "${mountAt}" || \
           ${pkgs.util-linux}/bin/mount -o loop "${imgPath}" "${mountAt}"
-        ${pkgs.coreutils}/bin/chmod 1777 "${mountAt}"
+        ${pkgs.coreutils}/bin/chmod 0755 "${mountAt}"
       '';
       ExecStop = pkgs.writeShellScript "nix-tmp-loop-down" ''
         ${pkgs.util-linux}/bin/mountpoint -q "${mountAt}" && \
@@ -62,4 +67,13 @@ in
   };
 
   systemd.services.nix-daemon.environment.TMPDIR = mountAt;
+
+  # nix.conf-level build-dir. Forces every nix client to use the loop
+  # for build scratch — root callers (sudo nixos-rebuild) build
+  # in-process and bypass the daemon's TMPDIR drop-in above, falling
+  # back to /tmp on / and disk-out'ing on big builds (deno+LTO etc).
+  # Falls back transparently to the empty tmpfiles dir on / when the
+  # loop isn't mounted — same semantics as TMPDIR. Requires the dir
+  # to be 0755 (not 1777) per nix 2.31+ security check.
+  nix.settings.build-dir = mountAt;
 }

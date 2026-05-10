@@ -89,10 +89,6 @@ in
     # default into a scriptable XDG-compliant path. bw populates data.json
     # itself; we only set the directory.
     BITWARDENCLI_APPDATA_DIR = "${config.xdg.configHome}/bitwarden-cli";
-    # Loop-mounted ext4 image on the Expansion drive — see
-    # modules/core/nix-tmp.nix. Falls back to the local empty dir
-    # transparently if the drive is unplugged.
-    TMPDIR = "/mnt/nix-tmp";
   };
 
   # Refresh the tealdeer (tldr) cache on every home-manager activation.
@@ -137,7 +133,6 @@ in
       enable = true;
       bashrcExtra = ''
         export SSH_AUTH_SOCK="/run/user/$(id -u)/gitway-agent.sock"
-        export TMPDIR="/mnt/nix-tmp"
       '';
     };
 
@@ -217,9 +212,6 @@ in
         # only takes effect for login shells; non-login shells (terminals
         # spawned inside a DE) inherit the PAM-set value.
         $env.SSH_AUTH_SOCK = $"/run/user/(id -u)/gitway-agent.sock"
-
-        # Builder TMPDIR — see modules/core/nix-tmp.nix.
-        $env.TMPDIR = "/mnt/nix-tmp"
 
         # Steelbore palette — kept in sync with flake.nix steelborePalette.
         # Nushell needs literals; env-var interpolation isn't available inside
@@ -571,10 +563,6 @@ in
       # pam_gnome_keyring otherwise sets it to /run/user/$UID/keyring/ssh.
       let SSH_AUTH_SOCK = "/run/user/$(id -u)/gitway-agent.sock"
       export SSH_AUTH_SOCK
-
-      # Builder TMPDIR — see modules/core/nix-tmp.nix.
-      let TMPDIR = "/mnt/nix-tmp"
-      export TMPDIR
 
       # Starship prompt
       eval $(${pkgs.starship}/bin/starship init ion)
