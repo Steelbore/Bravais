@@ -254,7 +254,11 @@
               (command: Execute, value: "gtklock", modifier: ["Control", "Alt"], key: "l"),
 
               // Applications
-              (command: Execute, value: "rio", modifier: ["modkey"], key: "Return"),
+              // Mod+Return launches alacritty rather than the repo-default rio:
+              // rio's wgpu backend prefers Wayland and renders nothing visible
+              // under leftwm's startx-spawned Xorg. alacritty has a stable X11
+              // backend and is the reliable choice for this X11-only WM.
+              (command: Execute, value: "alacritty", modifier: ["modkey"], key: "Return"),
               (command: Execute, value: "rlaunch", modifier: ["modkey"], key: "d"),
               (command: Execute, value: "rofi -show drun", modifier: ["modkey", "Shift"], key: "d"),
 
