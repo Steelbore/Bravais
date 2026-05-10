@@ -22,6 +22,10 @@
     layout = "us,ara";
     options = "grp:ctrl_space_toggle";
   };
+  # Emergency Xorg killswitch — Ctrl+Alt+Backspace zaps the X server.
+  # Useful when a WM (e.g. LeftWM) comes up with a black screen and its
+  # own keybinds aren't responding; sends X back to greetd.
+  services.xserver.enableCtrlAltBackspace = true;
 
   # ckbcomp can't resolve multi-layout XKB configs; keep console on US
   console.keyMap = "us";
