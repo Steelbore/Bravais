@@ -224,16 +224,17 @@
           workspaces: [],
           tags: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
           max_window_width: None,
-          layouts: [
-              MainAndVertStack,
-              MainAndHorizontalStack,
-              MainAndDeck,
-              GridHorizontal,
-              EvenHorizontal,
-              EvenVertical,
-              Fibonacci,
-              Monocle,
-          ],
+          // `layouts` intentionally omitted. lefthk-core 0.2.2 (bundled
+          // inside leftwm 0.5.4) ships its own config parser whose schema
+          // expects layouts as Vec<String>, while leftwm-core expects bare
+          // enum variants. Including the field in either form breaks one
+          // of the two parsers — when lefthk's parse fails, it silently
+          // falls back to a Mod+Shift+* default keymap, making every
+          // user-defined Mod-only binding (Mod+Return, Mod+D, Mod+Q…) a
+          // no-op. Omitting the field lets lefthk parse the rest of the
+          // config; leftwm still gets a working layout set from its
+          // built-in defaults. Re-add the explicit list once leftwm and
+          // lefthk-core ship a unified config schema.
           layout_mode: Tag,
           insert_behavior: Bottom,
           scratchpad: [
@@ -267,21 +268,16 @@
               (command: ToggleFullScreen, value: "", modifier: ["modkey"], key: "f"),
               (command: ToggleFloating, value: "", modifier: ["modkey", "Shift"], key: "f"),
 
-              // Focus (Vim-style)
-              (command: FocusWindowLeft, value: "", modifier: ["modkey"], key: "h"),
-              (command: FocusWindowRight, value: "", modifier: ["modkey"], key: "l"),
+              // Focus / Move — only Up/Down survive. lefthk-core 0.2.2's
+              // BaseCommand enum is missing FocusWindowLeft, FocusWindowRight,
+              // MoveWindowLeft, and MoveWindowRight; including any of those
+              // panics lefthk's parser and disables every keybinding. With
+              // focus_behaviour: Sloppy, mouse hover already covers
+              // left/right focus; tile-drag handles left/right window moves.
               (command: FocusWindowUp, value: "", modifier: ["modkey"], key: "k"),
               (command: FocusWindowDown, value: "", modifier: ["modkey"], key: "j"),
-
-              // Focus (Arrow keys)
-              (command: FocusWindowLeft, value: "", modifier: ["modkey"], key: "Left"),
-              (command: FocusWindowRight, value: "", modifier: ["modkey"], key: "Right"),
               (command: FocusWindowUp, value: "", modifier: ["modkey"], key: "Up"),
               (command: FocusWindowDown, value: "", modifier: ["modkey"], key: "Down"),
-
-              // Move windows (Vim-style)
-              (command: MoveWindowLeft, value: "", modifier: ["modkey", "Shift"], key: "h"),
-              (command: MoveWindowRight, value: "", modifier: ["modkey", "Shift"], key: "l"),
               (command: MoveWindowUp, value: "", modifier: ["modkey", "Shift"], key: "k"),
               (command: MoveWindowDown, value: "", modifier: ["modkey", "Shift"], key: "j"),
 
