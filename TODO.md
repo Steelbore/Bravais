@@ -44,6 +44,12 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] **`security.nix`**: Enable polkit
 - [✓] **`security.nix`**: Enable SSH agent, disable GNOME keyring SSH agent
 - [✓] **`security.nix`**: Configure tmpfiles rules (`/tmp`, `/var/tmp`)
+- [✓] **`dns.nix`**: Enable `systemd-resolved` with DNS-over-TLS and DNSSEC enforced
+- [✓] **`dns.nix`**: Cloudflare malware-block primary (`1.1.1.2` / `1.0.0.2` + v6, SNI `security.cloudflare-dns.com`)
+- [✓] **`dns.nix`**: Plain Cloudflare fallback (`1.1.1.1` / `1.0.0.1` + v6, SNI `cloudflare-dns.com`)
+- [✓] **`dns.nix`**: Global `~.` Domains entry to override DHCP-pushed link DNS
+- [✓] **`dns.nix`**: Route NetworkManager DNS through `systemd-resolved`
+- [✓] **`dns.nix`**: Stable/unstable schema portability via `options.services.resolved ? settings` check (silences four rename warnings × five unstable variants)
 
 ---
 

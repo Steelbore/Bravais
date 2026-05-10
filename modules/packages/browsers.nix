@@ -14,7 +14,6 @@
     environment.systemPackages = with pkgs; [
       google-chrome
       brave
-      microsoft-edge
       librewolf
     ];
   };

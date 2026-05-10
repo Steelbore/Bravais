@@ -47,6 +47,7 @@ bravais/
 |   |   +-- locale.nix             # Timezone, i18n
 |   |   +-- audio.nix              # PipeWire audio stack
 |   |   +-- security.nix           # sudo-rs, polkit, SSH agent
+|   |   +-- dns.nix                # systemd-resolved + DoT + DNSSEC (Cloudflare malware-block)
 |   +-- theme/                     # Steelbore visual identity
 |   |   +-- default.nix            # Color palette env vars, TTY colors
 |   |   +-- fonts.nix              # Typography (system fonts)
@@ -316,6 +317,16 @@ Set via `console.colors` -- 16 hex values without `#` prefix, in order: normal 0
 - **Polkit:** Enabled
 - **SSH agent:** `programs.ssh.startAgent = true`, GNOME keyring SSH agent disabled
 - **Tmpfiles rules:** `/tmp 1777`, `/var/tmp 1777`
+
+### 5.6 DNS (`modules/core/dns.nix`)
+
+- **Resolver:** `systemd-resolved` (NetworkManager → `dns = "systemd-resolved"`)
+- **Primary:** Cloudflare malware-blocking — `1.1.1.2` / `1.0.0.2` (+ v6) with TLS SNI `security.cloudflare-dns.com`
+- **Fallback:** Plain Cloudflare — `1.1.1.1` / `1.0.0.1` (+ v6) with TLS SNI `cloudflare-dns.com`
+- **DNS-over-TLS (DoT):** Enforced (`DNSOverTLS=true` — refuses plaintext)
+- **DNSSEC:** Enforced (`DNSSEC=true` — drops responses that fail validation)
+- **Routing:** Global `~.` Domains entry forces every query through the global DNS list, ignoring link-specific DNS pushed by DHCP
+- **Channel portability:** Schema differs between stable 25.11 (legacy `services.resolved.{dnssec,dnsovertls,...}` flags) and unstable (renamed to `services.resolved.settings.Resolve.*`); module uses an `options.services.resolved ? settings` check to pick the right form per channel and evaluates clean on all 10 mkBravais variants
 
 ---
 

@@ -10,5 +10,6 @@
     ./locale.nix
     ./audio.nix
     ./security.nix
+    ./dns.nix
   ];
 }
