@@ -125,19 +125,29 @@ let
   # (modules/desktops/leftwm.nix); session bring-up runs here, not
   # there.
   leftwm-session-inner = pkgs.writeShellScript "leftwm-session-inner" ''
-    ${xsetrootPkg}/bin/xsetroot -solid '${steelborePalette.voidNavy}' &
     ${pkgs.picom}/bin/picom &
     ${pkgs.dunst}/bin/dunst &
     ${pkgs.eww}/bin/eww open bar &
     ${pkgs.numlockx}/bin/numlockx on &
     ${gitway.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/gitway-add "$HOME/.ssh/id_ed25519" &
-    # Force-apply the Steelbore theme. leftwm 0.5.4 does not load
-    # ~/.config/leftwm/themes/current/theme.ron automatically on session
-    # startup; without this call, the focused window border falls back to
-    # leftwm's hard-coded default (bright red) instead of moltenAmber.
-    # Delay one second so leftwm's IPC socket exists before we send the
-    # LoadTheme command.
-    (sleep 1 && ${pkgs.leftwm}/bin/leftwm-command "LoadTheme $HOME/.config/leftwm/themes/current/theme.ron") &
+    # After leftwm is up, force-apply the Steelbore theme and re-set the
+    # root background. Both calls must happen AFTER leftwm starts:
+    #
+    # - leftwm 0.5.4 does not auto-load themes/current/theme.ron on
+    #   session start; without LoadTheme the focused border falls back
+    #   to leftwm's hardcoded red.
+    # - leftwm clobbers the root window background on startup to its
+    #   default grey (#333333); xsetroot must run AFTER leftwm or its
+    #   color (voidNavy) gets overwritten and gaps between tiled
+    #   windows show as grey instead.
+    #
+    # The one-second sleep gives leftwm's IPC socket and root grab
+    # time to settle.
+    (
+      sleep 1
+      ${pkgs.leftwm}/bin/leftwm-command "LoadTheme $HOME/.config/leftwm/themes/current/theme.ron"
+      ${xsetrootPkg}/bin/xsetroot -solid '${steelborePalette.voidNavy}'
+    ) &
     exec ${pkgs.leftwm}/bin/leftwm
   '';
 
