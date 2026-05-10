@@ -20,12 +20,13 @@
   services.xserver.enable = true;
   services.xserver.xkb = {
     layout = "us,ara";
-    options = "grp:ctrl_space_toggle";
+    # `terminate:ctrl_alt_bksp` = emergency Xorg killswitch (zaps the
+    # server when a WM comes up unresponsive — e.g. LeftWM black screen).
+    # Must be in the same options string as `grp:*` because xkb.options
+    # is a single value and the explicit setting overrides anything
+    # added via services.xserver.enableCtrlAltBackspace.
+    options = "grp:ctrl_space_toggle,terminate:ctrl_alt_bksp";
   };
-  # Emergency Xorg killswitch — Ctrl+Alt+Backspace zaps the X server.
-  # Useful when a WM (e.g. LeftWM) comes up with a black screen and its
-  # own keybinds aren't responding; sends X back to greetd.
-  services.xserver.enableCtrlAltBackspace = true;
 
   # ckbcomp can't resolve multi-layout XKB configs; keep console on US
   console.keyMap = "us";
