@@ -346,7 +346,7 @@ in
             family = "JetBrains Mono";
             style = "Regular";
           };
-          size = 12.0;
+          size = 10.0;
         };
         colors = {
           primary = {

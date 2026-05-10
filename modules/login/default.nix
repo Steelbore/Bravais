@@ -131,6 +131,13 @@ let
     ${pkgs.eww}/bin/eww open bar &
     ${pkgs.numlockx}/bin/numlockx on &
     ${gitway.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/gitway-add "$HOME/.ssh/id_ed25519" &
+    # Force-apply the Steelbore theme. leftwm 0.5.4 does not load
+    # ~/.config/leftwm/themes/current/theme.ron automatically on session
+    # startup; without this call, the focused window border falls back to
+    # leftwm's hard-coded default (bright red) instead of moltenAmber.
+    # Delay one second so leftwm's IPC socket exists before we send the
+    # LoadTheme command.
+    (sleep 1 && ${pkgs.leftwm}/bin/leftwm-command "LoadTheme $HOME/.config/leftwm/themes/current/theme.ron") &
     exec ${pkgs.leftwm}/bin/leftwm
   '';
 

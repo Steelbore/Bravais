@@ -59,7 +59,7 @@ in
       normal = { family = "JetBrains Mono", style = "Regular" }
       bold = { family = "JetBrains Mono", style = "Bold" }
       italic = { family = "JetBrains Mono", style = "Italic" }
-      size = 12.0
+      size = 10.0
 
       [colors.primary]
       background = "${steelborePalette.voidNavy}"
