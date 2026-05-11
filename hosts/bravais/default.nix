@@ -23,12 +23,7 @@
   services.libinput.touchpad.naturalScrolling = true;
   services.xserver.xkb = {
     layout = "us,ara";
-    # `terminate:ctrl_alt_bksp` = emergency Xorg killswitch (zaps the
-    # server when a WM comes up unresponsive — e.g. LeftWM black screen).
-    # Must be in the same options string as `grp:*` because xkb.options
-    # is a single value and the explicit setting overrides anything
-    # added via services.xserver.enableCtrlAltBackspace.
-    options = "grp:ctrl_space_toggle,terminate:ctrl_alt_bksp";
+    options = "grp:ctrl_space_toggle";
   };
 
   # ckbcomp can't resolve multi-layout XKB configs; keep console on US
