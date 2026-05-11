@@ -12,7 +12,6 @@
       # AI Coding Assistants (Rust preferred)
       aichat                     # Rust — Universal chat REPL
       gemini-cli                 # Rust — Gemini CLI
-      operator                   # Rust — Multi-agent orchestration TUI (untra/operator, overlay in modules/core/nix.nix)
 
       # AI Coding Assistants (Other)
       opencode                   # Go — Coding agent
