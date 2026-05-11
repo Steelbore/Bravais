@@ -49,12 +49,12 @@ modules/core/nix.nix       # Overlays live here (inline)
 modules/theme/             # Palette env vars, TTY colors, fonts
 modules/desktops/          # gnome, cosmic, plasma, niri, leftwm
 modules/login/             # greetd + tuigreet + shell sessions
-modules/packages/          # 12 opt-in bundles: ai, browsers, development, editors,
+modules/packages/          # 11 opt-in bundles: ai, browsers, development, editors,
                            #   flatpak, multimedia, networking, productivity,
                            #   security, system, terminals
 users/mj/default.nix       # System user definition
 users/mj/home.nix          # Home Manager config (~900 lines)
-overlays/                  # Reference overlay + claude-code-package-lock.json
+overlays/                  # Reference overlay (not imported — active overlays live in modules/core/nix.nix)
 lib/default.nix            # mkSteelboreModule helper, palette
 ```
 
@@ -93,7 +93,7 @@ After adding, update `PRD.md` (package inventory section) and `TODO.md` (relevan
 - **SPDX headers**: Every `.nix` file starts with `# SPDX-License-Identifier: GPL-3.0-or-later`
 - **Rust-first**: Prefer memory-safe alternatives (sudo-rs over sudo, Sequoia over GnuPG, Nushell over bash, etc.)
 - **Shells**: User shell = Nushell, root shell = Brush. Bash module stays enabled (PAM requirement) but is not assigned as any user's login shell.
-- **Default terminal**: Rio (for Niri `Mod+Return` and LeftWM `Mod+Return`)
+- **Default terminal**: Rio under Niri (`Mod+Return`); LeftWM uses alacritty for `Mod+Return` because Rio's wgpu backend renders blank under startx-spawned Xorg (rationale in `modules/desktops/leftwm.nix:258-260`)
 - **Default editor**: msedit (`EDITOR`/`VISUAL` in home.nix)
 - **Terminal configs**: All 15 terminals get Steelbore-themed system-level configs in `/etc/` with Nushell as shell
 - **ISO 8601**: All date/time displays use `%Y-%m-%d %H:%M:%S` 24h format
