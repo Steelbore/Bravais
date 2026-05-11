@@ -13,9 +13,25 @@ let
   # Foot requires hex colors without the '#' prefix
   h = c: builtins.substring 1 (builtins.stringLength c - 1) c;
 
-  # User-authored AI skills — single source of truth at /steelbore/skills/
-  # (separate GitHub repo). Symlinked individually (not whole-dir) so Codex's
-  # bundled .system/ namespace under .codex/skills/ stays untouched.
+  # User-authored AI skills — single source of truth at /steelbore/construct/
+  # (separate GitHub repo: github:Steelbore/Construct).
+  #
+  # Layout: ~/.agents/ is the canonical agent-config hub managed by HM.
+  # ~/.agents/skills/<skill> is a per-skill mkOutOfStoreSymlink to
+  # /steelbore/construct/<skill> — edits in the construct repo show up
+  # live, no rebuild needed. Every other AI tool dir gets a single
+  # <tool>/skills symlink → ~/.agents/skills, so all tools share one
+  # canonical skill location.
+  #
+  # .gemini intentionally NOT in the alias list — Gemini reads
+  # ~/.agents/ directly (per upstream config), so a .gemini/skills
+  # alias would be redundant.
+  #
+  # Trade-off vs the previous per-skill cross product: <tool>/skills is
+  # now a directory-level symlink, so any tool-specific bundled
+  # namespace (e.g. older Codex builds shipped a .codex/skills/.system/)
+  # would be shadowed. Acceptable per current design — no such bundle
+  # is in active use here.
   aiSkillNames = [
     "rust-guidelines"
     "steelbore-agentic-cli"
@@ -28,24 +44,34 @@ let
     "steelbore-standard"
     "steelbore-theme-factory"
   ];
+
+  # ~/.agents/skills/<skill> — the canonical hub. HM creates ~/.agents/
+  # and ~/.agents/skills/ as parents of these entries automatically.
+  agentsSkillLinks = builtins.listToAttrs (map (skill: {
+    name = ".agents/skills/${skill}";
+    value.source = config.lib.file.mkOutOfStoreSymlink
+      "/steelbore/construct/${skill}";
+  }) aiSkillNames);
+
+  # <tool>/skills → ~/.agents/skills — single directory-level link per
+  # tool. mkOutOfStoreSymlink so the link target is the live home dir
+  # (not a frozen store path).
   aiSkillToolDirs = [
-    ".agent/skills"
-    ".agents/skills"
-    ".ai/skills"
-    ".claude/skills"
-    ".codex/skills"
-    ".gemini/skills"
-    ".copilot/skills"
-    ".opencode/skills"
-    ".aichat/skills"
+    ".agent"
+    ".ai"
+    ".aichat"
+    ".claude"
+    ".codex"
+    ".copilot"
+    ".opencode"
   ];
-  aiSkillLinks = builtins.listToAttrs (lib.flatten (
-    map (toolDir: map (skill: {
-      name = "${toolDir}/${skill}";
-      value.source = config.lib.file.mkOutOfStoreSymlink
-        "/steelbore/skills/${skill}";
-    }) aiSkillNames) aiSkillToolDirs
-  ));
+  toolSkillsAliases = builtins.listToAttrs (map (tool: {
+    name = "${tool}/skills";
+    value.source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/.agents/skills";
+  }) aiSkillToolDirs);
+
+  aiSkillLinks = agentsSkillLinks // toolSkillsAliases;
 
   # Wallpaper daemon: upstream renamed swww → awww. On unstable both
   # exist (swww is a deprecation alias that warns); on stable 25.11
@@ -317,9 +343,9 @@ in
         }
 
 
-        # Pull latest AI skills from /steelbore/skills (decoupled from rebuild)
+        # Pull latest AI skills from /steelbore/construct (decoupled from rebuild)
         def skills-sync [] {
-          cd /steelbore/skills
+          cd /steelbore/construct
           git pull --ff-only
           print $"(date now | format date '%Y-%m-%d %H:%M:%S') skills synced"
         }

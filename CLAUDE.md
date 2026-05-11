@@ -60,16 +60,19 @@ lib/default.nix            # mkSteelboreModule helper, palette
 
 ## First-time bootstrap
 
-The Steelbore Skills repo (`github:Steelbore/Skills`) lives at
-`/steelbore/skills/` and is symlinked per-skill into every supported AI tool
-dir (`~/.claude/skills/`, `~/.codex/skills/`, `~/.gemini/skills/`,
-`~/.copilot/skills/`, `~/.opencode/skills/`, `~/.aichat/skills/`) by Home
-Manager — see `users/mj/home.nix:19-44`. On a fresh machine, clone it before
-the first `nixos-rebuild`:
+The Steelbore Construct repo (`github:Steelbore/Construct`) lives at
+`/steelbore/construct/` and is wired into a hub-and-spoke layout by Home
+Manager: `~/.agents/skills/<skill>` is a per-skill symlink to
+`/steelbore/construct/<skill>`, and `~/.agent/skills`, `~/.ai/skills`,
+`~/.aichat/skills`, `~/.claude/skills`, `~/.codex/skills`, `~/.copilot/skills`,
+`~/.opencode/skills` are each a single directory-level symlink to
+`~/.agents/skills`. `.gemini` is intentionally omitted — Gemini reads
+`~/.agents/` directly. See `users/mj/home.nix:16-72`. On a fresh machine,
+clone the source repo before the first `nixos-rebuild`:
 
 ```sh
 sudo mkdir -p /steelbore && sudo chown $USER /steelbore
-git clone git@github.com:Steelbore/Skills.git /steelbore/skills
+git clone git@github.com:Steelbore/Construct.git /steelbore/construct
 ```
 
 To pull updates later, run `skills-sync` (Nushell command). Sync is
