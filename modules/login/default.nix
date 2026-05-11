@@ -154,6 +154,13 @@ let
   leftwm-xinitrc = pkgs.writeShellScript "leftwm-xinitrc" ''
     export GDK_BACKEND=x11
     export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gitway-agent.sock"
+    # XDG_CURRENT_DESKTOP routes xdg-desktop-portal's per-DE config to
+    # the GTK appearance backend (see xdg.portal.config.leftwm in
+    # modules/theme/dark-mode.nix). Without it, the portal falls
+    # through to `common`, which under multi-DE configPackages can
+    # resolve appearance to a non-existent backend; libadwaita then
+    # silently launches light.
+    export XDG_CURRENT_DESKTOP=leftwm
     exec ${pkgs.dbus}/bin/dbus-run-session -- ${leftwm-session-inner}
   '';
 

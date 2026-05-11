@@ -56,6 +56,15 @@
       // Steelbore Niri Configuration
       // The Steelbore Standard — Scrolling Tiling
 
+      // Session-wide environment. Niri imports these into the systemd
+      // user manager's env, which xdg-desktop-portal-* and every
+      // spawn-at-startup child inherit. XDG_CURRENT_DESKTOP is what
+      // xdg-desktop-portal routes on (see xdg.portal.config.niri in
+      // modules/theme/dark-mode.nix).
+      environment {
+          XDG_CURRENT_DESKTOP "niri"
+      }
+
       layout {
           gaps 8
 

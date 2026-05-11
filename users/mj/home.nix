@@ -584,6 +584,13 @@ in
     "niri/config.kdl".text = ''
       // Steelbore Niri User Configuration
 
+      // XDG_CURRENT_DESKTOP routes xdg-desktop-portal lookups (see
+      // xdg.portal.config.niri in modules/theme/dark-mode.nix). Niri
+      // imports these into the systemd user env at session start.
+      environment {
+          XDG_CURRENT_DESKTOP "niri"
+      }
+
       layout {
           focus-ring {
               // off  — uncomment to disable; presence of the block enables it
@@ -1202,8 +1209,26 @@ in
     "XTerm*color15"                = steelborePalette.moltenAmber;
   };
 
-  # dconf settings for GNOME-based terminals (Ptyxis, GNOME Console)
+  # dconf settings for GNOME-based terminals (Ptyxis, GNOME Console) +
+  # system-wide dark-mode keys read by HM's gtk module, by Qt's adwaita
+  # platform theme, and by xdg-desktop-portal-gtk when it serves
+  # org.freedesktop.appearance.color-scheme to libadwaita apps under
+  # Niri / LeftWM. Identical color-scheme value to the one HM writes
+  # via `gtk.colorScheme = "dark"` — Nix attrset merge is a no-op when
+  # values match.
   dconf.settings = {
+    # ── Dark Mode (Niri + LeftWM appearance source) ─────────────────────────
+    "org/gnome/desktop/interface" = {
+      color-scheme        = "prefer-dark";
+      gtk-theme           = "adw-gtk3-dark";
+      icon-theme          = "Papirus-Dark";
+      cursor-theme        = "Bibata-Modern-Classic";
+      cursor-size         = 24;
+      font-name           = "Orbitron 11";
+      document-font-name  = "Orbitron 11";
+      monospace-font-name = "JetBrains Mono 11";
+    };
+
     # ── Ptyxis ──────────────────────────────────────────────────────────────
     "org/gnome/Ptyxis" = {
       default-profile-uuid = "steelbore";
@@ -1246,5 +1271,67 @@ in
       use-system-font = false;
       custom-font = "JetBrains Mono 12";
     };
+  };
+
+  # ─── System-wide Dark Mode (Niri + LeftWM) ───────────────────────────────
+  # Per-user side of modules/theme/dark-mode.nix. HM's gtk module writes
+  # ~/.config/gtk-{3,4}.0/settings.ini with the theme names and
+  # gtk-application-prefer-dark-theme=true; it also writes the matching
+  # gsettings keys via dconf. The qt module exports QT_QPA_PLATFORMTHEME +
+  # QT_STYLE_OVERRIDE through the systemd user env so Qt apps inherit
+  # them at process start. Under GNOME/COSMIC/Plasma sessions these are
+  # mostly inert — those DEs' own appearance daemons take precedence in
+  # their own sessions; this layer "wins" only under Niri / LeftWM.
+  gtk = {
+    enable = true;
+    theme = {
+      name = "adw-gtk3-dark";
+      package = pkgs.adw-gtk3;
+    };
+    # HM 25.11 deprecates the legacy gtk4.theme default at
+    # home.stateVersion >= "26.05" (it becomes null and HM stops writing
+    # gtk-theme-name into ~/.config/gtk-4.0/settings.ini). Bind it
+    # explicitly to keep the legacy behavior across the upgrade and
+    # silence the activation warning.
+    gtk4.theme = {
+      name = "adw-gtk3-dark";
+      package = pkgs.adw-gtk3;
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
+    cursorTheme = {
+      name = "Bibata-Modern-Classic";
+      package = pkgs.bibata-cursors;
+      size = 24;
+    };
+    font = {
+      name = "Orbitron";
+      size = 11;
+    };
+  };
+
+  qt = {
+    enable = true;
+    # `adwaita` brings in adwaita-qt(6) + qadwaitadecorations. HM marks
+    # `gnome` (qgnomeplatform) as deprecated in 25.11. `qtct` would need
+    # a runtime GUI to configure — not declarative.
+    platformTheme.name = "adwaita";
+    # `style.name` selects the widget style; -dark gives dark chrome
+    # immediately rather than relying on color-scheme inference.
+    style.name = "adwaita-dark";
+  };
+
+  # Single cursor across X11 + Wayland + GTK + .icons. Bibata ships
+  # cursor files for all backends in one package, so enabling every
+  # propagation path costs nothing.
+  home.pointerCursor = {
+    name = "Bibata-Modern-Classic";
+    package = pkgs.bibata-cursors;
+    size = 24;
+    gtk.enable = true;        # writes ~/.config/gtk-{3,4}.0/settings.ini cursor keys
+    x11.enable = true;        # writes ~/.Xresources + Xcursor.theme / .size
+    dotIcons.enable = true;   # writes ~/.icons/default/index.theme (XDG)
   };
 }

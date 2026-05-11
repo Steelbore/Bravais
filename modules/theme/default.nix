@@ -5,6 +5,7 @@
 {
   imports = [
     ./fonts.nix
+    ./dark-mode.nix
   ];
 
   # Environment variables for theme-aware applications
