@@ -18,6 +18,9 @@
 
   # X11 (for LeftWM)
   services.xserver.enable = true;
+  # Touchpad — natural (reverse) scrolling on X11 sessions (LeftWM, Plasma X11).
+  # Niri sets its own equivalent in its config.kdl.
+  services.libinput.touchpad.naturalScrolling = true;
   services.xserver.xkb = {
     layout = "us,ara";
     # `terminate:ctrl_alt_bksp` = emergency Xorg killswitch (zaps the

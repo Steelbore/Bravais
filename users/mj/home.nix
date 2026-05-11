@@ -607,7 +607,6 @@ in
       // (ksshaskpass) automatically. Cached for 24 h per the agent TTL.
       spawn-at-startup "gitway-add" "/home/mj/.ssh/id_ed25519"
 
-      // Input — natural-scroll intentionally absent (presence = enabled).
       input {
           keyboard {
               xkb {
@@ -618,6 +617,7 @@ in
           touchpad {
               tap
               accel-speed 0.3
+              natural-scroll
           }
       }
 
