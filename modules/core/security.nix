@@ -20,6 +20,14 @@
   # Polkit for privilege escalation
   security.polkit.enable = true;
 
+  # PAM service for gtklock (screen locker used by Niri and LeftWM). The
+  # gtklock package ships its own `etc/pam.d/gtklock` (auth include login)
+  # but NixOS doesn't link package PAM files into /etc/pam.d/ — without
+  # this declaration the service is unknown to PAM and gtklock rejects
+  # every password. Empty attrset = NixOS defaults (pam_unix), which is
+  # what `auth include login` resolves to here.
+  security.pam.services.gtklock = {};
+
   # SSH agent — provided by gitway-agent (NixOS module from the gitway flake;
   # imported in flake.nix). Disable system OpenSSH ssh-agent.service so it
   # doesn't race gitway-agent for $SSH_AUTH_SOCK. The OpenSSH CLI tools remain
