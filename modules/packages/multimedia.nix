@@ -25,6 +25,7 @@
       loupe                      # Rust — Image viewer
       viu                        # Rust — CLI image viewer
       emulsion                   # Rust — Image viewer
+      oculante                   # Rust — Image viewer with editing tools
 
       # Audio Recognition
       mousai                     # Rust — Song identification
