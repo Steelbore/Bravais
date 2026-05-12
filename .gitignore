@@ -9,6 +9,11 @@ result-*
 # Claude Code (local settings are machine-specific)
 .claude/settings.local.json
 
+# Agent context files (kept local, not version-controlled)
+CLAUDE.md
+AGENTS.md
+Chat.txt
+
 # Scratch files
 *.txt
 
