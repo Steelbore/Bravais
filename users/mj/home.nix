@@ -6,6 +6,7 @@
   lib,
   steelborePalette,
   gitway,
+  unstablePkgs,
   ...
 }:
 
@@ -124,10 +125,22 @@ in
     $DRY_RUN_CMD ${pkgs.tealdeer}/bin/tldr --update >/dev/null 2>&1 || true
   '';
 
-  # User packages
-  home.packages = with pkgs; [
+  # User packages. Stable (pkgs) for system-coupled tooling; unstable
+  # (unstablePkgs) for freshness-sensitive editors / FHS-wrapped IDEs /
+  # uv that iterate faster than the 6-month NixOS stable cadence.
+  # allowUnfree is set on the unstable import in flake.nix (covers
+  # vscode + cursor).
+  home.packages = (with pkgs; [
     sequoia-chameleon-gnupg
-  ];
+  ]) ++ (with unstablePkgs; [
+    uv                 # Python package + project manager
+    steam-run          # FHS environment for running Linux binaries
+    code-cursor-fhs    # Cursor editor (FHS variant)
+    kiro-fhs           # Kiro editor (FHS variant)
+    vscode-fhs         # VSCode (FHS variant)
+    antigravity-fhs    # Antigravity (FHS variant)
+    zed-editor-fhs     # Zed editor (FHS variant)
+  ]);
 
   # Programs
   programs = {

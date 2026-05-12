@@ -24,14 +24,14 @@
       mc                         # Midnight Commander
 
       # GUI Editors (Rust preferred)
-      zed-editor-fhs             # Rust — Fast collaborative (FHS variant)
+      # zed-editor-fhs moved to users/mj/home.nix (unstable channel via HM).
       lapce                      # Rust — Lightning fast
       neovide                    # Rust — Neovim GUI
       cosmic-edit                # Rust — COSMIC editor
 
       # GUI Editors (Standard)
       emacs-pgtk
-      vscode-fhs                  # Keep a single Code-family editor in system.path
+      # vscode-fhs moved to users/mj/home.nix (unstable channel via HM).
       gedit
     ];
   };

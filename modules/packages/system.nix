@@ -81,7 +81,7 @@
       t-rec                      # Rust — Terminal recorder
 
       # Containers & Virtualization
-      steam-run                  # FHS environment for running Linux binaries
+      # steam-run moved to users/mj/home.nix (unstable channel via HM).
       distrobox
       boxbuddy                   # Rust — Distrobox GUI
       host-spawn
@@ -110,7 +110,7 @@
 
       # ZFS
       zfs
-      antigravity-fhs            # Rust — FHS variant
+      # antigravity-fhs moved to users/mj/home.nix (unstable channel via HM).
 
       # Benchmarking
       phoronix-test-suite
