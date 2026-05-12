@@ -119,68 +119,101 @@
           }
       }
 
-      // Key bindings
+      // Key bindings.
+      //
+      // `hotkey-overlay-title="..."` populates Niri's show-hotkey-overlay
+      // cheatsheet. Binds WITHOUT a title are still active but hidden
+      // from the overlay — used here for secondary aliases (vim-style
+      // movement that mirrors arrow-key binds, mouse-wheel workspace
+      // nav, individual workspace 2-9 numbers that share the title of
+      // the Mod+1 anchor entry).
       binds {
           // Session
-          Mod+Shift+E { quit; }
-          Mod+Shift+L { spawn "gtklock"; }
-          // Re-display the keybind cheatsheet that Niri shows on startup.
+          Mod+Shift+E hotkey-overlay-title="Exit niri" { quit; }
+          Mod+Shift+L hotkey-overlay-title="Lock the Screen: gtklock" { spawn "gtklock"; }
           // `Slash` is Niri's KDL name for the `/` key (US layout produces
           // `?` when shifted) — consistent with our use of symbolic names
           // (Minus, Equal, Return) elsewhere in the bind table.
-          Mod+Shift+Slash { show-hotkey-overlay; }
+          Mod+Shift+Slash hotkey-overlay-title="Show Important Hotkeys" { show-hotkey-overlay; }
 
           // Applications
-          Mod+Return { spawn "rio"; }
-          Mod+D { spawn "anyrun"; }
+          Mod+Return hotkey-overlay-title="Open a Terminal: rio" { spawn "rio"; }
+          Mod+D hotkey-overlay-title="Run an Application: anyrun" { spawn "anyrun"; }
 
           // Window management
-          Mod+Q { close-window; }
-          Mod+F { maximize-column; }
-          Mod+Shift+F { fullscreen-window; }
+          Mod+Q hotkey-overlay-title="Close Focused Window" { close-window; }
+          Mod+F hotkey-overlay-title="Maximize Column" { maximize-column; }
+          Mod+Shift+F hotkey-overlay-title="Fullscreen Window" { fullscreen-window; }
 
-          // Focus
-          Mod+Left  { focus-column-left; }
-          Mod+Right { focus-column-right; }
-          Mod+Up    { focus-window-up; }
-          Mod+Down  { focus-window-down; }
+          // Floating
+          Mod+V hotkey-overlay-title="Toggle Window Floating" { toggle-window-floating; }
+          Mod+Shift+V hotkey-overlay-title="Switch Focus Floating/Tiling" { switch-focus-between-floating-and-tiling; }
+
+          // Overview
+          Mod+O hotkey-overlay-title="Open the Overview" { toggle-overview; }
+
+          // Focus — arrow-key primaries appear in the overlay; vim
+          // duplicates are silent secondary aliases.
+          Mod+Left  hotkey-overlay-title="Focus Column to the Left"  { focus-column-left; }
+          Mod+Right hotkey-overlay-title="Focus Column to the Right" { focus-column-right; }
+          Mod+Up    hotkey-overlay-title="Focus Window Up"           { focus-window-up; }
+          Mod+Down  hotkey-overlay-title="Focus Window Down"         { focus-window-down; }
           Mod+H { focus-column-left; }
           Mod+L { focus-column-right; }
           Mod+K { focus-window-up; }
           Mod+J { focus-window-down; }
 
-          // Move windows
+          // Move windows — Mod+Ctrl+arrows primaries (matches Niri's
+          // default-config idioms); Mod+Shift+arrows and vim variants
+          // are silent secondary aliases for muscle memory.
+          Mod+Ctrl+Left  hotkey-overlay-title="Move Column Left"   { move-column-left; }
+          Mod+Ctrl+Right hotkey-overlay-title="Move Column Right"  { move-column-right; }
+          Mod+Ctrl+Up    hotkey-overlay-title="Move Window Up"     { move-window-up; }
+          Mod+Ctrl+Down  hotkey-overlay-title="Move Window Down"   { move-window-down; }
           Mod+Shift+Left  { move-column-left; }
           Mod+Shift+Right { move-column-right; }
           Mod+Shift+Up    { move-window-up; }
           Mod+Shift+Down  { move-window-down; }
-          // Mod+Shift+L is reserved for gtklock above; Mod+Shift+Right
-          // covers move-column-right.
+          // Mod+Shift+L is reserved for gtklock; vim moves use H/K/J only.
           Mod+Shift+H { move-column-left; }
           Mod+Shift+K { move-window-up; }
           Mod+Shift+J { move-window-down; }
 
-          // Workspaces
-          Mod+1 { focus-workspace 1; }
+          // Consume / Expel (column-folding) — square brackets per the
+          // Niri default-config idiom. `BracketLeft`/`BracketRight` are
+          // Niri's KDL names for `[`/`]`.
+          Mod+BracketLeft  hotkey-overlay-title="Consume Window into Column" { consume-or-expel-window-left; }
+          Mod+BracketRight hotkey-overlay-title="Expel Window into New Column" { consume-or-expel-window-right; }
+
+          // Workspaces (Mod+1 is the anchor; 2-5 share the same
+          // semantic title so the overlay isn't flooded).
+          Mod+1 hotkey-overlay-title="Switch to Workspace 1-5" { focus-workspace 1; }
           Mod+2 { focus-workspace 2; }
           Mod+3 { focus-workspace 3; }
           Mod+4 { focus-workspace 4; }
           Mod+5 { focus-workspace 5; }
-          Mod+Shift+1 { move-column-to-workspace 1; }
+          Mod+Shift+1 hotkey-overlay-title="Move Column to Workspace 1-5" { move-column-to-workspace 1; }
           Mod+Shift+2 { move-column-to-workspace 2; }
           Mod+Shift+3 { move-column-to-workspace 3; }
           Mod+Shift+4 { move-column-to-workspace 4; }
           Mod+Shift+5 { move-column-to-workspace 5; }
 
+          // Workspace navigation (relative)
+          Mod+Page_Down hotkey-overlay-title="Switch Workspace Down" { focus-workspace-down; }
+          Mod+Page_Up   hotkey-overlay-title="Switch Workspace Up"   { focus-workspace-up; }
+          Mod+Ctrl+Page_Down hotkey-overlay-title="Move Column to Workspace Down" { move-column-to-workspace-down; }
+          Mod+Ctrl+Page_Up   hotkey-overlay-title="Move Column to Workspace Up"   { move-column-to-workspace-up; }
+          Mod+Tab hotkey-overlay-title="Switch to Previous Workspace" { focus-workspace-previous; }
+
           // Resize
-          Mod+R { switch-preset-column-width; }
-          Mod+Minus { set-column-width "-10%"; }
-          Mod+Equal { set-column-width "+10%"; }
+          Mod+R     hotkey-overlay-title="Switch Preset Column Widths" { switch-preset-column-width; }
+          Mod+Minus hotkey-overlay-title="Decrease Column Width" { set-column-width "-10%"; }
+          Mod+Equal hotkey-overlay-title="Increase Column Width" { set-column-width "+10%"; }
 
           // Screenshots
-          Print { screenshot; }
-          Mod+Print { screenshot-window; }
-          Mod+Shift+Print { screenshot-screen; }
+          Print           hotkey-overlay-title="Take a Screenshot" { screenshot; }
+          Mod+Print       hotkey-overlay-title="Screenshot Window" { screenshot-window; }
+          Mod+Shift+Print hotkey-overlay-title="Screenshot Screen" { screenshot-screen; }
       }
     '';
 
