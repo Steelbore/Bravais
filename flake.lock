@@ -26,11 +26,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777971718,
-        "narHash": "sha256-rm/DHPOiSs/2aAMM0ZsAEM6hFQFBAMs3JNz58RfBD/Y=",
+        "lastModified": 1778612424,
+        "narHash": "sha256-qLpElR3PHLE9EqB/NrRuSelxBa9xmQdtGcYY+W5XQ9A=",
         "owner": "Steelbore",
         "repo": "Gitway",
-        "rev": "48840459ba860523b3aa74b36bef4107450d14cc",
+        "rev": "4d7a953f456cfeab47eb3e781713798f6e318314",
         "type": "github"
       },
       "original": {
