@@ -255,6 +255,13 @@ in
         # spawned inside a DE) inherit the PAM-set value.
         $env.SSH_AUTH_SOCK = $"/run/user/(id -u)/gitway-agent.sock"
 
+        # Override Nushell's default PROMPT_MULTILINE_INDICATOR (which ships
+        # with ANSI color codes baked in). systemd's `import-environment`
+        # refuses to inherit variables whose value contains control chars
+        # and emits a warning when niri starts; a plain-ASCII value silences
+        # it. The visible UX is identical except the indicator is uncolored.
+        $env.PROMPT_MULTILINE_INDICATOR = "::: "
+
         # Steelbore palette — kept in sync with flake.nix steelborePalette.
         # Nushell needs literals; env-var interpolation isn't available inside
         # color_config records.
@@ -674,6 +681,11 @@ in
           // Session
           Mod+Shift+E { quit; }
           Mod+Shift+L { spawn "gtklock"; }
+          // Re-display the keybind cheatsheet that Niri shows on startup.
+          // `Slash` is Niri's KDL name for the `/` key (US layout produces
+          // `?` when shifted) — consistent with our use of symbolic names
+          // (Minus, Equal, Return) elsewhere in the bind table.
+          Mod+Shift+Slash { show-hotkey-overlay; }
 
           // Applications
           Mod+Return { spawn "rio"; }

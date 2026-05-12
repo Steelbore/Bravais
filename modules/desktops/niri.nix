@@ -124,6 +124,11 @@
           // Session
           Mod+Shift+E { quit; }
           Mod+Shift+L { spawn "gtklock"; }
+          // Re-display the keybind cheatsheet that Niri shows on startup.
+          // `Slash` is Niri's KDL name for the `/` key (US layout produces
+          // `?` when shifted) — consistent with our use of symbolic names
+          // (Minus, Equal, Return) elsewhere in the bind table.
+          Mod+Shift+Slash { show-hotkey-overlay; }
 
           // Applications
           Mod+Return { spawn "rio"; }
