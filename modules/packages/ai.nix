@@ -39,9 +39,10 @@
       ollama-cpu                 # Go — CPU-only Ollama (local LLM server)
     ])
     # claude-code: always from nixpkgs-unstable via specialArgs threading.
-    ++ [ unstablePkgs.claude-code ]
-    # grok-cli is unstable-only at the moment (added to nixpkgs after 25.11
-    # branched). Include it conditionally so stable builds still evaluate.
-    ++ lib.optional (pkgs ? grok-cli) pkgs.grok-cli;
+    ++ [ unstablePkgs.claude-code ];
   };
 }
+# grok-cli moved to users/mj/home.nix (unstable channel via HM) — it's
+# unstable-only at the moment (added to nixpkgs after 25.11 branched),
+# so HM-via-unstable is the right home rather than a stable-system
+# conditional include.

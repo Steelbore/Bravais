@@ -127,9 +127,9 @@ in
 
   # User packages. Stable (pkgs) for system-coupled tooling; unstable
   # (unstablePkgs) for freshness-sensitive editors / FHS-wrapped IDEs /
-  # uv that iterate faster than the 6-month NixOS stable cadence.
-  # allowUnfree is set on the unstable import in flake.nix (covers
-  # vscode + cursor).
+  # AI CLIs / uv that iterate faster than the 6-month NixOS stable
+  # cadence. allowUnfree is set on the unstable import in flake.nix
+  # (covers vscode + cursor).
   home.packages = (with pkgs; [
     sequoia-chameleon-gnupg
   ]) ++ (with unstablePkgs; [
@@ -140,6 +140,9 @@ in
     vscode-fhs         # VSCode (FHS variant)
     antigravity-fhs    # Antigravity (FHS variant)
     zed-editor-fhs     # Zed editor (FHS variant)
+
+    # AI CLIs (kept here when they're unstable-only or freshness-tracked)
+    grok-cli           # xAI's Grok CLI agent
   ]);
 
   # Programs
