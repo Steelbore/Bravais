@@ -27,6 +27,13 @@
     # Gitway — Steelbore's SSH transport for Git (tracks main)
     gitway.url = "github:Steelbore/Gitway";
     gitway.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
+    # Kimi Code CLI — Moonshot's terminal coding agent (Python). Upstream
+    # ships a flake with packages.${system}.default = `kimi`. Threaded the
+    # same way as gitway (specialArgs + extraSpecialArgs) per CLAUDE.md
+    # constraint #7, not as an overlay.
+    kimi-cli.url = "github:MoonshotAI/kimi-cli";
+    kimi-cli.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
   outputs =
@@ -38,6 +45,7 @@
       home-manager-unstable,
       nix-flatpak,
       gitway,
+      kimi-cli,
       ...
     }:
     let
@@ -92,7 +100,7 @@
         in
         ch.pkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit steelborePalette gitway unstablePkgs; };
+          specialArgs = { inherit steelborePalette gitway kimi-cli unstablePkgs; };
           modules = [
             # External modules
             ch.hm.nixosModules.home-manager
@@ -115,7 +123,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = { inherit steelborePalette gitway unstablePkgs; };
+              home-manager.extraSpecialArgs = { inherit steelborePalette gitway kimi-cli unstablePkgs; };
               home-manager.users.mj = import ./users/mj/home.nix;
             }
           ];

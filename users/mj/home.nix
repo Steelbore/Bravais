@@ -6,6 +6,7 @@
   lib,
   steelborePalette,
   gitway,
+  kimi-cli,
   unstablePkgs,
   ...
 }:
@@ -143,7 +144,11 @@ in
 
     # AI CLIs (kept here when they're unstable-only or freshness-tracked)
     grok-cli           # xAI's Grok CLI agent
-  ]);
+  ]) ++ [
+    # AI CLIs from upstream flakes (no nixpkgs entry). Threaded via
+    # specialArgs per CLAUDE.md constraint #7 — same idiom as gitway.
+    kimi-cli.packages.${pkgs.stdenv.hostPlatform.system}.default  # Moonshot's Kimi Code agent
+  ];
 
   # Programs
   programs = {
