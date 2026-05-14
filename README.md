@@ -137,15 +137,15 @@ All profiles share: `-O3 -flto=auto -mpclmul` (v2+) and full security hardening
 
 ## Flake Inputs
 
-| Input | Channel | Purpose |
-|-------|---------|---------|
+| Input | Reference | Purpose |
+|-------|-----------|---------|
 | `nixpkgs` | 25.11 stable | Core package set (all packages) |
 | `home-manager` | release-25.11 | Home Manager (follows `nixpkgs`) |
 | `nixpkgs-unstable` | nixos-unstable (rolling) | Bleeding-edge package set |
 | `home-manager-unstable` | main (rolling) | Home Manager (follows `nixpkgs-unstable`) |
-| `nix-flatpak` | gmodena/nix-flatpak | Declarative Flatpak module |
-| `gitway` | Steelbore/Gitway (main) | SSH agent/session integration |
-| `kimi-cli` | MoonshotAI/kimi-cli | Kimi Code CLI integration |
+| `nix-flatpak` | default branch (rolling) | Declarative Flatpak module |
+| `gitway` | main (rolling) | SSH agent/session integration |
+| `kimi-cli` | default branch (rolling) | Kimi Code CLI integration |
 
 ## Host Configuration Pattern
 
