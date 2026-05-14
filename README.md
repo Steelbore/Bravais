@@ -6,7 +6,7 @@ Bravais is a meticulously crafted, flake-based NixOS configuration implementing 
 
 The design of Bravais is guided by four primary tenets:
 
-1. **Rust-First Ecosystem (Memory Safety):** Extreme priority is given to tools written in memory-safe languages. Bravais replaces legacy C-based utilities with robust Rust equivalents—ranging from core privilege escalation (`sudo-rs` completely replacing standard `sudo`) to terminal emulators, status bars (`ironbar`), and application launchers (`anyrun`, `onagre`).
+1. **Rust-First Ecosystem (Memory Safety):** Extreme priority is given to tools written in memory-safe languages. Bravais prioritizes robust Rust-native tooling across the stack—from core privilege escalation (`sudo-rs` completely replacing standard `sudo`) to terminal tooling, status bars (`eww`), and application launchers (`anyrun`).
 
 2. **Opt-in Modularity:** Every feature, hardware profile, and application set is structurally siloed inside its own module using Nix's `lib.mkEnableOption`. Hosts boot only exactly what they explicitly declare via the `steelbore.*` namespace.
 
@@ -45,11 +45,11 @@ bravais/
 │   │   ├── default.nix            # Desktop module entry
 │   │   ├── gnome.nix              # GNOME on Wayland (de-bloated)
 │   │   ├── cosmic.nix             # COSMIC DE on Wayland
-│   │   ├── niri.nix               # Niri + Ironbar (The Steelbore Standard)
-│   │   └── leftwm.nix             # LeftWM + Polybar on X11
+│   │   ├── plasma.nix             # KDE Plasma 6 (Wayland/X11 session support)
+│   │   ├── niri.nix               # Niri + Eww (The Steelbore Standard)
+│   │   └── leftwm.nix             # LeftWM + Eww/Polybar on X11
 │   ├── login/                     # Display/login managers
-│   │   ├── default.nix            # Login module entry
-│   │   └── greetd.nix             # greetd + tuigreet
+│   │   └── default.nix            # Complete greetd + tuigreet login module
 │   └── packages/                  # Application bundles (opt-in)
 │       ├── default.nix            # Package module entry
 │       ├── browsers.nix           # Web browsers
@@ -61,7 +61,8 @@ bravais/
 │       ├── multimedia.nix         # Media players & processing
 │       ├── productivity.nix       # Office & notes
 │       ├── system.nix             # System utilities (modern Unix, Docker + Youki OCI)
-│       └── ai.nix                 # AI coding assistants
+│       ├── ai.nix                 # AI coding assistants
+│       └── flatpak.nix            # Declarative Flatpak app management
 ├── users/                         # User profiles
 │   └── mj/                        # User "mj"
 │       ├── default.nix            # System-level user config
@@ -86,14 +87,15 @@ bravais/
 
 ## Desktop Environments
 
-Bravais officially provisions definitions for four primary desktop targets:
+Bravais officially provisions definitions for five primary desktop targets:
 
 | Desktop | Protocol | Status Bar | Launcher | Description |
 |---------|----------|------------|----------|-------------|
-| **Niri** | Wayland | Ironbar | onagre/anyrun | *The Steelbore Standard* — Scrolling tiling compositor |
+| **Niri** | Wayland | Eww | anyrun | *The Steelbore Standard* — Scrolling tiling compositor |
 | **COSMIC** | Wayland | cosmic-panel | cosmic-launcher | System76's fully Rust-based desktop |
 | **GNOME** | Wayland | GNOME Shell | GNOME | De-bloated GNOME with curated extensions |
-| **LeftWM** | X11 | Polybar | rlaunch/rofi | High-performance Rust tiling fallback |
+| **Plasma 6** | Wayland/X11 | Plasma Panel | KRunner | KDE Plasma with Steelbore defaults |
+| **LeftWM** | X11 | Eww (Polybar transition) | rlaunch/rofi | High-performance Rust tiling fallback |
 
 ## Terminal Emulators
 
@@ -135,12 +137,15 @@ All profiles share: `-O3 -flto=auto -mpclmul` (v2+) and full security hardening
 
 ## Flake Inputs
 
-| Input | Channel | Purpose |
-|-------|---------|---------|
+| Input | Reference | Purpose |
+|-------|-----------|---------|
 | `nixpkgs` | 25.11 stable | Core package set (all packages) |
 | `home-manager` | release-25.11 | Home Manager (follows `nixpkgs`) |
 | `nixpkgs-unstable` | nixos-unstable (rolling) | Bleeding-edge package set |
 | `home-manager-unstable` | main (rolling) | Home Manager (follows `nixpkgs-unstable`) |
+| `nix-flatpak` | default branch (rolling) | Declarative Flatpak module |
+| `gitway` | main (rolling) | SSH agent/session integration |
+| `kimi-cli` | default branch (rolling) | Kimi Code CLI integration |
 
 ## Host Configuration Pattern
 
@@ -152,6 +157,7 @@ Hosts toggle modules declaratively via the `steelbore.*` namespace:
     # Desktop environments
     desktops.gnome.enable = true;
     desktops.cosmic.enable = true;
+    desktops.plasma.enable = true;
     desktops.niri.enable = true;
     desktops.leftwm.enable = true;
 
@@ -173,6 +179,7 @@ Hosts toggle modules declaratively via the `steelbore.*` namespace:
     packages.productivity.enable = true;
     packages.system.enable = true;
     packages.ai.enable = true;
+    packages.flatpak.enable = true;
   };
 }
 ```
@@ -203,6 +210,7 @@ sudo nixos-rebuild switch --flake .#bravais-v4   # AVX-512 (same as .#bravais)
 
 # Switch to unstable channel (bleeding-edge packages)
 sudo nixos-rebuild switch --flake .#bravais-unstable       # AVX-512 / v4
+sudo nixos-rebuild switch --flake .#bravais-unstable-v2    # SSE4.2 (ALHP-derived)
 sudo nixos-rebuild switch --flake .#bravais-unstable-v3    # AVX2
 sudo nixos-rebuild switch --flake .#bravais-unstable-v1    # Baseline x86-64
 ```
@@ -230,4 +238,4 @@ sudo nixos-rebuild switch --flake .#bravais-unstable-v1    # Baseline x86-64
 | **Total** | **107** | **78** | **185** |
 
 ---
-*Bravais (A Steelbore NixOS Distribution)* | *Version 2.0*
+*Bravais (A Steelbore NixOS Distribution)* | *Version 2.1*
