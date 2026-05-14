@@ -6,7 +6,7 @@ Bravais is a meticulously crafted, flake-based NixOS configuration implementing 
 
 The design of Bravais is guided by four primary tenets:
 
-1. **Rust-First Ecosystem (Memory Safety):** Extreme priority is given to tools written in memory-safe languages. Bravais replaces legacy C-based utilities with robust Rust equivalents—ranging from core privilege escalation (`sudo-rs` completely replacing standard `sudo`) to terminal emulators, status bars (`eww`), and application launchers (`anyrun`).
+1. **Rust-First Ecosystem (Memory Safety):** Extreme priority is given to tools written in memory-safe languages. Bravais prioritizes robust Rust-native tooling across the stack—from core privilege escalation (`sudo-rs` completely replacing standard `sudo`) to terminal tooling, status bars (`eww`), and application launchers (`anyrun`).
 
 2. **Opt-in Modularity:** Every feature, hardware profile, and application set is structurally siloed inside its own module using Nix's `lib.mkEnableOption`. Hosts boot only exactly what they explicitly declare via the `steelbore.*` namespace.
 
@@ -49,7 +49,7 @@ bravais/
 │   │   ├── niri.nix               # Niri + Eww (The Steelbore Standard)
 │   │   └── leftwm.nix             # LeftWM + Eww/Polybar on X11
 │   ├── login/                     # Display/login managers
-│   │   └── default.nix            # greetd + tuigreet login stack
+│   │   └── default.nix            # Complete greetd + tuigreet login module
 │   └── packages/                  # Application bundles (opt-in)
 │       ├── default.nix            # Package module entry
 │       ├── browsers.nix           # Web browsers
@@ -95,7 +95,7 @@ Bravais officially provisions definitions for five primary desktop targets:
 | **COSMIC** | Wayland | cosmic-panel | cosmic-launcher | System76's fully Rust-based desktop |
 | **GNOME** | Wayland | GNOME Shell | GNOME | De-bloated GNOME with curated extensions |
 | **Plasma 6** | Wayland/X11 | Plasma Panel | KRunner | KDE Plasma with Steelbore defaults |
-| **LeftWM** | X11 | Eww/Polybar | rlaunch/rofi | High-performance Rust tiling fallback |
+| **LeftWM** | X11 | Eww (Polybar transition) | rlaunch/rofi | High-performance Rust tiling fallback |
 
 ## Terminal Emulators
 
