@@ -49,7 +49,6 @@ bravais/
 │   │   ├── niri.nix               # Niri + Eww (The Steelbore Standard)
 │   │   └── leftwm.nix             # LeftWM + Eww/Polybar on X11
 │   ├── login/                     # Display/login managers
-│   │   ├── default.nix            # Login module entry
 │   │   └── default.nix            # greetd + tuigreet login stack
 │   └── packages/                  # Application bundles (opt-in)
 │       ├── default.nix            # Package module entry
@@ -211,7 +210,6 @@ sudo nixos-rebuild switch --flake .#bravais-v4   # AVX-512 (same as .#bravais)
 
 # Switch to unstable channel (bleeding-edge packages)
 sudo nixos-rebuild switch --flake .#bravais-unstable       # AVX-512 / v4
-sudo nixos-rebuild switch --flake .#bravais-unstable-v4    # AVX-512
 sudo nixos-rebuild switch --flake .#bravais-unstable-v2    # SSE4.2 (ALHP-derived)
 sudo nixos-rebuild switch --flake .#bravais-unstable-v3    # AVX2
 sudo nixos-rebuild switch --flake .#bravais-unstable-v1    # Baseline x86-64
