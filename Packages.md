@@ -28,7 +28,7 @@
 
 ### **2. Desktop & Window Management**
 * **Window Managers & Sessions**
-    * **niri** 🦀 `[Wayland]` *(The Steelbore Standard scrollable tiling manager)*
+    * **niri** 🦀 `[Wayland]` *(The Spacecraft Software Standard scrollable tiling manager)*
     * **leftwm** 🦀 `[X11]` *(Lightweight, themeable X11 tiling window manager)*
     * **COSMIC DE** 🦀 `[Wayland]` *(System76's Rust-based desktop environment)*
     * **cosmic-session** 🦀 `[CLI ⌨️]` *(COSMIC Session Manager)*
@@ -43,7 +43,7 @@
 
 ### **3. System Monitoring & Panels**
 * **Bars & Widgets**
-    * **Ironbar** 🦀 `[GUI 🖱️]` *(The "Steelbore" GTK4 taskbar/panel)*
+    * **Ironbar** 🦀 `[GUI 🖱️]` *(The "Spacecraft Software" GTK4 taskbar/panel)*
     * **eww** 🦀 `[GUI 🖱️]` *(ElKowars wacky widgets - custom UI creator)*
 * **Notifications**
     * **wired** 🦀 `[Daemon]` *(Lightweight, customizable notification daemon)*
@@ -109,7 +109,7 @@
     * **delta** 🦀 `[CLI ⌨️]` *(Syntax-highlighting pager for git diffs)*
     * **jujutsu (jj)** 🦀 `[CLI ⌨️]` *(Git-compatible DVCS with a focus on simplicity)*
     * **cpx** 🦀 `[CLI ⌨️]` *(Competitive Programming Helper tool)*
-    * **Gitway** 🦀 `[CLI ⌨️]` *(Steelbore SSH transport for Git — drop-in for ssh-add / ssh-keygen / GIT_SSH_COMMAND)*
+    * **Gitway** 🦀 `[CLI ⌨️]` *(Spacecraft Software SSH transport for Git — drop-in for ssh-add / ssh-keygen / GIT_SSH_COMMAND)*
 * **Containers**
     * **Podman** 🐹 `[CLI ⌨️]` *(Daemonless, Docker-compatible container engine)*
 * **Toolchains & Env**

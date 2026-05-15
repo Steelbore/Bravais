@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — greetd + tuigreet Login Manager
-{ config, lib, pkgs, steelborePalette, gitway, ... }:
+# Spacecraft Software Bravais — greetd + tuigreet Login Manager
+{ config, lib, pkgs, spacecraftPalette, gitway, ... }:
 
 let
   # Wrap each shell-as-session in cage (single-app Wayland kiosk) plus rio
@@ -130,7 +130,7 @@ let
     ${pkgs.eww}/bin/eww open bar &
     ${pkgs.numlockx}/bin/numlockx on &
     ${gitway.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/gitway-add "$HOME/.ssh/id_ed25519" &
-    # After leftwm is up, force-apply the Steelbore theme and re-set the
+    # After leftwm is up, force-apply the Spacecraft Software theme and re-set the
     # root background. Both calls must happen AFTER leftwm starts:
     #
     # - leftwm 0.5.4 does not auto-load themes/current/theme.ron on
@@ -146,7 +146,7 @@ let
     (
       sleep 1
       ${pkgs.leftwm}/bin/leftwm-command "LoadTheme $HOME/.config/leftwm/themes/current/theme.ron"
-      ${xsetrootPkg}/bin/xsetroot -solid '${steelborePalette.voidNavy}'
+      ${xsetrootPkg}/bin/xsetroot -solid '${spacecraftPalette.voidNavy}'
     ) &
     exec ${pkgs.leftwm}/bin/leftwm
   '';

@@ -26,15 +26,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1778612424,
-        "narHash": "sha256-qLpElR3PHLE9EqB/NrRuSelxBa9xmQdtGcYY+W5XQ9A=",
-        "owner": "Steelbore",
+        "lastModified": 1778867508,
+        "narHash": "sha256-/vp7cKph1g5Vih04A68hG9PXBdznATQ+o5GHmcKl0V4=",
+        "owner": "Spacecraft-Software",
         "repo": "Gitway",
-        "rev": "4d7a953f456cfeab47eb3e781713798f6e318314",
+        "rev": "101a3e3fbb945f6a7d5e4b1b4d868c578acd865b",
         "type": "github"
       },
       "original": {
-        "owner": "Steelbore",
+        "owner": "Spacecraft-Software",
         "repo": "Gitway",
         "type": "github"
       }

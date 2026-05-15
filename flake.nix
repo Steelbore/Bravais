@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 {
-  description = "Bravais — A Steelbore NixOS Distribution";
+  description = "Bravais — A Spacecraft Software NixOS Distribution";
 
   inputs = {
     # Core (Stable — 25.11)
@@ -24,8 +24,8 @@
     # Declarative Flatpak management
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
-    # Gitway — Steelbore's SSH transport for Git (tracks main)
-    gitway.url = "github:Steelbore/Gitway";
+    # Gitway — Spacecraft Software's SSH transport for Git (tracks main)
+    gitway.url = "github:Spacecraft-Software/Gitway";
     gitway.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     # Kimi Code CLI — Moonshot's terminal coding agent (Python). Upstream
@@ -51,8 +51,8 @@
     let
       system = "x86_64-linux";
 
-      # Steelbore color palette as a reusable attribute set
-      steelborePalette = {
+      # Spacecraft Software color palette as a reusable attribute set
+      spacecraftPalette = {
         voidNavy    = "#000027";
         moltenAmber = "#D98E32";
         steelBlue   = "#4B7EB0";
@@ -100,7 +100,7 @@
         in
         ch.pkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit steelborePalette gitway kimi-cli unstablePkgs; };
+          specialArgs = { inherit spacecraftPalette gitway kimi-cli unstablePkgs; };
           modules = [
             # External modules
             ch.hm.nixosModules.home-manager
@@ -118,12 +118,12 @@
 
             # Profile + Home Manager integration
             {
-              steelbore.hardware.intel.marchLevel = marchLevel;
+              spacecraft.hardware.intel.marchLevel = marchLevel;
 
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = { inherit steelborePalette gitway kimi-cli unstablePkgs; };
+              home-manager.extraSpecialArgs = { inherit spacecraftPalette gitway kimi-cli unstablePkgs; };
               home-manager.users.mj = import ./users/mj/home.nix;
             }
           ];

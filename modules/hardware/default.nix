@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Hardware Module Entry Point
+# Spacecraft Software Bravais — Hardware Module Entry Point
 { config, lib, pkgs, ... }:
 
 {

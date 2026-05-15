@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Security Configuration
+# Spacecraft Software Bravais — Security Configuration
 {
   config,
   lib,

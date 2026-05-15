@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Office and Productivity Applications
+# Spacecraft Software Bravais — Office and Productivity Applications
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.packages.productivity = {
+  options.spacecraft.packages.productivity = {
     enable = lib.mkEnableOption "Office and productivity applications";
   };
 
-  config = lib.mkIf config.steelbore.packages.productivity.enable {
+  config = lib.mkIf config.spacecraft.packages.productivity.enable {
     environment.systemPackages = with pkgs; [
       # Knowledge Management (Rust preferred)
       appflowy                   # Rust — Open source Notion

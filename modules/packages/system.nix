@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — System Utilities and Modern Unix Tools
+# Spacecraft Software Bravais — System Utilities and Modern Unix Tools
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.packages.system = {
+  options.spacecraft.packages.system = {
     enable = lib.mkEnableOption "System utilities and modern Unix tools";
   };
 
-  config = lib.mkIf config.steelbore.packages.system.enable {
+  config = lib.mkIf config.spacecraft.packages.system.enable {
     environment.systemPackages = with pkgs; [
       # Modern Unix (Rust preferred)
       fd                         # Rust — find replacement

@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Development Tools and Languages
+# Spacecraft Software Bravais — Development Tools and Languages
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.packages.development = {
+  options.spacecraft.packages.development = {
     enable = lib.mkEnableOption "Development tools and languages";
   };
 
-  config = lib.mkIf config.steelbore.packages.development.enable {
+  config = lib.mkIf config.spacecraft.packages.development.enable {
     environment.systemPackages = with pkgs; [
       # Git & Version Control (Rust preferred)
       git

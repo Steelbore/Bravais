@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Text Editors and IDEs
+# Spacecraft Software Bravais — Text Editors and IDEs
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.packages.editors = {
+  options.spacecraft.packages.editors = {
     enable = lib.mkEnableOption "Text editors and IDEs";
   };
 
-  config = lib.mkIf config.steelbore.packages.editors.enable {
+  config = lib.mkIf config.spacecraft.packages.editors.enable {
     environment.systemPackages = with pkgs; [
       # Linting
       markdownlint-cli2           # Markdown linter

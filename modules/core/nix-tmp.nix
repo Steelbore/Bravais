@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Loop-mounted /mnt/nix-tmp for Nix builder TMPDIR
+# Spacecraft Software Bravais — Loop-mounted /mnt/nix-tmp for Nix builder TMPDIR
 #
 # Move Nix's working set off the system disk and onto a 40 GiB ext4
 # loop image on the user's Expansion external drive. udisks2 mounts

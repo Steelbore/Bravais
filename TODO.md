@@ -13,10 +13,10 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] Configure home-manager input (stable `release-25.11`, follows nixpkgs)
 - [✓] Configure home-manager-unstable input (follows nixpkgs-unstable)
 - [✓] Configure nix-flatpak input
-- [✓] Configure gitway input (`github:Steelbore/Gitway`, tracks `main`; threaded via `specialArgs` / `extraSpecialArgs`)
+- [✓] Configure gitway input (`github:Spacecraft-Software/Gitway`, tracks `main`; threaded via `specialArgs` / `extraSpecialArgs`)
 - [✓] Define `mkBravais` function with `marchLevel` and `channel` parameters
 - [✓] Generate 10 `nixosConfigurations` (5 stable + 5 unstable, v1-v4 each)
-- [✓] Set up `steelborePalette` in specialArgs
+- [✓] Set up `spacecraftPalette` in specialArgs
 - [✓] ~~Pass `stablePkgs` to modules via specialArgs~~ (removed — claude-code now uses channel-appropriate `pkgs`)
 - [✓] Build folder hierarchy (`hosts/`, `modules/`, `lib/`, `users/`, `overlays/`)
 
@@ -55,7 +55,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ## Phase 3: Theme Engine (`modules/theme/`)
 
-- [✓] **`default.nix`**: Define `STEELBORE_*` environment variables (6 colors)
+- [✓] **`default.nix`**: Define `SPACECRAFT_*` environment variables (6 colors)
 - [✓] **`default.nix`**: Configure TTY console colors (16-color palette)
 - [✓] **`fonts.nix`**: Install Orbitron (UI headers)
 - [✓] **`fonts.nix`**: Install JetBrains Mono (code/terminal)
@@ -67,7 +67,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ## Phase 4: Login Management (`modules/login/`)
 
-- [✓] **`default.nix`**: greetd + tuigreet with Steelbore branding
+- [✓] **`default.nix`**: greetd + tuigreet with Spacecraft Software branding
 - [✓] **`default.nix`**: Session memory and ISO 8601 time display
 - [✓] **`default.nix`**: Shell sessions (Ion, Nushell, Brush) via `mkShellSession`
 - [✓] **`default.nix`**: Register session packages (niri, cosmic, ion, nushell, brush)
@@ -79,7 +79,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### GNOME (`gnome.nix`)
 
-- [✓] Define `steelbore.desktops.gnome` option
+- [✓] Define `spacecraft.desktops.gnome` option
 - [✓] Enable GNOME on Wayland, disable GDM (use greetd)
 - [✓] Install GNOME Tweaks, dconf-editor
 - [✓] Install extension manager and browser connector
@@ -89,12 +89,12 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### COSMIC (`cosmic.nix`)
 
-- [✓] Define `steelbore.desktops.cosmic` option
+- [✓] Define `spacecraft.desktops.cosmic` option
 - [✓] Enable COSMIC DE, disable cosmic-greeter (use greetd)
 
 ### KDE Plasma 6 (`plasma.nix`)
 
-- [✓] Define `steelbore.desktops.plasma` option
+- [✓] Define `spacecraft.desktops.plasma` option
 - [✓] Enable Plasma 6 on Wayland, disable SDDM (use greetd)
 - [✓] Enable X server for XWayland support
 - [✓] Configure SSH askpass override (`ksshaskpass`)
@@ -103,12 +103,12 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] Enable GPG agent with pinentry-qt
 - [✓] Exclude bloatware (oxygen, elisa, khelpcenter)
 
-### Niri (`niri.nix`) -- The Steelbore Standard
+### Niri (`niri.nix`) -- The Spacecraft Software Standard
 
-- [✓] Define `steelbore.desktops.niri` option
+- [✓] Define `spacecraft.desktops.niri` option
 - [✓] Enable Niri compositor
 - [✓] Install companion packages (14: swaybg, xwayland-satellite, ironbar, waybar, etc.)
-- [✓] Write `/etc/niri/config.kdl` with Steelbore palette
+- [✓] Write `/etc/niri/config.kdl` with Spacecraft Software palette
 - [✓] Write `/etc/ironbar/config.yaml` and `/etc/ironbar/style.css`
 - [✓] Configure keybindings (Vim-style + CUA arrows); `Mod+Return` → rio (default terminal)
 - [✓] Configure workspaces 1-5
@@ -117,12 +117,12 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### LeftWM (`leftwm.nix`)
 
-- [✓] Define `steelbore.desktops.leftwm` option
+- [✓] Define `spacecraft.desktops.leftwm` option
 - [✓] Enable X11 and LeftWM, configure XKB layout (`us,ar`)
 - [✓] Install companion packages (15: rlaunch, rofi, dmenu, polybar, picom, etc.)
 - [✓] Write `/etc/leftwm/config.ron` with keybindings; `Mod+Return` → rio (default terminal)
 - [✓] Write theme files (`theme.ron`, `up`, `down`, `polybar.ini`, `template.liquid`, `picom.conf`)
-- [✓] Write `/etc/dunst/dunstrc` with Steelbore theme
+- [✓] Write `/etc/dunst/dunstrc` with Spacecraft Software theme
 
 ---
 
@@ -134,24 +134,24 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### browsers.nix
 
-- [✓] Define `steelbore.packages.browsers` option
+- [✓] Define `spacecraft.packages.browsers` option
 - [✓] Enable Firefox via `programs.firefox`
 - [✓] Install browsers (Chrome, Brave, Edge, Librewolf)
 
 ### terminals.nix
 
-- [✓] Define `steelbore.packages.terminals` option
+- [✓] Define `spacecraft.packages.terminals` option
 - [✓] Install Rust terminals (Alacritty, WezTerm, Rio, Warp)
 - [✓] Install Ghostty (Zig)
 - [✓] Install GTK/VTE terminals (Ptyxis, GNOME Console)
 - [✓] Install AI-native terminals (WaveTerm)
 - [✓] Install KDE terminals (Konsole, Yakuake)
 - [✓] Install other terminals (Foot, XTerm, XFCE4 Terminal, Termius, COSMIC Term)
-- [✓] Write system-level configs for all 15 terminals with Steelbore theme
+- [✓] Write system-level configs for all 15 terminals with Spacecraft Software theme
 
 ### editors.nix
 
-- [✓] Define `steelbore.packages.editors` option
+- [✓] Define `spacecraft.packages.editors` option
 - [✓] Install linting (markdownlint-cli2)
 - [✓] Install Rust TUI editors (Helix, Amp, msedit)
 - [✓] Install standard TUI editors (Neovim, Vim, mg, mc)
@@ -160,7 +160,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### development.nix
 
-- [✓] Define `steelbore.packages.development` option
+- [✓] Define `spacecraft.packages.development` option
 - [✓] Install Git and Rust VCS tools (gitui, delta, jujutsu)
 - [✓] Install gh and github-desktop
 - [✓] Install Forgejo stack (forgejo, forgejo-cli, forgejo-runner)
@@ -174,7 +174,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### security.nix
 
-- [✓] Define `steelbore.packages.security` option
+- [✓] Define `spacecraft.packages.security` option
 - [✓] Install Rust encryption (age, rage)
 - [✓] Install sops for secrets
 - [✓] Install Sequoia PGP stack (sq, chameleon, wot, sqv, sqop)
@@ -187,7 +187,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### networking.nix
 
-- [✓] Define `steelbore.packages.networking` option
+- [✓] Define `spacecraft.packages.networking` option
 - [✓] Install network management (impala, iwd)
 - [✓] Install HTTP clients (xh, monolith, curlFull, wget2)
 - [✓] Install Rust diagnostics (gping, trippy, lychee, rustscan, sniffglue, bandwhich)
@@ -198,7 +198,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### multimedia.nix
 
-- [✓] Define `steelbore.packages.multimedia` option
+- [✓] Define `spacecraft.packages.multimedia` option
 - [✓] Install video players (mpv, vlc, cosmic-player)
 - [✓] Install Rust audio (amberol, termusic, ncspot, psst, shortwave)
 - [✓] Install Rust image viewers (loupe, viu, emulsion)
@@ -208,7 +208,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### productivity.nix
 
-- [✓] Define `steelbore.packages.productivity` option
+- [✓] Define `spacecraft.packages.productivity` option
 - [✓] Install Rust knowledge tools (AppFlowy, Affine)
 - [✓] Install CLI note-taking (nb)
 - [✓] Install office suites (LibreOffice, OnlyOffice)
@@ -217,7 +217,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### system.nix
 
-- [✓] Define `steelbore.packages.system` option
+- [✓] Define `spacecraft.packages.system` option
 - [✓] Install modern Unix (fd, ripgrep, bat, eza, sd, zoxide, procs, dust, dua)
 - [✓] Install uutils (coreutils, diffutils, findutils)
 - [✓] Install file managers (yazi, broot, superfile, spacedrive, fclones, kondo, pipe-rename, ouch)
@@ -237,7 +237,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### ai.nix
 
-- [✓] Define `steelbore.packages.ai` option
+- [✓] Define `spacecraft.packages.ai` option
 - [✓] Install Rust AI tools (aichat, gemini-cli)
 - [✓] Install opencode (Go)
 - [✓] Install AI tools (codex, copilot-cli, gpt-cli, mcp-nixos)
@@ -246,7 +246,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ### flatpak.nix
 
-- [✓] Define `steelbore.packages.flatpak` option
+- [✓] Define `spacecraft.packages.flatpak` option
 - [✓] Configure Flathub remote
 - [✓] Declare Flatpak packages (42+ apps across terminals, browsers, communication, security, development, gaming, retro, productivity, incl. org.gnome.baobab disk usage analyzer)
 
@@ -275,9 +275,9 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] **`default.nix`**: Create user `mj` with groups (networkmanager, wheel, input, video, audio)
 - [✓] **`default.nix`**: Set user shell to Nushell (Rust), root shell to Brush (Rust)
 - [✓] **`default.nix`**: Register Nushell, Brush, Ion as valid login shells; bash excluded from `environment.shells` (`programs.bash.enable` kept — NixOS PAM/activation scripts require it; overlay replacement impossible due to nixpkgs bootstrapping cycle)
-- [✓] **`default.nix`**: Enable all steelbore desktop modules (gnome, cosmic, plasma, niri, leftwm)
-- [✓] **`default.nix`**: Enable all steelbore hardware modules (fingerprint, intel)
-- [✓] **`default.nix`**: Enable all steelbore package modules (12 modules including flatpak)
+- [✓] **`default.nix`**: Enable all spacecraft desktop modules (gnome, cosmic, plasma, niri, leftwm)
+- [✓] **`default.nix`**: Enable all spacecraft hardware modules (fingerprint, intel)
+- [✓] **`default.nix`**: Enable all spacecraft package modules (12 modules including flatpak)
 - [✓] **`default.nix`**: Set `stateVersion = "25.11"`
 - [✓] **`hardware.nix`**: Import from `modulesPath`, configure root (ext4) and boot (vfat) filesystems
 
@@ -287,12 +287,12 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] **`home.nix`**: Set username, home directory, stateVersion 25.11
 - [✓] **`home.nix`**: Create `~/steelbore` symlink to `/steelbore`
 - [✓] **`home.nix`**: Configure keyboard layout (`us,ara`, `grp:ctrl_space_toggle`)
-- [✓] **`home.nix`**: Set session variables (`EDITOR`, `VISUAL` to msedit, `STEELBORE_THEME`)
+- [✓] **`home.nix`**: Set session variables (`EDITOR`, `VISUAL` to msedit, `SPACECRAFT_THEME`)
 - [✓] **`home.nix`**: Configure Git with SSH signing (Sequoia), LFS enabled
 - [✓] **`home.nix`**: Configure Starship prompt (Tokyo Night preset)
-- [✓] **`home.nix`**: Configure Nushell with aliases (telemetry, steelbore banner)
+- [✓] **`home.nix`**: Configure Nushell with aliases (telemetry, spacecraft banner)
 - [✓] **`home.nix`**: Configure Ion shell init (`~/.config/ion/initrc`) with aliases
-- [✓] **`home.nix`**: Configure Alacritty with Steelbore colors (via `programs.alacritty`)
+- [✓] **`home.nix`**: Configure Alacritty with Spacecraft Software colors (via `programs.alacritty`)
 - [✓] **`home.nix`**: Write user-level XDG configs (niri, ironbar, wezterm, rio, ghostty, foot, xfce4-terminal, konsole, yakuake, xresources)
 - [✓] **`home.nix`**: Configure dconf settings (Ptyxis profile, GNOME Console)
 - [✓] **`home.nix`**: Configure containers (`~/.config/containers/containers.conf`, runc default)
@@ -323,9 +323,9 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] Verify KDE Plasma 6 session boots on Wayland
 - [ ] Verify LeftWM session boots with Polybar
 - [✓] Verify greetd/tuigreet login with session selection
-- [✓] Verify Steelbore palette on TTY
-- [~] Verify Steelbore palette on all themed terminals (15)
-- [ ] Verify Steelbore palette on Ironbar and Polybar
+- [✓] Verify Spacecraft Software palette on TTY
+- [~] Verify Spacecraft Software palette on all themed terminals (15)
+- [ ] Verify Spacecraft Software palette on Ironbar and Polybar
 - [ ] Verify sudo-rs works for privilege escalation
 - [✓] Verify fingerprint authentication (fprintd)
 - [ ] Verify Podman with `docker` compat alias

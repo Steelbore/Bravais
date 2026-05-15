@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — LeftWM Tiling Window Manager (X11)
-{ config, lib, pkgs, steelborePalette, ... }:
+# Spacecraft Software Bravais — LeftWM Tiling Window Manager (X11)
+{ config, lib, pkgs, spacecraftPalette, ... }:
 
 {
-  options.steelbore.desktops.leftwm = {
+  options.spacecraft.desktops.leftwm = {
     enable = lib.mkEnableOption "LeftWM tiling window manager (X11)";
   };
 
-  config = lib.mkIf config.steelbore.desktops.leftwm.enable (let
+  config = lib.mkIf config.spacecraft.desktops.leftwm.enable (let
     # The LeftWM Themes wiki strongly recommends that
     # `~/.config/leftwm/themes/current` be a symlink rather than a real
     # directory — leftwm 0.5.x's path resolution intermittently fails to
@@ -15,47 +15,47 @@
     # (observed: "Global up script failed: IO error: No such file or
     # directory"). Ship the theme as one nix-store derivation and expose
     # it via a single xdg.configFile symlink.
-    steelboreTheme = pkgs.linkFarm "leftwm-steelbore-theme" [
+    spacecraftTheme = pkgs.linkFarm "leftwm-spacecraft-theme" [
       # up/down are stubs: actual session bring-up happens in
       # `leftwm-xinitrc` (see modules/login/default.nix). leftwm-theme
       # tooling expects up/down to exist, so we ship empty no-ops.
       {
         name = "up";
-        path = pkgs.writeShellScript "leftwm-steelbore-up" "exit 0";
+        path = pkgs.writeShellScript "leftwm-spacecraft-up" "exit 0";
       }
       {
         name = "down";
-        path = pkgs.writeShellScript "leftwm-steelbore-down" "exit 0";
+        path = pkgs.writeShellScript "leftwm-spacecraft-down" "exit 0";
       }
       {
         name = "theme.ron";
-        path = pkgs.writeText "leftwm-steelbore-theme.ron" ''
-          // Steelbore LeftWM Theme
+        path = pkgs.writeText "leftwm-spacecraft-theme.ron" ''
+          // Spacecraft Software LeftWM Theme
           (
               border_width: 2,
               margin: 8,
               workspace_margin: Some(8),
-              default_border_color: "${steelborePalette.steelBlue}",
-              floating_border_color: "${steelborePalette.liquidCool}",
-              focused_border_color: "${steelborePalette.moltenAmber}",
+              default_border_color: "${spacecraftPalette.steelBlue}",
+              floating_border_color: "${spacecraftPalette.liquidCool}",
+              focused_border_color: "${spacecraftPalette.moltenAmber}",
               on_new_window_cmd: None,
           )
         '';
       }
       {
         name = "polybar.ini";
-        path = pkgs.writeText "leftwm-steelbore-polybar.ini" ''
-          ; Steelbore Polybar Configuration
+        path = pkgs.writeText "leftwm-spacecraft-polybar.ini" ''
+          ; Spacecraft Software Polybar Configuration
 
           [colors]
-          background = ${steelborePalette.voidNavy}
-          foreground = ${steelborePalette.moltenAmber}
-          accent = ${steelborePalette.steelBlue}
-          success = ${steelborePalette.radiumGreen}
-          warning = ${steelborePalette.redOxide}
-          info = ${steelborePalette.liquidCool}
+          background = ${spacecraftPalette.voidNavy}
+          foreground = ${spacecraftPalette.moltenAmber}
+          accent = ${spacecraftPalette.steelBlue}
+          success = ${spacecraftPalette.radiumGreen}
+          warning = ${spacecraftPalette.redOxide}
+          info = ${spacecraftPalette.liquidCool}
 
-          [bar/steelbore]
+          [bar/spacecraft]
           width = 100%
           height = 32
           fixed-center = true
@@ -120,17 +120,17 @@
       }
       {
         name = "template.liquid";
-        path = pkgs.writeText "leftwm-steelbore-template.liquid" ''
+        path = pkgs.writeText "leftwm-spacecraft-template.liquid" ''
           {% for tag in workspace.tags %}
           %{A1:leftwm-command "SendWorkspaceToTag {{ workspace.index }} {{ tag.index }}":}
           {% if tag.mine %}
-          %{F${steelborePalette.moltenAmber}}%{+u}
+          %{F${spacecraftPalette.moltenAmber}}%{+u}
           {% elsif tag.visible %}
-          %{F${steelborePalette.liquidCool}}
+          %{F${spacecraftPalette.liquidCool}}
           {% elsif tag.busy %}
-          %{F${steelborePalette.steelBlue}}
+          %{F${spacecraftPalette.steelBlue}}
           {% else %}
-          %{F${steelborePalette.steelBlue}50}
+          %{F${spacecraftPalette.steelBlue}50}
           {% endif %}
             {{ tag.name }}
           %{-u}%{F-}%{A}
@@ -139,8 +139,8 @@
       }
       {
         name = "picom.conf";
-        path = pkgs.writeText "leftwm-steelbore-picom.conf" ''
-          # Steelbore Picom Configuration
+        path = pkgs.writeText "leftwm-spacecraft-picom.conf" ''
+          # Spacecraft Software Picom Configuration
           backend = "glx";
           vsync = true;
 
@@ -214,8 +214,8 @@
 
     # LeftWM configuration
     home-manager.users.mj.xdg.configFile."leftwm/config.ron".text = ''
-      // Steelbore LeftWM Configuration
-      // The Steelbore Standard — X11 Tiling
+      // Spacecraft Software LeftWM Configuration
+      // The Spacecraft Software Standard — X11 Tiling
 
       #![enable(implicit_some)]
       (
@@ -317,13 +317,13 @@
     '';
 
     # LeftWM theme — single symlink to a nix-store directory containing
-    # all theme files. See the steelboreTheme let-binding above.
+    # all theme files. See the spacecraftTheme let-binding above.
     home-manager.users.mj.xdg.configFile."leftwm/themes/current".source =
-      steelboreTheme;
+      spacecraftTheme;
 
     # Dunst notification configuration
     environment.etc."dunst/dunstrc".text = ''
-      # Steelbore Dunst Configuration
+      # Spacecraft Software Dunst Configuration
       [global]
       monitor = 0
       follow = mouse
@@ -336,7 +336,7 @@
       padding = 16
       horizontal_padding = 16
       frame_width = 2
-      frame_color = "${steelborePalette.steelBlue}"
+      frame_color = "${spacecraftPalette.steelBlue}"
       separator_color = frame
 
       font = "Share Tech Mono 12"
@@ -349,19 +349,19 @@
       max_icon_size = 48
 
       [urgency_low]
-      background = "${steelborePalette.voidNavy}"
-      foreground = "${steelborePalette.liquidCool}"
+      background = "${spacecraftPalette.voidNavy}"
+      foreground = "${spacecraftPalette.liquidCool}"
       timeout = 5
 
       [urgency_normal]
-      background = "${steelborePalette.voidNavy}"
-      foreground = "${steelborePalette.moltenAmber}"
+      background = "${spacecraftPalette.voidNavy}"
+      foreground = "${spacecraftPalette.moltenAmber}"
       timeout = 10
 
       [urgency_critical]
-      background = "${steelborePalette.voidNavy}"
-      foreground = "${steelborePalette.redOxide}"
-      frame_color = "${steelborePalette.redOxide}"
+      background = "${spacecraftPalette.voidNavy}"
+      foreground = "${spacecraftPalette.redOxide}"
+      frame_color = "${spacecraftPalette.redOxide}"
       timeout = 0
     '';
   });

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Host Configuration
+# Spacecraft Software Bravais — Host Configuration
 {
   config,
   pkgs,
@@ -58,8 +58,8 @@
   # bash module being active. Bash is excluded from user shells via shell= and
   # environment.shells — no user or root has bash as their login shell.
 
-  # Steelbore module toggles
-  steelbore = {
+  # Spacecraft Software module toggles
+  spacecraft = {
     # Desktop environments
     desktops.gnome.enable = true;
     desktops.cosmic.enable = true;   # stable pkgs (nixos-25.11)

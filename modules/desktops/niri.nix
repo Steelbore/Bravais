@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Niri Scrolling Tiling Compositor (Wayland)
-{ config, lib, pkgs, steelborePalette, ... }:
+# Spacecraft Software Bravais — Niri Scrolling Tiling Compositor (Wayland)
+{ config, lib, pkgs, spacecraftPalette, ... }:
 
 {
-  options.steelbore.desktops.niri = {
+  options.spacecraft.desktops.niri = {
     enable = lib.mkEnableOption "Niri scrolling tiling compositor (Wayland)";
   };
 
-  config = lib.mkIf config.steelbore.desktops.niri.enable (
+  config = lib.mkIf config.spacecraft.desktops.niri.enable (
     let
       # Wallpaper daemon: upstream renamed swww → awww. On unstable both
       # exist (swww is a deprecation alias that warns); on stable 25.11
@@ -53,8 +53,8 @@
 
     # System-wide Niri configuration
     environment.etc."niri/config.kdl".text = ''
-      // Steelbore Niri Configuration
-      // The Steelbore Standard — Scrolling Tiling
+      // Spacecraft Software Niri Configuration
+      // The Spacecraft Software Standard — Scrolling Tiling
 
       // Session-wide environment. Niri imports these into the systemd
       // user manager's env, which xdg-desktop-portal-* and every
@@ -71,15 +71,15 @@
           focus-ring {
               // off  — uncomment to disable; presence of the block enables it
               width 2
-              active-color "${steelborePalette.moltenAmber}"
-              inactive-color "${steelborePalette.steelBlue}"
+              active-color "${spacecraftPalette.moltenAmber}"
+              inactive-color "${spacecraftPalette.steelBlue}"
           }
 
           border {
               off
               width 1
-              active-color "${steelborePalette.moltenAmber}"
-              inactive-color "${steelborePalette.steelBlue}"
+              active-color "${spacecraftPalette.moltenAmber}"
+              inactive-color "${spacecraftPalette.steelBlue}"
           }
 
           // Default column width
@@ -95,7 +95,7 @@
       // `clear` call sets the solid Void Navy wallpaper. Eww and dunst
       // start in parallel.
       spawn-at-startup "${wallpaperPkg}/bin/${wallpaperBin}-daemon"
-      spawn-at-startup "sh" "-c" "sleep 1 && ${wallpaperPkg}/bin/${wallpaperBin} clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
+      spawn-at-startup "sh" "-c" "sleep 1 && ${wallpaperPkg}/bin/${wallpaperBin} clear ${lib.removePrefix "#" spacecraftPalette.voidNavy}"
       spawn-at-startup "eww" "open" "bar"
       spawn-at-startup "dunst"
       // Load SSH key into gitway-agent once per session. With no TTY but

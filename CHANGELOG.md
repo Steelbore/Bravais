@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `nixosConfigurations` keys (`bravais`, `bravais-v{1..4}`,
   `bravais-unstable`, `bravais-unstable-v{1..4}`), `networking.hostName`,
   the working-tree path (`/steelbore/lattice` → `/steelbore/bravais`), the
-  GitHub repo (`Steelbore/Lattice` → `Steelbore/Bravais`), all module
+  GitHub repo (`Spacecraft-Software/Lattice` → `Spacecraft-Software/Bravais`), all module
   headers, the greetd greeting (`STEELBORE :: BRAVAIS`), and every
   documentation file. `v0/` is intentionally left untouched as a frozen
   pre-flake snapshot of the old name; see `v0/README.md`.
@@ -30,13 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - ISO 8601 date/time display (`%Y-%m-%d %H:%M:%S`)
   - Session memory (remembers last selected desktop)
   - Password asterisks for visual feedback
-  - Steelbore branding in greeting message
+  - Spacecraft Software branding in greeting message
   - PAM integration for GNOME Keyring
 
-- **Steelbore themes for all terminal emulators**
+- **Spacecraft Software themes for all terminal emulators**
   - Ghostty configuration (`/etc/ghostty/config`)
   - WaveTerm JSON configuration (`/etc/waveterm/config.json`)
-  - Warp Terminal YAML theme (`/etc/warp/themes/steelbore.yaml`)
+  - Warp Terminal YAML theme (`/etc/warp/themes/spacecraft.yaml`)
   - COSMIC Term theme reference
   - Ptyxis dconf profile with full 16-color palette
 
@@ -86,14 +86,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Complete architecture rewrite** — Modular, opt-in design with `steelbore.*` namespace
+- **Complete architecture rewrite** — Modular, opt-in design with `spacecraft.*` namespace
 - **Four desktop environments**
   - Niri (Wayland) — Scrolling tiling compositor with Ironbar
   - LeftWM (X11) — Tiling WM with Polybar
   - COSMIC (Wayland) — Full desktop from System76
   - GNOME (Wayland) — Full desktop with extensions
 
-- **Steelbore color palette** — Unified theming across all components
+- **Spacecraft Software color palette** — Unified theming across all components
   - Void Navy (`#000027`) — Mandatory background
   - Molten Amber (`#D98E32`) — Primary text
   - Steel Blue (`#4B7EB0`) — Accents
@@ -102,17 +102,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Liquid Coolant (`#8BE9FD`) — Info
 
 - **Module categories**
-  - `steelbore.desktops.*` — Desktop environments
-  - `steelbore.hardware.*` — Hardware support (fingerprint, Intel)
-  - `steelbore.packages.*` — Application bundles (10 categories)
+  - `spacecraft.desktops.*` — Desktop environments
+  - `spacecraft.hardware.*` — Hardware support (fingerprint, Intel)
+  - `spacecraft.packages.*` — Application bundles (10 categories)
 
 - **Terminal configurations**
-  - Alacritty with Steelbore theme
-  - WezTerm with Steelbore theme
-  - Rio with Steelbore theme
+  - Alacritty with Spacecraft Software theme
+  - WezTerm with Spacecraft Software theme
+  - Rio with Spacecraft Software theme
 
 - **Home Manager integration**
-  - Starship prompt with Steelbore palette
+  - Starship prompt with Spacecraft Software palette
   - Nushell configuration with aliases
   - Git configuration with SSH signing
 
@@ -138,4 +138,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-*--- Forged in Steelbore ---*
+*--- Forged in Spacecraft Software ---*

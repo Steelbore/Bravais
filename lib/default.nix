@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Library Functions
+# Spacecraft Software Bravais — Library Functions
 { lib, ... }:
 
 {
-  # Steelbore color palette for use across modules
-  steelborePalette = {
+  # Spacecraft Software color palette for use across modules
+  spacecraftPalette = {
     voidNavy     = "#000027";
     moltenAmber  = "#D98E32";
     steelBlue    = "#4B7EB0";
@@ -13,12 +13,12 @@
     liquidCool   = "#8BE9FD";
   };
 
-  # Helper to create a Steelbore module with standard options
-  mkSteelboreModule = { name, description, config }: {
-    options.steelbore.${name} = {
+  # Helper to create a Spacecraft Software module with standard options
+  mkSpacecraftModule = { name, description, config }: {
+    options.spacecraft.${name} = {
       enable = lib.mkEnableOption description;
     };
 
-    config = lib.mkIf config.steelbore.${name}.enable config;
+    config = lib.mkIf config.spacecraft.${name}.enable config;
   };
 }

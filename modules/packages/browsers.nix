@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Web Browsers
+# Spacecraft Software Bravais — Web Browsers
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.packages.browsers = {
+  options.spacecraft.packages.browsers = {
     enable = lib.mkEnableOption "Web browsers";
   };
 
-  config = lib.mkIf config.steelbore.packages.browsers.enable {
+  config = lib.mkIf config.spacecraft.packages.browsers.enable {
     # Firefox (system-managed)
     programs.firefox.enable = true;
 

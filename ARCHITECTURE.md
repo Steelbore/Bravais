@@ -1,4 +1,4 @@
-# Steelbore Bravais — Architecture
+# Spacecraft Software Bravais — Architecture
 
 ## System Architecture Diagram
 
@@ -28,7 +28,7 @@ graph TB
 
     subgraph HOST["hosts/bravais/"]
         direction TB
-        HOST_DEF["default.nix<br/>━━━━━━━━━━━━━<br/>Hostname: bravais<br/>NetworkManager<br/>User: mj<br/>Shell: nushell<br/>steelbore.* toggles"]
+        HOST_DEF["default.nix<br/>━━━━━━━━━━━━━<br/>Hostname: bravais<br/>NetworkManager<br/>User: mj<br/>Shell: nushell<br/>spacecraft.* toggles"]
         HW["hardware.nix<br/>━━━━━━━━━━━━━<br/>ext4 + vfat<br/>Intel KVM<br/>NVMe/USB storage"]
         HOST_DEF --> HW
     end
@@ -56,7 +56,7 @@ graph TB
 
         subgraph THEME["theme/"]
             direction TB
-            THEME_DEF["default.nix<br/>━━━━━━━━━━━━━<br/>STEELBORE_* vars<br/>TTY hex colors"]
+            THEME_DEF["default.nix<br/>━━━━━━━━━━━━━<br/>SPACECRAFT_* vars<br/>TTY hex colors"]
             FONTS["fonts.nix<br/>━━━━━━━━━━━━━<br/>Orbitron<br/>JetBrains Mono<br/>Share Tech Mono<br/>Nerd Fonts"]
         end
 
@@ -65,7 +65,7 @@ graph TB
             DESK_DEF["default.nix"]
             GNOME["gnome.nix<br/>━━━━━━━━━━━━━<br/>GNOME Wayland<br/>Extensions<br/>De-bloated"]
             COSMIC["cosmic.nix<br/>━━━━━━━━━━━━━<br/>COSMIC DE<br/>30+ cosmic-* pkgs<br/>No cosmic-greeter"]
-            NIRI["niri.nix<br/>━━━━━━━━━━━━━<br/>Niri WM<br/>anyrun, ironbar<br/>config.kdl<br/>Steelbore theme"]
+            NIRI["niri.nix<br/>━━━━━━━━━━━━━<br/>Niri WM<br/>anyrun, ironbar<br/>config.kdl<br/>Spacecraft Software theme"]
             LEFTWM["leftwm.nix<br/>━━━━━━━━━━━━━<br/>LeftWM X11<br/>rlaunch, polybar<br/>config.ron<br/>picom, dunst"]
         end
 
@@ -89,7 +89,7 @@ graph TB
         end
     end
 
-    subgraph PALETTE["Steelbore Palette"]
+    subgraph PALETTE["Spacecraft Software Palette"]
         direction LR
         P1["#000027<br/>Void Navy"]
         P2["#D98E32<br/>Molten Amber"]
@@ -147,7 +147,7 @@ graph TB
 │               ┌─────────────────────────────────────┐                       │
 │               │    nixosConfigurations.bravais      │                       │
 │               │    specialArgs: unstable, emacs-ng  │                       │
-│               │                steelborePalette     │                       │
+│               │                spacecraftPalette     │                       │
 │               └─────────────────┬───────────────────┘                       │
 └─────────────────────────────────┼───────────────────────────────────────────┘
                                   │
@@ -158,7 +158,7 @@ graph TB
   │                 │   │                 │   │                 │
   │ • Hostname      │   │ core/           │   │ users/mj/       │
   │ • User account  │   │ • boot          │   │ • Git + GPG     │
-  │ • steelbore.*   │   │ • nix           │   │ • Starship      │
+  │ • spacecraft.*   │   │ • nix           │   │ • Starship      │
   │   toggles       │   │ • locale        │   │ • Nushell       │
   │ • Hardware      │   │ • audio         │   │ • Alacritty     │
   │                 │   │ • security      │   │ • Niri dots     │
@@ -189,18 +189,18 @@ graph TB
 
 ## Module Design Pattern
 
-All modules follow the `steelbore.*` namespace pattern with `lib.mkEnableOption`:
+All modules follow the `spacecraft.*` namespace pattern with `lib.mkEnableOption`:
 
 ```nix
 # Example: modules/desktops/niri.nix
-{ config, lib, pkgs, unstable, steelborePalette, ... }:
+{ config, lib, pkgs, unstable, spacecraftPalette, ... }:
 
 {
-  options.steelbore.desktops.niri = {
+  options.spacecraft.desktops.niri = {
     enable = lib.mkEnableOption "Niri scrolling tiling compositor (Wayland)";
   };
 
-  config = lib.mkIf config.steelbore.desktops.niri.enable {
+  config = lib.mkIf config.spacecraft.desktops.niri.enable {
     programs.niri.enable = true;
 
     environment.systemPackages = with pkgs; [
@@ -210,12 +210,12 @@ All modules follow the `steelbore.*` namespace pattern with `lib.mkEnableOption`
       # ...
     ];
 
-    # Declarative configuration with Steelbore palette
+    # Declarative configuration with Spacecraft Software palette
     environment.etc."niri/config.kdl".text = ''
       layout {
         focus-ring {
-          active-color "${steelborePalette.moltenAmber}"
-          inactive-color "${steelborePalette.steelBlue}"
+          active-color "${spacecraftPalette.moltenAmber}"
+          inactive-color "${spacecraftPalette.steelBlue}"
         }
       }
     '';
@@ -237,7 +237,7 @@ Bravais uses a dual-channel approach for package sourcing:
 ```nix
 # In flake.nix
 specialArgs = {
-  inherit unstable emacs-ng steelborePalette;
+  inherit unstable emacs-ng spacecraftPalette;
 };
 
 # In modules
@@ -327,14 +327,14 @@ environment.systemPackages = [
 
 ## Theme Propagation
 
-The Steelbore palette propagates through all layers:
+The Spacecraft Software palette propagates through all layers:
 
 ```text
-flake.nix (steelborePalette)
+flake.nix (spacecraftPalette)
          │
          ├──► modules/theme/default.nix
          │         │
-         │         ├──► Environment variables (STEELBORE_*)
+         │         ├──► Environment variables (SPACECRAFT_*)
          │         └──► TTY console colors
          │
          ├──► modules/desktops/niri.nix

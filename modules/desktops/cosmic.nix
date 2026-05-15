@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — COSMIC Desktop Environment (Wayland)
-{ config, lib, pkgs, steelborePalette, ... }:
+# Spacecraft Software Bravais — COSMIC Desktop Environment (Wayland)
+{ config, lib, pkgs, spacecraftPalette, ... }:
 
 let
   # cosmic-theme stores colors as Srgba with 0.0–1.0 floats. Pre-converted
-  # from the canonical Steelbore palette (Standard §8). Eight-digit
+  # from the canonical Spacecraft Software palette (Standard §8). Eight-digit
   # precision matches what cosmic-settings writes itself, so user-facing
   # diffs stay clean.
   rgb = {
@@ -15,8 +15,8 @@ let
     redOxide        = "(red: 1.0, green: 0.36078431, blue: 0.36078431)"; # #FF5C5C
     liquidCool      = "(red: 0.54509804, green: 0.91372549, blue: 0.99215686)"; # #8BE9FD
 
-    # Light-mode-only derived shades — NOT in Steelbore Standard §8.
-    # Scoped to cosmic.nix; do not propagate to flake.nix steelborePalette,
+    # Light-mode-only derived shades — NOT in Spacecraft Software Standard §8.
+    # Scoped to cosmic.nix; do not propagate to flake.nix spacecraftPalette,
     # lib/default.nix, or modules/theme. Promote in the Standard first if
     # they ever need to become canonical.
     paper           = "(red: 0.94117647, green: 0.94901961, blue: 0.97254902)"; # #F0F2F8 — Light bg
@@ -49,11 +49,11 @@ let
 in
 
 {
-  options.steelbore.desktops.cosmic = {
+  options.spacecraft.desktops.cosmic = {
     enable = lib.mkEnableOption "COSMIC Desktop Environment (Wayland)";
   };
 
-  config = lib.mkIf config.steelbore.desktops.cosmic.enable {
+  config = lib.mkIf config.spacecraft.desktops.cosmic.enable {
     services.desktopManager.cosmic.enable = true;
     services.displayManager.cosmic-greeter.enable = false; # Use greetd
 
@@ -71,7 +71,7 @@ in
       "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
     };
 
-    # Steelbore-themed Builder overrides for cosmic-theme. cosmic-settings-daemon
+    # Spacecraft Software-themed Builder overrides for cosmic-theme. cosmic-settings-daemon
     # watches these via inotify, so changes apply without logout. palette /
     # corner_radii / spacing / gaps / active_hint / is_frosted / window_hint /
     # primary_container_bg / secondary_container_bg are intentionally left to

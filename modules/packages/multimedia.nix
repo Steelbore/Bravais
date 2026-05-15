@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Multimedia Players and Processing Tools
+# Spacecraft Software Bravais — Multimedia Players and Processing Tools
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.packages.multimedia = {
+  options.spacecraft.packages.multimedia = {
     enable = lib.mkEnableOption "Multimedia players and processing tools";
   };
 
-  config = lib.mkIf config.steelbore.packages.multimedia.enable {
+  config = lib.mkIf config.spacecraft.packages.multimedia.enable {
     environment.systemPackages = with pkgs; [
       # Video Players
       mpv

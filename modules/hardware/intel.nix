@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Intel CPU Optimizations
+# Spacecraft Software Bravais — Intel CPU Optimizations
 { config, lib, ... }:
 
 let
-  cfg = config.steelbore.hardware.intel;
+  cfg = config.spacecraft.hardware.intel;
 
   # ── CachyOS shared components (v1, v3, v4) ────────────────────────────────
   # Source: github.com/CachyOS/docker-makepkg (makepkg.conf per level)
@@ -64,7 +64,7 @@ let
 
 in
 {
-  options.steelbore.hardware.intel = {
+  options.spacecraft.hardware.intel = {
     enable = lib.mkEnableOption "Intel CPU optimizations";
 
     marchLevel = lib.mkOption {

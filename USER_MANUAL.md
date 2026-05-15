@@ -1,6 +1,6 @@
 # Bravais User Manual
 
-**A Steelbore NixOS Distribution**
+**A Spacecraft Software NixOS Distribution**
 **Version:** 2.1 | **Date:** 2026-04-05
 
 ---
@@ -18,7 +18,7 @@
 5. [Keyboard Layout](#5-keyboard-layout)
 6. [Shell Configuration](#6-shell-configuration)
 7. [System Administration](#7-system-administration)
-8. [Steelbore Theme](#8-steelbore-theme)
+8. [Spacecraft Software Theme](#8-spacecraft-software-theme)
 9. [Troubleshooting](#9-troubleshooting)
 
 ---
@@ -27,10 +27,10 @@
 
 ### 1.1 System Overview
 
-Bravais is a NixOS-based operating system built on the Steelbore Standard. It features:
+Bravais is a NixOS-based operating system built on the Spacecraft Software Standard. It features:
 
 - **Four desktop environments:** Niri, LeftWM, COSMIC, and GNOME
-- **Unified theming:** All applications use the Steelbore color palette
+- **Unified theming:** All applications use the Spacecraft Software color palette
 - **Rust-first tooling:** Memory-safe alternatives wherever possible
 - **Declarative configuration:** All settings managed through Nix
 
@@ -374,7 +374,7 @@ Configure keybindings in **Settings > Keyboard > Keyboard Shortcuts**.
 - **COSMIC integration:** cosmic-term
 - **GNOME integration:** Ptyxis
 
-All terminals are themed with the Steelbore color palette.
+All terminals are themed with the Spacecraft Software color palette.
 
 ---
 
@@ -413,13 +413,13 @@ The default shell is **Nushell** (`nu`), a modern shell written in Rust.
 | `disk-telemetry` | `yazi`                     | File manager             |
 | `edit`           | `hx`                       | Helix editor             |
 
-### 6.3 Steelbore Identity
+### 6.3 Spacecraft Software Identity
 
-Run `steelbore` in the terminal to display the system identity banner:
+Run `spacecraft` in the terminal to display the system identity banner:
 
 ```
 ============================================================
-  STEELBORE :: Industrial Sci-Fi Desktop Environment
+  SPACECRAFT SOFTWARE :: Industrial Sci-Fi Desktop
 ============================================================
   STATUS    :: ACTIVE
   LOAD      :: NOMINAL
@@ -442,11 +442,11 @@ The prompt displays:
 
 ### 7.1 Rebuilding the System
 
-After modifying configuration files in `/steelbore/Bravais/`:
+After modifying configuration files in `/spacecraft-software/bravais/`:
 
 ```bash
 # Navigate to configuration directory
-cd /steelbore/Bravais
+cd /spacecraft-software/bravais
 
 # Rebuild and switch
 sudo nixos-rebuild switch --flake .#bravais
@@ -468,10 +468,10 @@ sudo nixos-rebuild switch --flake .#bravais
 
 | Component        | Location                                    |
 |------------------|---------------------------------------------|
-| System config    | `/steelbore/Bravais/`                       |
-| Host config      | `/steelbore/Bravais/hosts/bravais/`         |
-| User config      | `/steelbore/Bravais/users/mj/home.nix`      |
-| Hardware config  | `/steelbore/Bravais/hosts/bravais/hardware.nix` |
+| System config    | `/spacecraft-software/bravais/`                       |
+| Host config      | `/spacecraft-software/bravais/hosts/bravais/`         |
+| User config      | `/spacecraft-software/bravais/users/mj/home.nix`      |
+| Hardware config  | `/spacecraft-software/bravais/hosts/bravais/hardware.nix` |
 
 ### 7.4 Fingerprint Enrollment
 
@@ -492,7 +492,7 @@ Once enrolled, you can use your fingerprint for:
 
 ---
 
-## 8. Steelbore Theme
+## 8. Spacecraft Software Theme
 
 ### 8.1 Color Palette
 
@@ -518,12 +518,12 @@ Once enrolled, you can use your fingerprint for:
 The theme exports these variables for application use:
 
 ```bash
-STEELBORE_BACKGROUND=#000027
-STEELBORE_TEXT=#D98E32
-STEELBORE_ACCENT=#4B7EB0
-STEELBORE_SUCCESS=#50FA7B
-STEELBORE_WARNING=#FF5C5C
-STEELBORE_INFO=#8BE9FD
+SPACECRAFT_BACKGROUND=#000027
+SPACECRAFT_TEXT=#D98E32
+SPACECRAFT_ACCENT=#4B7EB0
+SPACECRAFT_SUCCESS=#50FA7B
+SPACECRAFT_WARNING=#FF5C5C
+SPACECRAFT_INFO=#8BE9FD
 ```
 
 ---
@@ -626,4 +626,4 @@ STEELBORE_INFO=#8BE9FD
 
 ---
 
-*--- Forged in Steelbore ---*
+*--- Forged in Spacecraft Software ---*

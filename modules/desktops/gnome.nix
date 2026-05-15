@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — GNOME Desktop Environment (Wayland)
+# Spacecraft Software Bravais — GNOME Desktop Environment (Wayland)
 {
   config,
   lib,
@@ -8,11 +8,11 @@
 }:
 
 {
-  options.steelbore.desktops.gnome = {
+  options.spacecraft.desktops.gnome = {
     enable = lib.mkEnableOption "GNOME Desktop Environment (Wayland)";
   };
 
-  config = lib.mkIf config.steelbore.desktops.gnome.enable {
+  config = lib.mkIf config.spacecraft.desktops.gnome.enable {
     # Enable GNOME
     services.xserver.enable = true;
     services.displayManager.gdm.enable = lib.mkDefault false; # Use greetd instead

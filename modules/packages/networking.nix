@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Networking and Internet Tools
+# Spacecraft Software Bravais — Networking and Internet Tools
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.packages.networking = {
+  options.spacecraft.packages.networking = {
     enable = lib.mkEnableOption "Networking and internet tools";
   };
 
-  config = lib.mkIf config.steelbore.packages.networking.enable {
+  config = lib.mkIf config.spacecraft.packages.networking.enable {
     environment.systemPackages = with pkgs; [
       # Network Management
       impala                     # Rust — TUI for iwd

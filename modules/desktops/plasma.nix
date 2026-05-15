@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — KDE Plasma 6 Desktop Environment (Wayland)
+# Spacecraft Software Bravais — KDE Plasma 6 Desktop Environment (Wayland)
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.desktops.plasma = {
+  options.spacecraft.desktops.plasma = {
     enable = lib.mkEnableOption "KDE Plasma 6 Desktop Environment (Wayland)";
   };
 
-  config = lib.mkIf config.steelbore.desktops.plasma.enable {
+  config = lib.mkIf config.spacecraft.desktops.plasma.enable {
     # Enable Plasma 6
     services.desktopManager.plasma6.enable = true;
     services.displayManager.sddm.enable = lib.mkDefault false; # Use greetd instead

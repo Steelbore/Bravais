@@ -1,4 +1,4 @@
-# Bravais: A Steelbore NixOS Distribution — Implementation Status
+# Bravais: A Spacecraft Software NixOS Distribution — Implementation Status
 
 **Version:** 2.1 | **Date:** 2026-04-05 | **Status:** Implemented
 
@@ -6,7 +6,7 @@
 
 ## 1. Implementation Summary
 
-Bravais is a fully implemented flake-based NixOS configuration following the Steelbore Standard. The system provides a modular, opt-in architecture with four desktop environments, comprehensive terminal theming, and greetd-based login management.
+Bravais is a fully implemented flake-based NixOS configuration following the Spacecraft Software Standard. The system provides a modular, opt-in architecture with four desktop environments, comprehensive terminal theming, and greetd-based login management.
 
 ---
 
@@ -15,7 +15,7 @@ Bravais is a fully implemented flake-based NixOS configuration following the Ste
 ### 2.1 Directory Structure (Implemented)
 
 ```text
-/steelbore/Bravais/
+/spacecraft-software/bravais/
 ├── flake.nix                    # Main flake configuration
 ├── flake.lock                   # Pinned dependencies
 ├── PRD.md                       # Product Requirements Document
@@ -34,7 +34,7 @@ Bravais is a fully implemented flake-based NixOS configuration following the Ste
 │   │   ├── audio.nix            # PipeWire audio stack
 │   │   └── security.nix         # sudo-rs, Polkit
 │   ├── theme/
-│   │   ├── default.nix          # Steelbore palette, TTY colors
+│   │   ├── default.nix          # Spacecraft Software palette, TTY colors
 │   │   └── fonts.nix            # JetBrains Mono, Orbitron, Share Tech
 │   ├── hardware/
 │   │   ├── default.nix          # Entry point
@@ -50,7 +50,7 @@ Bravais is a fully implemented flake-based NixOS configuration following the Ste
 │   │   └── default.nix          # greetd + tuigreet
 │   └── packages/
 │       ├── default.nix          # Entry point
-│       ├── terminals.nix        # 9 terminals with Steelbore themes
+│       ├── terminals.nix        # 9 terminals with Spacecraft Software themes
 │       ├── editors.nix          # Text editors & IDEs
 │       ├── development.nix      # Dev tools & languages
 │       ├── browsers.nix         # Web browsers
@@ -72,16 +72,16 @@ Bravais is a fully implemented flake-based NixOS configuration following the Ste
 
 ### 2.2 Module Design (Implemented)
 
-All modules follow the `steelbore.*` namespace pattern:
+All modules follow the `spacecraft.*` namespace pattern:
 
 ```nix
 { config, lib, pkgs, ... }:
 {
-  options.steelbore.<category>.<module> = {
+  options.spacecraft.<category>.<module> = {
     enable = lib.mkEnableOption "<description>";
   };
 
-  config = lib.mkIf config.steelbore.<category>.<module>.enable {
+  config = lib.mkIf config.spacecraft.<category>.<module>.enable {
     # Implementation
   };
 }
@@ -94,7 +94,7 @@ All modules follow the `steelbore.*` namespace pattern:
 ### 3.1 Core Infrastructure
 
 - [x] Create flake.nix with nixpkgs and home-manager inputs
-- [x] Define steelborePalette in flake.nix
+- [x] Define spacecraftPalette in flake.nix
 - [x] Create lib/default.nix with helper functions
 - [x] Implement core/boot.nix (systemd-boot, XanMod kernel)
 - [x] Implement core/nix.nix (flakes, experimental features)
@@ -117,7 +117,7 @@ All modules follow the `steelbore.*` namespace pattern:
 
 - [x] Implement desktops/niri.nix
   - [x] Niri compositor configuration
-  - [x] Ironbar status bar with Steelbore theme
+  - [x] Ironbar status bar with Spacecraft Software theme
   - [x] wired notifications
   - [x] Keybindings (Vim + CUA)
 - [x] Implement desktops/cosmic.nix
@@ -129,7 +129,7 @@ All modules follow the `steelbore.*` namespace pattern:
 - [x] Implement desktops/leftwm.nix
   - [x] LeftWM configuration (config.ron)
   - [x] Theme configuration (theme.ron)
-  - [x] Polybar with Steelbore colors
+  - [x] Polybar with Spacecraft Software colors
   - [x] Picom compositor
   - [x] Dunst notifications
   - [x] Keybindings (Vim + CUA)
@@ -140,7 +140,7 @@ All modules follow the `steelbore.*` namespace pattern:
   - [x] greetd display manager
   - [x] tuigreet with ISO 8601 time format
   - [x] Session selection for all 4 desktops
-  - [x] Steelbore branding in greeting
+  - [x] Spacecraft Software branding in greeting
 
 ### 3.6 Terminal Emulators
 
@@ -171,7 +171,7 @@ All modules follow the `steelbore.*` namespace pattern:
 - [x] Implement users/mj/default.nix (user account)
 - [x] Implement users/mj/home.nix
   - [x] Git configuration with SSH signing
-  - [x] Starship prompt with Steelbore palette
+  - [x] Starship prompt with Spacecraft Software palette
   - [x] Nushell configuration with aliases
   - [x] Alacritty user configuration
   - [x] Niri user overrides
@@ -221,7 +221,7 @@ All modules follow the `steelbore.*` namespace pattern:
 
 ---
 
-## 5. Steelbore Standard Compliance
+## 5. Spacecraft Software Standard Compliance
 
 | Section | Requirement | Status |
 |---------|-------------|--------|
@@ -242,7 +242,7 @@ All modules follow the `steelbore.*` namespace pattern:
 
 ```bash
 # Verify flake
-cd /steelbore/Bravais
+cd /spacecraft-software/bravais
 nix flake check
 
 # Dry-run build
@@ -263,8 +263,8 @@ sudo nixos-rebuild switch --flake .#bravais
 - [ ] ISO builder for installation media
 - [ ] Additional host configurations (server, VM)
 - [ ] COSMIC theme integration (cosmic-settings)
-- [ ] Helix editor Steelbore theme
+- [ ] Helix editor Spacecraft Software theme
 
 ---
 
-*--- Forged in Steelbore ---*
+*--- Forged in Spacecraft Software ---*

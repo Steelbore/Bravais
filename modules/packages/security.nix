@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Security and Encryption Tools
+# Spacecraft Software Bravais — Security and Encryption Tools
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.packages.security = {
+  options.spacecraft.packages.security = {
     enable = lib.mkEnableOption "Security and encryption tools";
   };
 
-  config = lib.mkIf config.steelbore.packages.security.enable {
+  config = lib.mkIf config.spacecraft.packages.security.enable {
     environment.systemPackages = with pkgs; [
       # Encryption (Rust preferred)
       age                        # Rust — Modern encryption

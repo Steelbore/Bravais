@@ -1,6 +1,6 @@
-# Steelbore Bravais
+# Spacecraft Software Bravais
 
-Bravais is a meticulously crafted, flake-based NixOS configuration implementing the **Steelbore Standard**. Designed from the ground up to be modular, memory-safe, and visually cohesive, it provides a performant, reliable, and highly customizable system architecture for advanced computing workflows.
+Bravais is a meticulously crafted, flake-based NixOS configuration implementing the **Spacecraft Software Standard**. Designed from the ground up to be modular, memory-safe, and visually cohesive, it provides a performant, reliable, and highly customizable system architecture for advanced computing workflows.
 
 ## Core Philosophy
 
@@ -8,9 +8,9 @@ The design of Bravais is guided by four primary tenets:
 
 1. **Rust-First Ecosystem (Memory Safety):** Extreme priority is given to tools written in memory-safe languages. Bravais replaces legacy C-based utilities with robust Rust equivalents—ranging from core privilege escalation (`sudo-rs` completely replacing standard `sudo`) to terminal emulators, status bars (`ironbar`), and application launchers (`anyrun`, `onagre`).
 
-2. **Opt-in Modularity:** Every feature, hardware profile, and application set is structurally siloed inside its own module using Nix's `lib.mkEnableOption`. Hosts boot only exactly what they explicitly declare via the `steelbore.*` namespace.
+2. **Opt-in Modularity:** Every feature, hardware profile, and application set is structurally siloed inside its own module using Nix's `lib.mkEnableOption`. Hosts boot only exactly what they explicitly declare via the `spacecraft.*` namespace.
 
-3. **The Steelbore Telemetry Palette:** Color is treated as telemetry, not just decoration. A strict, universal 6-color *Steelbore Color Palette* acts as a system-wide visual identity unifying the interface—extending from desktop environments down to TTY consoles.
+3. **The Spacecraft Software Telemetry Palette:** Color is treated as telemetry, not just decoration. A strict, universal 6-color *Spacecraft Software Color Palette* acts as a system-wide visual identity unifying the interface—extending from desktop environments down to TTY consoles.
 
 4. **Self-Sufficient Configuration:** Built with determinism and reproducibility at the forefront. Features minimal external dependencies beyond `nixpkgs`, ensuring your host builds identically every time.
 
@@ -26,7 +26,7 @@ bravais/
 │   └── bravais/                   # Primary host
 │       ├── default.nix            # Host traits & module toggles
 │       └── hardware.nix           # Hardware configuration
-├── modules/                       # NixOS modules (steelbore.* namespace)
+├── modules/                       # NixOS modules (spacecraft.* namespace)
 │   ├── core/                      # Always-enabled necessities
 │   │   ├── default.nix            # Core module entry
 │   │   ├── nix.nix                # Nix settings, flakes, overlays
@@ -34,7 +34,7 @@ bravais/
 │   │   ├── locale.nix             # Timezone (UTC), i18n
 │   │   ├── audio.nix              # PipeWire audio stack
 │   │   └── security.nix           # sudo-rs, polkit
-│   ├── theme/                     # Steelbore visual identity
+│   ├── theme/                     # Spacecraft Software visual identity
 │   │   ├── default.nix            # Color palette, TTY colors
 │   │   └── fonts.nix              # Typography (Orbitron, JetBrains Mono)
 │   ├── hardware/                  # Hardware-specific modules
@@ -45,7 +45,7 @@ bravais/
 │   │   ├── default.nix            # Desktop module entry
 │   │   ├── gnome.nix              # GNOME on Wayland (de-bloated)
 │   │   ├── cosmic.nix             # COSMIC DE on Wayland
-│   │   ├── niri.nix               # Niri + Ironbar (The Steelbore Standard)
+│   │   ├── niri.nix               # Niri + Ironbar (The Spacecraft Software Standard)
 │   │   └── leftwm.nix             # LeftWM + Polybar on X11
 │   ├── login/                     # Display/login managers
 │   │   ├── default.nix            # Login module entry
@@ -53,7 +53,7 @@ bravais/
 │   └── packages/                  # Application bundles (opt-in)
 │       ├── default.nix            # Package module entry
 │       ├── browsers.nix           # Web browsers
-│       ├── terminals.nix          # Terminal emulators (Steelbore themed, starship+nushell)
+│       ├── terminals.nix          # Terminal emulators (Spacecraft Software themed, starship+nushell)
 │       ├── editors.nix            # Text editors & IDEs
 │       ├── development.nix        # Dev tools & languages
 │       ├── security.nix           # Encryption & auth (Sequoia stack)
@@ -71,7 +71,7 @@ bravais/
 └── v0/                            # Frozen v0-era configurations (archive)
 ```
 
-## Steelbore Color Palette
+## Spacecraft Software Color Palette
 
 | Token          | Hex       | Role                           |
 |----------------|-----------|--------------------------------|
@@ -82,7 +82,7 @@ bravais/
 | Red Oxide      | `#FF5C5C` | Warning / Error Status         |
 | Liquid Coolant | `#8BE9FD` | Info / Links                   |
 
-**`#000027` (Void Navy) is the mandatory background for ALL Steelbore surfaces.**
+**`#000027` (Void Navy) is the mandatory background for ALL Spacecraft Software surfaces.**
 
 ## Desktop Environments
 
@@ -90,14 +90,14 @@ Bravais officially provisions definitions for four primary desktop targets:
 
 | Desktop | Protocol | Status Bar | Launcher | Description |
 |---------|----------|------------|----------|-------------|
-| **Niri** | Wayland | Ironbar | onagre/anyrun | *The Steelbore Standard* — Scrolling tiling compositor |
+| **Niri** | Wayland | Ironbar | onagre/anyrun | *The Spacecraft Software Standard* — Scrolling tiling compositor |
 | **COSMIC** | Wayland | cosmic-panel | cosmic-launcher | System76's fully Rust-based desktop |
 | **GNOME** | Wayland | GNOME Shell | GNOME | De-bloated GNOME with curated extensions |
 | **LeftWM** | X11 | Polybar | rlaunch/rofi | High-performance Rust tiling fallback |
 
 ## Terminal Emulators
 
-All terminals are themed with the Steelbore color palette and launch **nushell + starship** by default.
+All terminals are themed with the Spacecraft Software color palette and launch **nushell + starship** by default.
 
 | Terminal | Stack | Notes |
 |----------|-------|-------|
@@ -108,7 +108,7 @@ All terminals are themed with the Steelbore color palette and launch **nushell +
 | Warp | Rust / AI | AI-powered terminal |
 | WaveTerm | Go / AI | AI-native terminal |
 | COSMIC Term | Rust | COSMIC desktop terminal |
-| Konsole | C++ / KDE | Steelbore colorscheme + profile |
+| Konsole | C++ / KDE | Spacecraft Software colorscheme + profile |
 | Yakuake | C++ / KDE | Drop-down terminal (Konsole backend) |
 | Ptyxis | C / GNOME | VTE-based, GNOME integration |
 | GNOME Console | C / GNOME | Minimal GNOME 4x terminal |
@@ -144,11 +144,11 @@ All profiles share: `-O3 -flto=auto -mpclmul` (v2+) and full security hardening
 
 ## Host Configuration Pattern
 
-Hosts toggle modules declaratively via the `steelbore.*` namespace:
+Hosts toggle modules declaratively via the `spacecraft.*` namespace:
 
 ```nix
 {
-  steelbore = {
+  spacecraft = {
     # Desktop environments
     desktops.gnome.enable = true;
     desktops.cosmic.enable = true;
@@ -230,4 +230,4 @@ sudo nixos-rebuild switch --flake .#bravais-unstable-v1    # Baseline x86-64
 | **Total** | **107** | **78** | **185** |
 
 ---
-*Bravais (A Steelbore NixOS Distribution)* | *Version 2.0*
+*Bravais (A Spacecraft Software NixOS Distribution)* | *Version 2.0*

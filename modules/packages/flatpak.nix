@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Declarative Flatpak Applications (via nix-flatpak)
+# Spacecraft Software Bravais — Declarative Flatpak Applications (via nix-flatpak)
 { config, lib, pkgs, ... }:
 
 {
-  options.steelbore.packages.flatpak = {
+  options.spacecraft.packages.flatpak = {
     enable = lib.mkEnableOption "Flatpak application management";
   };
 
-  config = lib.mkIf config.steelbore.packages.flatpak.enable {
+  config = lib.mkIf config.spacecraft.packages.flatpak.enable {
     # Enable Flatpak service
     services.flatpak.enable = true;
 

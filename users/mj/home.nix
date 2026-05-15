@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Home Manager Configuration
+# Spacecraft Software Bravais — Home Manager Configuration
 {
   config,
   pkgs,
   lib,
-  steelborePalette,
+  spacecraftPalette,
   gitway,
   kimi-cli,
   unstablePkgs,
@@ -16,7 +16,7 @@ let
   h = c: builtins.substring 1 (builtins.stringLength c - 1) c;
 
   # User-authored AI skills — single source of truth at /steelbore/construct/
-  # (separate GitHub repo: github:Steelbore/Construct).
+  # (separate GitHub repo: github:Spacecraft-Software/Construct).
   #
   # Layout: ~/.agents/ is the canonical agent-config hub managed by HM.
   # ~/.agents/skills/<skill> is a per-skill mkOutOfStoreSymlink to
@@ -36,15 +36,15 @@ let
   # is in active use here.
   aiSkillNames = [
     "rust-guidelines"
-    "steelbore-agentic-cli"
-    "steelbore-brand-guidelines"
-    "steelbore-cli-preference"
-    "steelbore-cli-shell"
-    "steelbore-cli-standard"
-    "steelbore-document-format"
-    "steelbore-missing-pkg"
-    "steelbore-standard"
-    "steelbore-theme-factory"
+    "spacecraft-agentic-cli"
+    "spacecraft-brand-guidelines"
+    "spacecraft-cli-preference"
+    "spacecraft-cli-shell"
+    "spacecraft-cli-standard"
+    "spacecraft-document-format"
+    "spacecraft-missing-pkg"
+    "spacecraft-standard"
+    "spacecraft-theme-factory"
   ];
 
   # ~/.agents/skills/<skill> — the canonical hub. HM creates ~/.agents/
@@ -91,12 +91,12 @@ in
   home.stateVersion = "25.11";
 
   home.file = aiSkillLinks // {
-    # Steelbore project symlink
+    # Spacecraft Software project symlink
     "steelbore".source = config.lib.file.mkOutOfStoreSymlink "/steelbore";
 
     # Brush (Rust Bash-compatible) — share init with Bash via ~/.bashrc
     ".brushrc".text = ''
-      # Steelbore Brush shell init — sources Home Manager's bashrc so Bash and Brush
+      # Spacecraft Software Brush shell init — sources Home Manager's bashrc so Bash and Brush
       # share aliases, env, and gitway-agent key auto-loading.
       [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
     '';
@@ -112,7 +112,7 @@ in
   home.sessionVariables = {
     EDITOR = "${pkgs.msedit}/bin/edit";
     VISUAL = "${pkgs.msedit}/bin/edit";
-    STEELBORE_THEME = "true";
+    SPACECRAFT_THEME = "true";
     # Move bw's app-data out from under the literal-space "Bitwarden CLI"
     # default into a scriptable XDG-compliant path. bw populates data.json
     # itself; we only set the directory.
@@ -183,67 +183,220 @@ in
       '';
     };
 
-    # Starship prompt (Tokyo Night preset)
+    # Starship prompt — Spacecraft Software powerline (mirrors
+    # /steelbore/theme/Shells/Starship/starship.toml, kept inline so the
+    # config doesn't depend on an out-of-flake path at eval time).
     starship = {
       enable = true;
       settings = {
         "$schema" = "https://starship.rs/config-schema.json";
-        format = "[░▒▓](#a3aed2)[  ](bg:#a3aed2 fg:#090c0c)[](bg:#769ff0 fg:#a3aed2)$directory[](fg:#769ff0 bg:#394260)$git_branch$git_status[](fg:#394260 bg:#212736)$nodejs$rust$golang$php[](fg:#212736 bg:#1d2230)$time[ ](fg:#1d2230)\n$character";
+
+        format = "[](red)$os$username[](bg:peach fg:red)$directory[](bg:yellow fg:peach)$git_branch$git_status[](fg:yellow bg:green)$c$rust$golang$nodejs$bun$php$java$kotlin$haskell$python[](fg:green bg:sapphire)$conda[](fg:sapphire bg:lavender)$time[ ](fg:lavender)$cmd_duration$line_break$character";
+
+        palette = "spacecraft";
+
+        os = {
+          disabled = false;
+          style = "bg:red fg:crust";
+          symbols = {
+            Windows = "";
+            Ubuntu = "󰕈";
+            SUSE = "";
+            Raspbian = "󰐿";
+            Mint = "󰣭";
+            Macos = "󰀵";
+            Manjaro = "";
+            Linux = "󰌽";
+            Gentoo = "󰣨";
+            Fedora = "󰣛";
+            Alpine = "";
+            Amazon = "";
+            Android = "";
+            AOSC = "";
+            Arch = "󰣇";
+            Artix = "󰣇";
+            CentOS = "";
+            Debian = "󰣚";
+            Redhat = "󱄛";
+            RedHatEnterprise = "󱄛";
+          };
+        };
+
+        username = {
+          show_always = true;
+          style_user = "bg:red fg:crust";
+          style_root = "bg:red fg:crust";
+          format = "[ $user]($style)";
+        };
 
         directory = {
-          style = "fg:#e3e5e5 bg:#769ff0";
+          style = "bg:peach fg:crust";
           format = "[ $path ]($style)";
           truncation_length = 3;
           truncation_symbol = "…/";
 
           substitutions = {
             Documents = "󰈙 ";
-            Downloads = " ";
-            Music = " ";
-            Pictures = " ";
+            Downloads = " ";
+            Music = "󰝚 ";
+            Pictures = " ";
+            Developer = "󰲋 ";
           };
         };
 
         git_branch = {
-          symbol = "";
-          style = "bg:#394260";
-          format = "[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)";
+          symbol = "";
+          style = "bg:yellow";
+          format = "[[ $symbol $branch ](fg:crust bg:yellow)]($style)";
         };
 
         git_status = {
-          style = "bg:#394260";
-          format = "[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)";
+          style = "bg:yellow";
+          format = "[[($all_status$ahead_behind )](fg:crust bg:yellow)]($style)";
         };
 
         nodejs = {
-          symbol = "";
-          style = "bg:#212736";
-          format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+          symbol = "";
+          style = "bg:green";
+          format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
+        };
+
+        bun = {
+          symbol = "";
+          style = "bg:green";
+          format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
+        };
+
+        c = {
+          symbol = " ";
+          style = "bg:green";
+          format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
         };
 
         rust = {
-          symbol = "";
-          style = "bg:#212736";
-          format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+          symbol = "";
+          style = "bg:green";
+          format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
         };
 
         golang = {
-          symbol = "";
-          style = "bg:#212736";
-          format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+          symbol = "";
+          style = "bg:green";
+          format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
         };
 
         php = {
-          symbol = "";
-          style = "bg:#212736";
-          format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+          symbol = "";
+          style = "bg:green";
+          format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
+        };
+
+        java = {
+          symbol = " ";
+          style = "bg:green";
+          format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
+        };
+
+        kotlin = {
+          symbol = "";
+          style = "bg:green";
+          format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
+        };
+
+        haskell = {
+          symbol = "";
+          style = "bg:green";
+          format = "[[ $symbol( $version) ](fg:crust bg:green)]($style)";
+        };
+
+        python = {
+          symbol = "";
+          style = "bg:green";
+          format = "[[ $symbol( $version)(\\(#$virtualenv\\)) ](fg:crust bg:green)]($style)";
+        };
+
+        docker_context = {
+          symbol = "";
+          style = "bg:sapphire";
+          format = "[[ $symbol( $context) ](fg:crust bg:sapphire)]($style)";
+        };
+
+        conda = {
+          symbol = "  ";
+          style = "fg:crust bg:sapphire";
+          format = "[$symbol$environment ]($style)";
+          ignore_base = false;
         };
 
         time = {
           disabled = false;
           time_format = "%R";
-          style = "bg:#1d2230";
-          format = "[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)";
+          style = "bg:lavender";
+          format = "[[  $time ](fg:crust bg:lavender)]($style)";
+        };
+
+        line_break.disabled = true;
+
+        character = {
+          disabled = false;
+          success_symbol = "[❯](bold fg:green)";
+          error_symbol = "[❯](bold fg:red)";
+          vimcmd_symbol = "[❮](bold fg:green)";
+          vimcmd_replace_one_symbol = "[❮](bold fg:lavender)";
+          vimcmd_replace_symbol = "[❮](bold fg:lavender)";
+          vimcmd_visual_symbol = "[❮](bold fg:yellow)";
+        };
+
+        cmd_duration = {
+          show_milliseconds = true;
+          format = " in $duration ";
+          style = "bg:lavender";
+          disabled = false;
+          show_notifications = true;
+          min_time_to_notify = 45000;
+        };
+
+        # Spacecraft Software palette — Catppuccin role keys preserved so the
+        # upstream powerline preset renders unchanged, but every hex
+        # value resolves to a token from the Spacecraft Software canonical palette.
+        palettes.spacecraft = {
+          # Powerline section accents
+          red      = "#FF5C5C";  # red_oxide     — OS / username cap
+          peach    = "#D98E32";  # molten_amber  — directory block
+          yellow   = "#6272A4";  # slag_grey     — git block
+          green    = "#50FA7B";  # radium_green  — language runtimes
+          sapphire = "#4B7EB0";  # steel_blue    — docker / conda
+          lavender = "#8BE9FD";  # liquid_cool   — time block
+
+          # Dark canvas (foreground text on bright section blocks)
+          crust  = "#000027";
+          mantle = "#000027";
+          base   = "#000027";
+
+          # Secondary surfaces
+          surface0 = "#050530";
+          surface1 = "#050530";
+          surface2 = "#050530";
+
+          # Dim / muted scale
+          overlay0 = "#6272A4";
+          overlay1 = "#6272A4";
+          overlay2 = "#6272A4";
+
+          # Foreground text scale
+          text     = "#D98E32";
+          subtext0 = "#E6E6F0";
+          subtext1 = "#E6E6F0";
+
+          # Remaining catppuccin role keys mapped to nearest Spacecraft Software semantic
+          rosewater = "#FF5C5C";
+          flamingo  = "#FF5C5C";
+          pink      = "#FF5C5C";
+          mauve     = "#FF5C5C";
+          maroon    = "#FF5C5C";
+          teal      = "#8BE9FD";
+          sky       = "#8BE9FD";
+          blue      = "#4B7EB0";
         };
       };
     };
@@ -267,10 +420,10 @@ in
         # it. The visible UX is identical except the indicator is uncolored.
         $env.PROMPT_MULTILINE_INDICATOR = "::: "
 
-        # Steelbore palette — kept in sync with flake.nix steelborePalette.
+        # Spacecraft Software palette — kept in sync with flake.nix spacecraftPalette.
         # Nushell needs literals; env-var interpolation isn't available inside
         # color_config records.
-        let steelbore = {
+        let spacecraft = {
           voidNavy:    "#000027"
           moltenAmber: "#D98E32"
           steelBlue:   "#4B7EB0"
@@ -284,71 +437,71 @@ in
           ls: { use_ls_colors: true, clickable_links: true },
           cursor_shape: { emacs: block, vi_insert: block, vi_normal: block },
           color_config: {
-            separator:        $steelbore.steelBlue
+            separator:        $spacecraft.steelBlue
             leading_trailing_space_bg: { attr: "n" }
-            header:           { fg: $steelbore.moltenAmber attr: "b" }
-            empty:            $steelbore.liquidCool
-            bool:             {|v| if $v { $steelbore.radiumGreen } else { $steelbore.redOxide } }
-            int:              $steelbore.moltenAmber
-            filesize:         {|v| if $v == 0b { $steelbore.steelBlue } else if $v < 1mb { $steelbore.liquidCool } else { $steelbore.moltenAmber } }
-            duration:         $steelbore.moltenAmber
-            date:             {|v| (date now) - $v | if $in < 1hr { { fg: $steelbore.radiumGreen attr: "b" } } else if $in < 6hr { $steelbore.radiumGreen } else if $in < 1day { $steelbore.moltenAmber } else if $in < 3day { $steelbore.liquidCool } else if $in < 1wk { { fg: $steelbore.liquidCool attr: "b" } } else if $in < 6wk { $steelbore.steelBlue } else if $in < 52wk { { fg: $steelbore.steelBlue attr: "b" } } else { "dark_gray" } }
-            range:            $steelbore.moltenAmber
-            float:            $steelbore.moltenAmber
-            string:           $steelbore.moltenAmber
-            nothing:          $steelbore.liquidCool
-            binary:           $steelbore.liquidCool
-            cell-path:        $steelbore.steelBlue
-            row_index:        { fg: $steelbore.steelBlue attr: "b" }
-            record:           $steelbore.moltenAmber
-            list:             $steelbore.moltenAmber
-            block:            $steelbore.moltenAmber
+            header:           { fg: $spacecraft.moltenAmber attr: "b" }
+            empty:            $spacecraft.liquidCool
+            bool:             {|v| if $v { $spacecraft.radiumGreen } else { $spacecraft.redOxide } }
+            int:              $spacecraft.moltenAmber
+            filesize:         {|v| if $v == 0b { $spacecraft.steelBlue } else if $v < 1mb { $spacecraft.liquidCool } else { $spacecraft.moltenAmber } }
+            duration:         $spacecraft.moltenAmber
+            date:             {|v| (date now) - $v | if $in < 1hr { { fg: $spacecraft.radiumGreen attr: "b" } } else if $in < 6hr { $spacecraft.radiumGreen } else if $in < 1day { $spacecraft.moltenAmber } else if $in < 3day { $spacecraft.liquidCool } else if $in < 1wk { { fg: $spacecraft.liquidCool attr: "b" } } else if $in < 6wk { $spacecraft.steelBlue } else if $in < 52wk { { fg: $spacecraft.steelBlue attr: "b" } } else { "dark_gray" } }
+            range:            $spacecraft.moltenAmber
+            float:            $spacecraft.moltenAmber
+            string:           $spacecraft.moltenAmber
+            nothing:          $spacecraft.liquidCool
+            binary:           $spacecraft.liquidCool
+            cell-path:        $spacecraft.steelBlue
+            row_index:        { fg: $spacecraft.steelBlue attr: "b" }
+            record:           $spacecraft.moltenAmber
+            list:             $spacecraft.moltenAmber
+            block:            $spacecraft.moltenAmber
             hints:            "dark_gray"
-            search_result:    { fg: $steelbore.voidNavy bg: $steelbore.moltenAmber }
+            search_result:    { fg: $spacecraft.voidNavy bg: $spacecraft.moltenAmber }
 
-            shape_and:                { fg: $steelbore.radiumGreen attr: "b" }
-            shape_binary:             { fg: $steelbore.liquidCool attr: "b" }
-            shape_block:              { fg: $steelbore.liquidCool attr: "b" }
-            shape_bool:               $steelbore.radiumGreen
-            shape_closure:            { fg: $steelbore.radiumGreen attr: "b" }
-            shape_custom:             $steelbore.radiumGreen
-            shape_datetime:           { fg: $steelbore.liquidCool attr: "b" }
-            shape_directory:          $steelbore.liquidCool
-            shape_external:           $steelbore.moltenAmber
-            shape_externalarg:        { fg: $steelbore.radiumGreen attr: "b" }
-            shape_external_resolved:  { fg: $steelbore.liquidCool attr: "b" }
-            shape_filepath:           $steelbore.steelBlue
-            shape_flag:               { fg: $steelbore.steelBlue attr: "b" }
-            shape_float:              { fg: $steelbore.moltenAmber attr: "b" }
-            shape_garbage:            { fg: $steelbore.redOxide bg: $steelbore.voidNavy attr: "b" }
-            shape_glob_interpolation: { fg: $steelbore.liquidCool attr: "b" }
-            shape_globpattern:        { fg: $steelbore.liquidCool attr: "b" }
-            shape_int:                { fg: $steelbore.moltenAmber attr: "b" }
-            shape_internalcall:       { fg: $steelbore.moltenAmber attr: "b" }
-            shape_keyword:            { fg: $steelbore.radiumGreen attr: "b" }
-            shape_list:               { fg: $steelbore.liquidCool attr: "b" }
-            shape_literal:            $steelbore.steelBlue
-            shape_match_pattern:      $steelbore.radiumGreen
+            shape_and:                { fg: $spacecraft.radiumGreen attr: "b" }
+            shape_binary:             { fg: $spacecraft.liquidCool attr: "b" }
+            shape_block:              { fg: $spacecraft.liquidCool attr: "b" }
+            shape_bool:               $spacecraft.radiumGreen
+            shape_closure:            { fg: $spacecraft.radiumGreen attr: "b" }
+            shape_custom:             $spacecraft.radiumGreen
+            shape_datetime:           { fg: $spacecraft.liquidCool attr: "b" }
+            shape_directory:          $spacecraft.liquidCool
+            shape_external:           $spacecraft.moltenAmber
+            shape_externalarg:        { fg: $spacecraft.radiumGreen attr: "b" }
+            shape_external_resolved:  { fg: $spacecraft.liquidCool attr: "b" }
+            shape_filepath:           $spacecraft.steelBlue
+            shape_flag:               { fg: $spacecraft.steelBlue attr: "b" }
+            shape_float:              { fg: $spacecraft.moltenAmber attr: "b" }
+            shape_garbage:            { fg: $spacecraft.redOxide bg: $spacecraft.voidNavy attr: "b" }
+            shape_glob_interpolation: { fg: $spacecraft.liquidCool attr: "b" }
+            shape_globpattern:        { fg: $spacecraft.liquidCool attr: "b" }
+            shape_int:                { fg: $spacecraft.moltenAmber attr: "b" }
+            shape_internalcall:       { fg: $spacecraft.moltenAmber attr: "b" }
+            shape_keyword:            { fg: $spacecraft.radiumGreen attr: "b" }
+            shape_list:               { fg: $spacecraft.liquidCool attr: "b" }
+            shape_literal:            $spacecraft.steelBlue
+            shape_match_pattern:      $spacecraft.radiumGreen
             shape_matching_brackets:  { attr: "u" }
-            shape_nothing:            $steelbore.liquidCool
-            shape_operator:           $steelbore.moltenAmber
-            shape_or:                 { fg: $steelbore.radiumGreen attr: "b" }
-            shape_pipe:               { fg: $steelbore.radiumGreen attr: "b" }
-            shape_range:              { fg: $steelbore.moltenAmber attr: "b" }
-            shape_record:             { fg: $steelbore.liquidCool attr: "b" }
-            shape_redirection:        { fg: $steelbore.radiumGreen attr: "b" }
-            shape_signature:          { fg: $steelbore.radiumGreen attr: "b" }
-            shape_string:             $steelbore.steelBlue
-            shape_string_interpolation: { fg: $steelbore.liquidCool attr: "b" }
-            shape_table:              { fg: $steelbore.steelBlue attr: "b" }
-            shape_variable:           $steelbore.steelBlue
-            shape_vardecl:            $steelbore.steelBlue
-            shape_raw_string:         $steelbore.steelBlue
-            shape_garbage_unknown:    { fg: $steelbore.redOxide attr: "b" }
+            shape_nothing:            $spacecraft.liquidCool
+            shape_operator:           $spacecraft.moltenAmber
+            shape_or:                 { fg: $spacecraft.radiumGreen attr: "b" }
+            shape_pipe:               { fg: $spacecraft.radiumGreen attr: "b" }
+            shape_range:              { fg: $spacecraft.moltenAmber attr: "b" }
+            shape_record:             { fg: $spacecraft.liquidCool attr: "b" }
+            shape_redirection:        { fg: $spacecraft.radiumGreen attr: "b" }
+            shape_signature:          { fg: $spacecraft.radiumGreen attr: "b" }
+            shape_string:             $spacecraft.steelBlue
+            shape_string_interpolation: { fg: $spacecraft.liquidCool attr: "b" }
+            shape_table:              { fg: $spacecraft.steelBlue attr: "b" }
+            shape_variable:           $spacecraft.steelBlue
+            shape_vardecl:            $spacecraft.steelBlue
+            shape_raw_string:         $spacecraft.steelBlue
+            shape_garbage_unknown:    { fg: $spacecraft.redOxide attr: "b" }
           }
         }
 
-        # Steelbore Telemetry Aliases
+        # Spacecraft Software Telemetry Aliases
         alias ll = ls -l
         alias lla = ls -la
         alias telemetry = macchina
@@ -359,10 +512,10 @@ in
         alias disk-telemetry = yazi
         alias edit = ${pkgs.msedit}/bin/edit
 
-        # Project Steelbore Identity
-        def steelbore [] {
+        # Project Spacecraft Software Identity
+        def spacecraft [] {
           print "============================================================"
-          print "  STEELBORE :: Industrial Sci-Fi Desktop Environment"
+          print "  SPACECRAFT SOFTWARE :: Industrial Sci-Fi Desktop"
           print "============================================================"
           print "  STATUS    :: ACTIVE"
           print "  LOAD      :: NOMINAL"
@@ -380,7 +533,7 @@ in
       '';
     };
 
-    # Alacritty (Steelbore theme)
+    # Alacritty (Spacecraft Software theme)
     alacritty = {
       enable = true;
       settings = {
@@ -404,36 +557,36 @@ in
         };
         colors = {
           primary = {
-            background = steelborePalette.voidNavy;
-            foreground = steelborePalette.moltenAmber;
+            background = spacecraftPalette.voidNavy;
+            foreground = spacecraftPalette.moltenAmber;
           };
           cursor = {
-            text = steelborePalette.voidNavy;
-            cursor = steelborePalette.moltenAmber;
+            text = spacecraftPalette.voidNavy;
+            cursor = spacecraftPalette.moltenAmber;
           };
           selection = {
-            text = steelborePalette.voidNavy;
-            background = steelborePalette.steelBlue;
+            text = spacecraftPalette.voidNavy;
+            background = spacecraftPalette.steelBlue;
           };
           normal = {
-            black = steelborePalette.voidNavy;
-            red = steelborePalette.redOxide;
-            green = steelborePalette.radiumGreen;
-            yellow = steelborePalette.moltenAmber;
-            blue = steelborePalette.steelBlue;
-            magenta = steelborePalette.steelBlue;
-            cyan = steelborePalette.liquidCool;
-            white = steelborePalette.moltenAmber;
+            black = spacecraftPalette.voidNavy;
+            red = spacecraftPalette.redOxide;
+            green = spacecraftPalette.radiumGreen;
+            yellow = spacecraftPalette.moltenAmber;
+            blue = spacecraftPalette.steelBlue;
+            magenta = spacecraftPalette.steelBlue;
+            cyan = spacecraftPalette.liquidCool;
+            white = spacecraftPalette.moltenAmber;
           };
           bright = {
-            black = steelborePalette.steelBlue;
-            red = steelborePalette.redOxide;
-            green = steelborePalette.radiumGreen;
-            yellow = steelborePalette.moltenAmber;
-            blue = steelborePalette.liquidCool;
-            magenta = steelborePalette.liquidCool;
-            cyan = steelborePalette.liquidCool;
-            white = steelborePalette.moltenAmber;
+            black = spacecraftPalette.steelBlue;
+            red = spacecraftPalette.redOxide;
+            green = spacecraftPalette.radiumGreen;
+            yellow = spacecraftPalette.moltenAmber;
+            blue = spacecraftPalette.liquidCool;
+            magenta = spacecraftPalette.liquidCool;
+            cyan = spacecraftPalette.liquidCool;
+            white = spacecraftPalette.moltenAmber;
           };
         };
       };
@@ -458,6 +611,15 @@ in
 
   # XDG config files
   xdg.configFile = {
+    # COSMIC's cosmic-settings-daemon overwrites HM's gtk-4.0/gtk.css
+    # with its own `cosmic/dark.css` symlink whenever the theme syncs.
+    # On the next nixos-rebuild HM sees a foreign file at the path it
+    # expects to own and refuses to activate ("would be clobbered").
+    # `force = true` tells HM to overwrite unconditionally; cosmic
+    # re-asserts its symlink moments later, producing at most a brief
+    # theme flicker right after activation.
+    "gtk-4.0/gtk.css".force = true;
+
     # Suppress gnome-keyring's SSH component so it doesn't override
     # SSH_AUTH_SOCK (which gitway-agent points at /run/user/$UID/gitway-agent.sock
     # via /etc/environment.d/10-gitway-agent.conf). PAM still launches
@@ -515,13 +677,66 @@ in
       Hidden=true
     '';
 
+    # COSMIC custom keybinds. cosmic-settings stores user-edited shortcuts
+    # in this RON file at ~/.config/cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom.
+    # The COSMIC 1.0-alpha schema supports multiple bindings mapped to the
+    # same action, so we ship pairs (Ctrl+Space + Super+Space → input-source
+    # switch; Super+Return + Super+T → terminal) here. Note: home-manager
+    # makes the file read-only, so future tweaks via the Settings UI silently
+    # fail until the binding is also added/removed here.
+    "cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom".text = ''
+      {
+          (
+              modifiers: [
+                  Ctrl,
+              ],
+              key: "space",
+          ): System(InputSourceSwitch),
+          (
+              modifiers: [
+                  Super,
+              ],
+              key: "space",
+          ): System(InputSourceSwitch),
+          (
+              modifiers: [
+                  Super,
+              ],
+          ): System(AppLibrary),
+          (
+              modifiers: [
+                  Super,
+              ],
+              key: "d",
+          ): System(Launcher),
+          (
+              modifiers: [
+                  Super,
+              ],
+              key: "slash",
+          ): Disable,
+          (
+              modifiers: [
+                  Super,
+              ],
+              key: "Return",
+          ): System(Terminal),
+          (
+              modifiers: [
+                  Super,
+              ],
+              key: "t",
+          ): System(Terminal),
+      }
+    '';
+
     # ═══════════════════════════════════════════════════════════════════════════
     # EWW — Shared status bar for LeftWM (X11) and Niri (Wayland).
     # Eww auto-detects X11 vs Wayland; one config drives both. WMs spawn it
     # via `eww open bar` from their startup scripts.
     # ═══════════════════════════════════════════════════════════════════════════
     "eww/eww.yuck".text = ''
-      ;; Steelbore Eww — shared bar widget
+      ;; Spacecraft Software Eww — shared bar widget
 
       (defpoll time    :interval "1s"  "date '+%Y-%m-%d %H:%M:%S'")
       (defpoll cpu     :interval "3s"  "top -bn1 -d 0.1 | awk '/^%Cpu/ {printf \"%d\", $2 + $4}'")
@@ -550,12 +765,12 @@ in
     '';
 
     "eww/eww.scss".text = ''
-      $voidNavy:    ${steelborePalette.voidNavy};
-      $moltenAmber: ${steelborePalette.moltenAmber};
-      $steelBlue:   ${steelborePalette.steelBlue};
-      $radiumGreen: ${steelborePalette.radiumGreen};
-      $liquidCool:  ${steelborePalette.liquidCool};
-      $redOxide:    ${steelborePalette.redOxide};
+      $voidNavy:    ${spacecraftPalette.voidNavy};
+      $moltenAmber: ${spacecraftPalette.moltenAmber};
+      $steelBlue:   ${spacecraftPalette.steelBlue};
+      $radiumGreen: ${spacecraftPalette.radiumGreen};
+      $liquidCool:  ${spacecraftPalette.liquidCool};
+      $redOxide:    ${spacecraftPalette.redOxide};
 
       * {
           font-family: "Share Tech Mono", "JetBrains Mono", monospace;
@@ -577,13 +792,13 @@ in
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
-    # ZELLIJ — Full Steelbore config
+    # ZELLIJ — Full Spacecraft Software config
     # User has no custom keybinds; ship a complete config that activates the
-    # Steelbore theme. zellij will write any auto-generated keybinds to its
+    # Spacecraft Software theme. zellij will write any auto-generated keybinds to its
     # internal cache; our config.kdl wins because it's at $XDG_CONFIG_HOME.
     # ═══════════════════════════════════════════════════════════════════════════
     "zellij/config.kdl".text = ''
-      theme "steelbore"
+      theme "spacecraft"
       default_shell "${pkgs.nushell}/bin/nu"
       simplified_ui false
       pane_frames true
@@ -591,18 +806,18 @@ in
       copy_on_select true
 
       themes {
-          steelbore {
-              fg "${steelborePalette.moltenAmber}"
-              bg "${steelborePalette.voidNavy}"
-              black "${steelborePalette.voidNavy}"
-              red "${steelborePalette.redOxide}"
-              green "${steelborePalette.radiumGreen}"
-              yellow "${steelborePalette.moltenAmber}"
-              blue "${steelborePalette.steelBlue}"
-              magenta "${steelborePalette.steelBlue}"
-              cyan "${steelborePalette.liquidCool}"
-              white "${steelborePalette.moltenAmber}"
-              orange "${steelborePalette.moltenAmber}"
+          spacecraft {
+              fg "${spacecraftPalette.moltenAmber}"
+              bg "${spacecraftPalette.voidNavy}"
+              black "${spacecraftPalette.voidNavy}"
+              red "${spacecraftPalette.redOxide}"
+              green "${spacecraftPalette.radiumGreen}"
+              yellow "${spacecraftPalette.moltenAmber}"
+              blue "${spacecraftPalette.steelBlue}"
+              magenta "${spacecraftPalette.steelBlue}"
+              cyan "${spacecraftPalette.liquidCool}"
+              white "${spacecraftPalette.moltenAmber}"
+              orange "${spacecraftPalette.moltenAmber}"
           }
       }
     '';
@@ -611,7 +826,7 @@ in
     # ION — Shell init (Starship prompt)
     # ═══════════════════════════════════════════════════════════════════════════
     "ion/initrc".text = ''
-      # Steelbore Ion Shell Init
+      # Spacecraft Software Ion Shell Init
 
       # Override SSH_AUTH_SOCK back to gitway-agent's socket. PAM's
       # pam_gnome_keyring otherwise sets it to /run/user/$UID/keyring/ssh.
@@ -636,7 +851,7 @@ in
     # NIRI — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "niri/config.kdl".text = ''
-      // Steelbore Niri User Configuration
+      // Spacecraft Software Niri User Configuration
 
       // XDG_CURRENT_DESKTOP routes xdg-desktop-portal lookups (see
       // xdg.portal.config.niri in modules/theme/dark-mode.nix). Niri
@@ -649,8 +864,8 @@ in
           focus-ring {
               // off  — uncomment to disable; presence of the block enables it
               width 2
-              active-color "${steelborePalette.moltenAmber}"
-              inactive-color "${steelborePalette.steelBlue}"
+              active-color "${spacecraftPalette.moltenAmber}"
+              inactive-color "${spacecraftPalette.steelBlue}"
           }
           border { off; }
           gaps 8
@@ -660,7 +875,7 @@ in
       // the full rationale. The wallpaper daemon needs to bind its IPC
       // socket before any client command.
       spawn-at-startup "${wallpaperPkg}/bin/${wallpaperBin}-daemon"
-      spawn-at-startup "sh" "-c" "sleep 1 && ${wallpaperPkg}/bin/${wallpaperBin} clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
+      spawn-at-startup "sh" "-c" "sleep 1 && ${wallpaperPkg}/bin/${wallpaperBin} clear ${lib.removePrefix "#" spacecraftPalette.voidNavy}"
       spawn-at-startup "eww" "open" "bar"
       spawn-at-startup "dunst"
       // Load SSH key into gitway-agent once per session. With no TTY but
@@ -823,33 +1038,33 @@ in
       }
 
       window {
-          background-color: ${steelborePalette.voidNavy};
-          color: ${steelborePalette.moltenAmber};
-          border-bottom: 2px solid ${steelborePalette.steelBlue};
+          background-color: ${spacecraftPalette.voidNavy};
+          color: ${spacecraftPalette.moltenAmber};
+          border-bottom: 2px solid ${spacecraftPalette.steelBlue};
       }
 
       .widget {
           padding: 0 10px;
-          border-left: 1px solid ${steelborePalette.steelBlue};
+          border-left: 1px solid ${spacecraftPalette.steelBlue};
       }
 
       .workspaces button {
-          color: ${steelborePalette.steelBlue};
+          color: ${spacecraftPalette.steelBlue};
           border-bottom: 2px solid transparent;
       }
 
       .workspaces button.active {
-          color: ${steelborePalette.moltenAmber};
-          border-bottom: 2px solid ${steelborePalette.moltenAmber};
+          color: ${spacecraftPalette.moltenAmber};
+          border-bottom: 2px solid ${spacecraftPalette.moltenAmber};
       }
 
       .clock {
-          color: ${steelborePalette.moltenAmber};
+          color: ${spacecraftPalette.moltenAmber};
           font-weight: bold;
       }
 
       .sys_info {
-          color: ${steelborePalette.radiumGreen};
+          color: ${spacecraftPalette.radiumGreen};
       }
     '';
 
@@ -857,7 +1072,7 @@ in
     # WEZTERM — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "wezterm/wezterm.lua".text = ''
-      -- Steelbore WezTerm User Configuration
+      -- Spacecraft Software WezTerm User Configuration
       local wezterm = require 'wezterm'
       local config = {}
 
@@ -870,42 +1085,42 @@ in
       config.default_prog = { "${pkgs.nushell}/bin/nu" }
 
       config.colors = {
-        foreground = "${steelborePalette.moltenAmber}",
-        background = "${steelborePalette.voidNavy}",
-        cursor_bg = "${steelborePalette.moltenAmber}",
-        cursor_fg = "${steelborePalette.voidNavy}",
-        cursor_border = "${steelborePalette.moltenAmber}",
-        selection_bg = "${steelborePalette.steelBlue}",
-        selection_fg = "${steelborePalette.voidNavy}",
+        foreground = "${spacecraftPalette.moltenAmber}",
+        background = "${spacecraftPalette.voidNavy}",
+        cursor_bg = "${spacecraftPalette.moltenAmber}",
+        cursor_fg = "${spacecraftPalette.voidNavy}",
+        cursor_border = "${spacecraftPalette.moltenAmber}",
+        selection_bg = "${spacecraftPalette.steelBlue}",
+        selection_fg = "${spacecraftPalette.voidNavy}",
         ansi = {
-          "${steelborePalette.voidNavy}",
-          "${steelborePalette.redOxide}",
-          "${steelborePalette.radiumGreen}",
-          "${steelborePalette.moltenAmber}",
-          "${steelborePalette.steelBlue}",
-          "${steelborePalette.steelBlue}",
-          "${steelborePalette.liquidCool}",
-          "${steelborePalette.moltenAmber}"
+          "${spacecraftPalette.voidNavy}",
+          "${spacecraftPalette.redOxide}",
+          "${spacecraftPalette.radiumGreen}",
+          "${spacecraftPalette.moltenAmber}",
+          "${spacecraftPalette.steelBlue}",
+          "${spacecraftPalette.steelBlue}",
+          "${spacecraftPalette.liquidCool}",
+          "${spacecraftPalette.moltenAmber}"
         },
         brights = {
-          "${steelborePalette.steelBlue}",
-          "${steelborePalette.redOxide}",
-          "${steelborePalette.radiumGreen}",
-          "${steelborePalette.moltenAmber}",
-          "${steelborePalette.liquidCool}",
-          "${steelborePalette.liquidCool}",
-          "${steelborePalette.liquidCool}",
-          "${steelborePalette.moltenAmber}"
+          "${spacecraftPalette.steelBlue}",
+          "${spacecraftPalette.redOxide}",
+          "${spacecraftPalette.radiumGreen}",
+          "${spacecraftPalette.moltenAmber}",
+          "${spacecraftPalette.liquidCool}",
+          "${spacecraftPalette.liquidCool}",
+          "${spacecraftPalette.liquidCool}",
+          "${spacecraftPalette.moltenAmber}"
         },
         tab_bar = {
-          background = "${steelborePalette.voidNavy}",
+          background = "${spacecraftPalette.voidNavy}",
           active_tab = {
-            bg_color = "${steelborePalette.steelBlue}",
-            fg_color = "${steelborePalette.moltenAmber}",
+            bg_color = "${spacecraftPalette.steelBlue}",
+            fg_color = "${spacecraftPalette.moltenAmber}",
           },
           inactive_tab = {
-            bg_color = "${steelborePalette.voidNavy}",
-            fg_color = "${steelborePalette.steelBlue}",
+            bg_color = "${spacecraftPalette.voidNavy}",
+            fg_color = "${spacecraftPalette.steelBlue}",
           },
         },
       }
@@ -917,7 +1132,7 @@ in
     # RIO — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "rio/config.toml".text = ''
-      # Steelbore Rio User Configuration
+      # Spacecraft Software Rio User Configuration
 
       [window]
       opacity = 0.95
@@ -942,31 +1157,31 @@ in
       weight = 700
 
       [colors]
-      background = '${steelborePalette.voidNavy}'
-      foreground = '${steelborePalette.moltenAmber}'
-      cursor = '${steelborePalette.moltenAmber}'
-      selection-background = '${steelborePalette.steelBlue}'
-      selection-foreground = '${steelborePalette.voidNavy}'
+      background = '${spacecraftPalette.voidNavy}'
+      foreground = '${spacecraftPalette.moltenAmber}'
+      cursor = '${spacecraftPalette.moltenAmber}'
+      selection-background = '${spacecraftPalette.steelBlue}'
+      selection-foreground = '${spacecraftPalette.voidNavy}'
 
       [colors.regular]
-      black = '${steelborePalette.voidNavy}'
-      red = '${steelborePalette.redOxide}'
-      green = '${steelborePalette.radiumGreen}'
-      yellow = '${steelborePalette.moltenAmber}'
-      blue = '${steelborePalette.steelBlue}'
-      magenta = '${steelborePalette.steelBlue}'
-      cyan = '${steelborePalette.liquidCool}'
-      white = '${steelborePalette.moltenAmber}'
+      black = '${spacecraftPalette.voidNavy}'
+      red = '${spacecraftPalette.redOxide}'
+      green = '${spacecraftPalette.radiumGreen}'
+      yellow = '${spacecraftPalette.moltenAmber}'
+      blue = '${spacecraftPalette.steelBlue}'
+      magenta = '${spacecraftPalette.steelBlue}'
+      cyan = '${spacecraftPalette.liquidCool}'
+      white = '${spacecraftPalette.moltenAmber}'
 
       [colors.bright]
-      black = '${steelborePalette.steelBlue}'
-      red = '${steelborePalette.redOxide}'
-      green = '${steelborePalette.radiumGreen}'
-      yellow = '${steelborePalette.moltenAmber}'
-      blue = '${steelborePalette.liquidCool}'
-      magenta = '${steelborePalette.liquidCool}'
-      cyan = '${steelborePalette.liquidCool}'
-      white = '${steelborePalette.moltenAmber}'
+      black = '${spacecraftPalette.steelBlue}'
+      red = '${spacecraftPalette.redOxide}'
+      green = '${spacecraftPalette.radiumGreen}'
+      yellow = '${spacecraftPalette.moltenAmber}'
+      blue = '${spacecraftPalette.liquidCool}'
+      magenta = '${spacecraftPalette.liquidCool}'
+      cyan = '${spacecraftPalette.liquidCool}'
+      white = '${spacecraftPalette.moltenAmber}'
 
       [shell]
       program = "${pkgs.nushell}/bin/nu"
@@ -977,7 +1192,7 @@ in
     # GHOSTTY — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "ghostty/config".text = ''
-      # Steelbore Ghostty User Configuration
+      # Spacecraft Software Ghostty User Configuration
 
       font-family = JetBrains Mono
       font-size = 12
@@ -986,29 +1201,29 @@ in
       window-padding-x = 10
       window-padding-y = 10
 
-      background = ${steelborePalette.voidNavy}
-      foreground = ${steelborePalette.moltenAmber}
-      cursor-color = ${steelborePalette.moltenAmber}
-      cursor-text = ${steelborePalette.voidNavy}
-      selection-background = ${steelborePalette.steelBlue}
-      selection-foreground = ${steelborePalette.voidNavy}
+      background = ${spacecraftPalette.voidNavy}
+      foreground = ${spacecraftPalette.moltenAmber}
+      cursor-color = ${spacecraftPalette.moltenAmber}
+      cursor-text = ${spacecraftPalette.voidNavy}
+      selection-background = ${spacecraftPalette.steelBlue}
+      selection-foreground = ${spacecraftPalette.voidNavy}
 
-      palette = 0=${steelborePalette.voidNavy}
-      palette = 1=${steelborePalette.redOxide}
-      palette = 2=${steelborePalette.radiumGreen}
-      palette = 3=${steelborePalette.moltenAmber}
-      palette = 4=${steelborePalette.steelBlue}
-      palette = 5=${steelborePalette.steelBlue}
-      palette = 6=${steelborePalette.liquidCool}
-      palette = 7=${steelborePalette.moltenAmber}
-      palette = 8=${steelborePalette.steelBlue}
-      palette = 9=${steelborePalette.redOxide}
-      palette = 10=${steelborePalette.radiumGreen}
-      palette = 11=${steelborePalette.moltenAmber}
-      palette = 12=${steelborePalette.liquidCool}
-      palette = 13=${steelborePalette.liquidCool}
-      palette = 14=${steelborePalette.liquidCool}
-      palette = 15=${steelborePalette.moltenAmber}
+      palette = 0=${spacecraftPalette.voidNavy}
+      palette = 1=${spacecraftPalette.redOxide}
+      palette = 2=${spacecraftPalette.radiumGreen}
+      palette = 3=${spacecraftPalette.moltenAmber}
+      palette = 4=${spacecraftPalette.steelBlue}
+      palette = 5=${spacecraftPalette.steelBlue}
+      palette = 6=${spacecraftPalette.liquidCool}
+      palette = 7=${spacecraftPalette.moltenAmber}
+      palette = 8=${spacecraftPalette.steelBlue}
+      palette = 9=${spacecraftPalette.redOxide}
+      palette = 10=${spacecraftPalette.radiumGreen}
+      palette = 11=${spacecraftPalette.moltenAmber}
+      palette = 12=${spacecraftPalette.liquidCool}
+      palette = 13=${spacecraftPalette.liquidCool}
+      palette = 14=${spacecraftPalette.liquidCool}
+      palette = 15=${spacecraftPalette.moltenAmber}
 
       # Shell — launches nushell (starship integrated via nushell config)
       command = ${pkgs.nushell}/bin/nu
@@ -1018,7 +1233,7 @@ in
     # FOOT — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "foot/foot.ini".text = ''
-      # Steelbore Foot User Configuration
+      # Spacecraft Software Foot User Configuration
 
       [main]
       font=JetBrains Mono:size=12
@@ -1026,27 +1241,27 @@ in
       term=xterm-256color
 
       [colors]
-      background=${h steelborePalette.voidNavy}
-      foreground=${h steelborePalette.moltenAmber}
-      regular0=${h steelborePalette.voidNavy}
-      regular1=${h steelborePalette.redOxide}
-      regular2=${h steelborePalette.radiumGreen}
-      regular3=${h steelborePalette.moltenAmber}
-      regular4=${h steelborePalette.steelBlue}
-      regular5=${h steelborePalette.steelBlue}
-      regular6=${h steelborePalette.liquidCool}
-      regular7=${h steelborePalette.moltenAmber}
-      bright0=${h steelborePalette.steelBlue}
-      bright1=${h steelborePalette.redOxide}
-      bright2=${h steelborePalette.radiumGreen}
-      bright3=${h steelborePalette.moltenAmber}
-      bright4=${h steelborePalette.liquidCool}
-      bright5=${h steelborePalette.liquidCool}
-      bright6=${h steelborePalette.liquidCool}
-      bright7=${h steelborePalette.moltenAmber}
-      cursor=${h steelborePalette.voidNavy} ${h steelborePalette.moltenAmber}
-      selection-foreground=${h steelborePalette.voidNavy}
-      selection-background=${h steelborePalette.steelBlue}
+      background=${h spacecraftPalette.voidNavy}
+      foreground=${h spacecraftPalette.moltenAmber}
+      regular0=${h spacecraftPalette.voidNavy}
+      regular1=${h spacecraftPalette.redOxide}
+      regular2=${h spacecraftPalette.radiumGreen}
+      regular3=${h spacecraftPalette.moltenAmber}
+      regular4=${h spacecraftPalette.steelBlue}
+      regular5=${h spacecraftPalette.steelBlue}
+      regular6=${h spacecraftPalette.liquidCool}
+      regular7=${h spacecraftPalette.moltenAmber}
+      bright0=${h spacecraftPalette.steelBlue}
+      bright1=${h spacecraftPalette.redOxide}
+      bright2=${h spacecraftPalette.radiumGreen}
+      bright3=${h spacecraftPalette.moltenAmber}
+      bright4=${h spacecraftPalette.liquidCool}
+      bright5=${h spacecraftPalette.liquidCool}
+      bright6=${h spacecraftPalette.liquidCool}
+      bright7=${h spacecraftPalette.moltenAmber}
+      cursor=${h spacecraftPalette.voidNavy} ${h spacecraftPalette.moltenAmber}
+      selection-foreground=${h spacecraftPalette.voidNavy}
+      selection-background=${h spacecraftPalette.steelBlue}
 
       [scrollback]
       lines=10000
@@ -1063,11 +1278,11 @@ in
       CustomCommand=${pkgs.nushell}/bin/nu
       BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
       BackgroundDarkness=0.95
-      ColorBackground=${steelborePalette.voidNavy}
-      ColorForeground=${steelborePalette.moltenAmber}
-      ColorCursor=${steelborePalette.moltenAmber}
+      ColorBackground=${spacecraftPalette.voidNavy}
+      ColorForeground=${spacecraftPalette.moltenAmber}
+      ColorCursor=${spacecraftPalette.moltenAmber}
       ColorBold=FALSE
-      ColorPalette=${steelborePalette.voidNavy};${steelborePalette.redOxide};${steelborePalette.radiumGreen};${steelborePalette.moltenAmber};${steelborePalette.steelBlue};${steelborePalette.steelBlue};${steelborePalette.liquidCool};${steelborePalette.moltenAmber};${steelborePalette.steelBlue};${steelborePalette.redOxide};${steelborePalette.radiumGreen};${steelborePalette.moltenAmber};${steelborePalette.liquidCool};${steelborePalette.liquidCool};${steelborePalette.liquidCool};${steelborePalette.moltenAmber}
+      ColorPalette=${spacecraftPalette.voidNavy};${spacecraftPalette.redOxide};${spacecraftPalette.radiumGreen};${spacecraftPalette.moltenAmber};${spacecraftPalette.steelBlue};${spacecraftPalette.steelBlue};${spacecraftPalette.liquidCool};${spacecraftPalette.moltenAmber};${spacecraftPalette.steelBlue};${spacecraftPalette.redOxide};${spacecraftPalette.radiumGreen};${spacecraftPalette.moltenAmber};${spacecraftPalette.liquidCool};${spacecraftPalette.liquidCool};${spacecraftPalette.liquidCool};${spacecraftPalette.moltenAmber}
       MiscMenubarDefault=FALSE
       ScrollingBar=TERMINAL_SCROLLBAR_NONE
       ScrollingLines=10000
@@ -1098,7 +1313,7 @@ in
 
     "konsolerc".text = ''
       [Desktop Entry]
-      DefaultProfile=Steelbore.profile
+      DefaultProfile=Spacecraft Software.profile
 
       [TabBar]
       CloseTabOnMiddleMouseButton=true
@@ -1108,11 +1323,11 @@ in
 
     # ═══════════════════════════════════════════════════════════════════════════
     # YAKUAKE — KDE drop-down terminal (uses Konsole as backend)
-    # Inherits shell and colors from the Konsole Steelbore profile above
+    # Inherits shell and colors from the Konsole Spacecraft Software profile above
     # ═══════════════════════════════════════════════════════════════════════════
     "yakuakerc".text = ''
       [Desktop Entry]
-      DefaultProfile=Steelbore.profile
+      DefaultProfile=Spacecraft Software.profile
 
       [Window]
       Height=50
@@ -1127,8 +1342,8 @@ in
     # ═══════════════════════════════════════════════════════════════════════════
     # KONSOLE — User profile and colorscheme
     # ═══════════════════════════════════════════════════════════════════════════
-    "konsole/Steelbore.colorscheme".text = ''
-      # Steelbore Konsole Color Scheme
+    "konsole/Spacecraft Software.colorscheme".text = ''
+      # Spacecraft Software Konsole Color Scheme
 
       [Background]
       Color=0,0,39
@@ -1234,23 +1449,23 @@ in
       Anchor=0.5,0.5
       Blur=false
       ColorRandomization=false
-      Description=Steelbore
+      Description=Spacecraft Software
       FillStyle=Tile
       Opacity=0.95
       Spread=1.0
       Wallpaper=
     '';
 
-    "konsole/Steelbore.profile".text = ''
-      # Steelbore Konsole Profile
+    "konsole/Spacecraft Software.profile".text = ''
+      # Spacecraft Software Konsole Profile
 
       [Appearance]
-      ColorScheme=Steelbore
+      ColorScheme=Spacecraft Software
       Font=JetBrains Mono,12,-1,5,50,0,0,0,0,0
 
       [General]
       Command=${pkgs.nushell}/bin/nu
-      Name=Steelbore
+      Name=Spacecraft Software
       Parent=FALLBACK/
       TerminalColumns=160
       TerminalRows=48
@@ -1274,28 +1489,28 @@ in
     "XTerm*saveLines"              = 10000;
     "XTerm*bellIsUrgent"           = true;
     "XTerm*internalBorder"         = 10;
-    "XTerm*background"             = steelborePalette.voidNavy;
-    "XTerm*foreground"             = steelborePalette.moltenAmber;
-    "XTerm*cursorColor"            = steelborePalette.moltenAmber;
-    "XTerm*pointerColorBackground" = steelborePalette.voidNavy;
-    "XTerm*pointerColorForeground" = steelborePalette.moltenAmber;
-    "XTerm*highlightColor"         = steelborePalette.steelBlue;
-    "XTerm*color0"                 = steelborePalette.voidNavy;
-    "XTerm*color1"                 = steelborePalette.redOxide;
-    "XTerm*color2"                 = steelborePalette.radiumGreen;
-    "XTerm*color3"                 = steelborePalette.moltenAmber;
-    "XTerm*color4"                 = steelborePalette.steelBlue;
-    "XTerm*color5"                 = steelborePalette.steelBlue;
-    "XTerm*color6"                 = steelborePalette.liquidCool;
-    "XTerm*color7"                 = steelborePalette.moltenAmber;
-    "XTerm*color8"                 = steelborePalette.steelBlue;
-    "XTerm*color9"                 = steelborePalette.redOxide;
-    "XTerm*color10"                = steelborePalette.radiumGreen;
-    "XTerm*color11"                = steelborePalette.moltenAmber;
-    "XTerm*color12"                = steelborePalette.liquidCool;
-    "XTerm*color13"                = steelborePalette.liquidCool;
-    "XTerm*color14"                = steelborePalette.liquidCool;
-    "XTerm*color15"                = steelborePalette.moltenAmber;
+    "XTerm*background"             = spacecraftPalette.voidNavy;
+    "XTerm*foreground"             = spacecraftPalette.moltenAmber;
+    "XTerm*cursorColor"            = spacecraftPalette.moltenAmber;
+    "XTerm*pointerColorBackground" = spacecraftPalette.voidNavy;
+    "XTerm*pointerColorForeground" = spacecraftPalette.moltenAmber;
+    "XTerm*highlightColor"         = spacecraftPalette.steelBlue;
+    "XTerm*color0"                 = spacecraftPalette.voidNavy;
+    "XTerm*color1"                 = spacecraftPalette.redOxide;
+    "XTerm*color2"                 = spacecraftPalette.radiumGreen;
+    "XTerm*color3"                 = spacecraftPalette.moltenAmber;
+    "XTerm*color4"                 = spacecraftPalette.steelBlue;
+    "XTerm*color5"                 = spacecraftPalette.steelBlue;
+    "XTerm*color6"                 = spacecraftPalette.liquidCool;
+    "XTerm*color7"                 = spacecraftPalette.moltenAmber;
+    "XTerm*color8"                 = spacecraftPalette.steelBlue;
+    "XTerm*color9"                 = spacecraftPalette.redOxide;
+    "XTerm*color10"                = spacecraftPalette.radiumGreen;
+    "XTerm*color11"                = spacecraftPalette.moltenAmber;
+    "XTerm*color12"                = spacecraftPalette.liquidCool;
+    "XTerm*color13"                = spacecraftPalette.liquidCool;
+    "XTerm*color14"                = spacecraftPalette.liquidCool;
+    "XTerm*color15"                = spacecraftPalette.moltenAmber;
   };
 
   # dconf settings for GNOME-based terminals (Ptyxis, GNOME Console) +
@@ -1320,34 +1535,34 @@ in
 
     # ── Ptyxis ──────────────────────────────────────────────────────────────
     "org/gnome/Ptyxis" = {
-      default-profile-uuid = "steelbore";
+      default-profile-uuid = "spacecraft";
       font-name = "JetBrains Mono 12";
       use-system-font = false;
     };
-    "org/gnome/Ptyxis/Profiles/steelbore" = {
-      label = "Steelbore";
+    "org/gnome/Ptyxis/Profiles/spacecraft" = {
+      label = "Spacecraft Software";
       use-custom-command = true;
       custom-command = "${pkgs.nushell}/bin/nu";
       palette = [
-        steelborePalette.voidNavy      # black
-        steelborePalette.redOxide      # red
-        steelborePalette.radiumGreen   # green
-        steelborePalette.moltenAmber   # yellow
-        steelborePalette.steelBlue     # blue
-        steelborePalette.steelBlue     # magenta
-        steelborePalette.liquidCool    # cyan
-        steelborePalette.moltenAmber   # white
-        steelborePalette.steelBlue     # bright black
-        steelborePalette.redOxide      # bright red
-        steelborePalette.radiumGreen   # bright green
-        steelborePalette.moltenAmber   # bright yellow
-        steelborePalette.liquidCool    # bright blue
-        steelborePalette.liquidCool    # bright magenta
-        steelborePalette.liquidCool    # bright cyan
-        steelborePalette.moltenAmber   # bright white
+        spacecraftPalette.voidNavy      # black
+        spacecraftPalette.redOxide      # red
+        spacecraftPalette.radiumGreen   # green
+        spacecraftPalette.moltenAmber   # yellow
+        spacecraftPalette.steelBlue     # blue
+        spacecraftPalette.steelBlue     # magenta
+        spacecraftPalette.liquidCool    # cyan
+        spacecraftPalette.moltenAmber   # white
+        spacecraftPalette.steelBlue     # bright black
+        spacecraftPalette.redOxide      # bright red
+        spacecraftPalette.radiumGreen   # bright green
+        spacecraftPalette.moltenAmber   # bright yellow
+        spacecraftPalette.liquidCool    # bright blue
+        spacecraftPalette.liquidCool    # bright magenta
+        spacecraftPalette.liquidCool    # bright cyan
+        spacecraftPalette.moltenAmber   # bright white
       ];
-      background-color = steelborePalette.voidNavy;
-      foreground-color = steelborePalette.moltenAmber;
+      background-color = spacecraftPalette.voidNavy;
+      foreground-color = spacecraftPalette.moltenAmber;
       use-theme-colors = false;
       opacity = 0.95;
     };

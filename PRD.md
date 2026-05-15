@@ -1,6 +1,6 @@
 # Bravais -- Product Requirements Document
 
-**Project:** Bravais (A Steelbore NixOS Distribution)
+**Project:** Bravais (A Spacecraft Software NixOS Distribution)
 **Version:** 3.1 | **Date:** 2026-04-20
 **Author:** Mohamed Hammad | **License:** GPL-3.0-or-later
 **Status:** Implemented
@@ -9,16 +9,16 @@
 
 ## 1. Executive Summary
 
-Bravais is a flake-based NixOS configuration implementing the Steelbore Standard. It delivers a complete, reproducible system with a modular, opt-in architecture supporting five desktop environments: GNOME (Wayland), COSMIC (Wayland), KDE Plasma 6 (Wayland), Niri (Wayland), and LeftWM (X11).
+Bravais is a flake-based NixOS configuration implementing the Spacecraft Software Standard. It delivers a complete, reproducible system with a modular, opt-in architecture supporting five desktop environments: GNOME (Wayland), COSMIC (Wayland), KDE Plasma 6 (Wayland), Niri (Wayland), and LeftWM (X11).
 
 **Core Principles:**
 
 - Memory-safe tooling preferred (Rust-first ecosystem)
-- Opt-in modularity via `lib.mkEnableOption` in the `steelbore.*` namespace
-- Steelbore Color Palette applied universally to all visual surfaces
+- Opt-in modularity via `lib.mkEnableOption` in the `spacecraft.*` namespace
+- Spacecraft Software Color Palette applied universally to all visual surfaces
 - Self-sufficient flake configuration (no external dependencies beyond nixpkgs, home-manager, nix-flatpak, and gitway)
 - Dual-channel support (stable nixos-25.11 / unstable rolling) with four x86-64 microarchitecture profiles (v1-v4)
-- 14+ terminal emulators, all themed with the Steelbore palette
+- 14+ terminal emulators, all themed with the Spacecraft Software palette
 - Declarative Flatpak management via nix-flatpak
 - Podman (not Docker) with runc as default runtime and Youki (Rust) available
 - Nushell (Rust) as default user shell; Brush (Rust, Bash-compatible) as root shell; Bash disabled as login shell
@@ -34,12 +34,12 @@ bravais/
 +-- flake.nix                      # Flake entry point
 +-- flake.lock                     # Pinned dependencies
 +-- lib/                           # Custom Nix helper functions
-|   +-- default.nix                # mkSteelboreModule, color palette
+|   +-- default.nix                # mkSpacecraftModule, color palette
 +-- hosts/                         # Machine-specific configurations
 |   +-- bravais/                   # Primary host
 |       +-- default.nix            # Host traits (boot, locale, user, toggles)
 |       +-- hardware.nix           # Hardware configuration (generated)
-+-- modules/                       # NixOS modules (steelbore.* namespace)
++-- modules/                       # NixOS modules (spacecraft.* namespace)
 |   +-- core/                      # Always-enabled necessities
 |   |   +-- default.nix            # Core module entry
 |   |   +-- nix.nix                # Nix settings, flakes, overlays
@@ -48,7 +48,7 @@ bravais/
 |   |   +-- audio.nix              # PipeWire audio stack
 |   |   +-- security.nix           # sudo-rs, polkit, SSH agent
 |   |   +-- dns.nix                # systemd-resolved + DoT + DNSSEC (Cloudflare malware-block)
-|   +-- theme/                     # Steelbore visual identity
+|   +-- theme/                     # Spacecraft Software visual identity
 |   |   +-- default.nix            # Color palette env vars, TTY colors
 |   |   +-- fonts.nix              # Typography (system fonts)
 |   +-- hardware/                  # Hardware-specific modules
@@ -87,29 +87,29 @@ bravais/
 
 ### 2.2 Module Design Pattern
 
-All modules use the `steelbore.*` namespace with `lib.mkEnableOption`:
+All modules use the `spacecraft.*` namespace with `lib.mkEnableOption`:
 
 ```nix
 { config, lib, pkgs, ... }:
 {
-  options.steelbore.desktops.niri = {
+  options.spacecraft.desktops.niri = {
     enable = lib.mkEnableOption "Niri scrolling tiling compositor (Wayland)";
   };
 
-  config = lib.mkIf config.steelbore.desktops.niri.enable {
+  config = lib.mkIf config.spacecraft.desktops.niri.enable {
     # Module implementation
   };
 }
 ```
 
-A `mkSteelboreModule` helper is available in `lib/default.nix` to reduce boilerplate.
+A `mkSpacecraftModule` helper is available in `lib/default.nix` to reduce boilerplate.
 
 ### 2.3 Host Configuration Pattern
 
 The host toggles modules declaratively:
 
 ```nix
-steelbore = {
+spacecraft = {
   desktops.gnome.enable = true;
   desktops.cosmic.enable = true;
   desktops.plasma.enable = true;
@@ -172,14 +172,14 @@ Ten `nixosConfigurations` are generated (5 stable + 5 unstable):
 | `nixpkgs-unstable`       | `github:nixos/nixpkgs/nixos-unstable`                 | --             |
 | `home-manager-unstable`  | `github:nix-community/home-manager`                   | `nixpkgs-unstable` |
 | `nix-flatpak`            | `github:gmodena/nix-flatpak`                          | --             |
-| `gitway`                 | `github:Steelbore/Gitway` (tracks `main`)             | `nixpkgs-unstable` |
+| `gitway`                 | `github:Spacecraft-Software/Gitway` (tracks `main`)             | `nixpkgs-unstable` |
 
-### 3.2 Steelbore Color Palette Definition
+### 3.2 Spacecraft Software Color Palette Definition
 
 Defined in `flake.nix` and passed as `specialArgs` to all modules:
 
 ```nix
-steelborePalette = {
+spacecraftPalette = {
   voidNavy    = "#000027";
   moltenAmber = "#D98E32";
   steelBlue   = "#4B7EB0";
@@ -196,10 +196,10 @@ mkBravais = { marchLevel, channel ? "stable" }: ...
 ```
 
 - Selects nixpkgs and home-manager inputs based on `channel`
-- Passes `specialArgs = { inherit steelborePalette gitway; }`
+- Passes `specialArgs = { inherit spacecraftPalette gitway; }`
 - Loads modules in order: external (home-manager, nix-flatpak), then host, core, theme, hardware, desktops, login, packages
-- Sets `steelbore.hardware.intel.marchLevel` from the `marchLevel` parameter
-- Configures Home Manager: `useGlobalPkgs = true`, `useUserPackages = true`, `backupFileExtension = "backup"`, passes `steelborePalette` via `extraSpecialArgs`
+- Sets `spacecraft.hardware.intel.marchLevel` from the `marchLevel` parameter
+- Configures Home Manager: `useGlobalPkgs = true`, `useUserPackages = true`, `backupFileExtension = "backup"`, passes `spacecraftPalette` via `extraSpecialArgs`
 
 ### 3.4 Overlays
 
@@ -213,7 +213,7 @@ Defined inline in `modules/core/nix.nix` via `nixpkgs.overlays`. A reference cop
 
 ---
 
-## 4. Steelbore Visual Identity
+## 4. Spacecraft Software Visual Identity
 
 ### 4.1 Color Palette
 
@@ -226,7 +226,7 @@ Defined inline in `modules/core/nix.nix` via `nixpkgs.overlays`. A reference cop
 | Red Oxide      | `#FF5C5C` | RGB(255, 092, 092) | Warning / Error Status         |
 | Liquid Coolant | `#8BE9FD` | RGB(139, 233, 253) | Info / Links                   |
 
-**`#000027` (Void Navy) is the mandatory background for ALL Steelbore surfaces.**
+**`#000027` (Void Navy) is the mandatory background for ALL Spacecraft Software surfaces.**
 
 ### 4.2 16-Color Terminal Palette Mapping
 
@@ -261,12 +261,12 @@ Defined inline in `modules/core/nix.nix` via `nixpkgs.overlays`. A reference cop
 Exported system-wide via `modules/theme/default.nix`:
 
 ```
-STEELBORE_BACKGROUND = #000027
-STEELBORE_TEXT       = #D98E32
-STEELBORE_ACCENT     = #4B7EB0
-STEELBORE_SUCCESS    = #50FA7B
-STEELBORE_WARNING    = #FF5C5C
-STEELBORE_INFO       = #8BE9FD
+SPACECRAFT_BACKGROUND = #000027
+SPACECRAFT_TEXT       = #D98E32
+SPACECRAFT_ACCENT     = #4B7EB0
+SPACECRAFT_SUCCESS    = #50FA7B
+SPACECRAFT_WARNING    = #FF5C5C
+SPACECRAFT_INFO       = #8BE9FD
 ```
 
 ### 4.5 TTY/Virtual Console Colors
@@ -334,13 +334,13 @@ Set via `console.colors` -- 16 hex values without `#` prefix, in order: normal 0
 
 ### 6.1 Fingerprint Reader (`modules/hardware/fingerprint.nix`)
 
-**Option:** `steelbore.hardware.fingerprint.enable`
+**Option:** `spacecraft.hardware.fingerprint.enable`
 
 When enabled: `services.fprintd.enable = true`, package `fprintd` installed.
 
 ### 6.2 Intel CPU Optimizations (`modules/hardware/intel.nix`)
 
-**Option:** `steelbore.hardware.intel.enable` with `marchLevel` suboption (enum: v1/v2/v3/v4, default: v4).
+**Option:** `spacecraft.hardware.intel.enable` with `marchLevel` suboption (enum: v1/v2/v3/v4, default: v4).
 
 **Flag sources:** CachyOS for v1/v3/v4, ALHP for v2.
 
@@ -477,7 +477,7 @@ brush
 
 ### 9.1 GNOME (Wayland)
 
-**Option:** `steelbore.desktops.gnome.enable`
+**Option:** `spacecraft.desktops.gnome.enable`
 
 **Services:**
 - `services.xserver.enable = true`
@@ -496,7 +496,7 @@ caffeine, just-perfection, window-gestures, wayland-or-x11, toggler, vim-alt-tab
 
 ### 9.2 COSMIC (Wayland)
 
-**Option:** `steelbore.desktops.cosmic.enable`
+**Option:** `spacecraft.desktops.cosmic.enable`
 
 **Services:**
 - `services.desktopManager.cosmic.enable = true`
@@ -506,7 +506,7 @@ Fully Rust-based desktop from System76. No additional packages needed.
 
 ### 9.3 KDE Plasma 6 (Wayland)
 
-**Option:** `steelbore.desktops.plasma.enable`
+**Option:** `spacecraft.desktops.plasma.enable`
 
 **Services:**
 - `services.desktopManager.plasma6.enable = true`
@@ -522,7 +522,7 @@ plasma-browser-integration, kdeconnect-kde, plasma-systemmonitor, filelight, kca
 
 ### 9.4 Niri (Wayland -- Scrolling Tiling)
 
-**Option:** `steelbore.desktops.niri.enable`
+**Option:** `spacecraft.desktops.niri.enable`
 
 **Service:** `programs.niri.enable = true`
 
@@ -562,7 +562,7 @@ Key bindings (Mod = Super):
 
 ### 9.5 LeftWM (X11 -- Tiling WM)
 
-**Option:** `steelbore.desktops.leftwm.enable`
+**Option:** `spacecraft.desktops.leftwm.enable`
 
 **Services:** `services.xserver.enable = true`, `services.xserver.windowManager.leftwm.enable = true`
 
@@ -592,7 +592,7 @@ Key bindings:
 - Border width: 2, margin: 8, workspace margin: 8
 - Default border: Steel Blue, floating border: Liquid Coolant, focused border: Molten Amber
 
-**Startup Script** (`up`): feh (Void Navy background), picom, dunst, polybar steelbore, numlockx on
+**Startup Script** (`up`): feh (Void Navy background), picom, dunst, polybar spacecraft, numlockx on
 
 **Shutdown Script** (`down`): kills polybar, picom, dunst
 
@@ -616,7 +616,7 @@ Key bindings:
 
 ## 10. Terminal Emulators (`modules/packages/terminals.nix`)
 
-All terminals are themed with the Steelbore palette. Both system-level and user-level configs use Nushell (`nu`) as the default shell.
+All terminals are themed with the Spacecraft Software palette. Both system-level and user-level configs use Nushell (`nu`) as the default shell.
 
 ### 10.1 Terminal Package List
 
@@ -640,7 +640,7 @@ All terminals are themed with the Steelbore palette. Both system-level and user-
 
 ### 10.2 System-Level Configuration Files
 
-Each terminal has a system-level config placed in `/etc/` with the full Steelbore palette. The following are generated:
+Each terminal has a system-level config placed in `/etc/` with the full Spacecraft Software palette. The following are generated:
 
 | Terminal       | Config Path                                      | Format  |
 |----------------|--------------------------------------------------|---------|
@@ -651,9 +651,9 @@ Each terminal has a system-level config placed in `/etc/` with the full Steelbor
 | COSMIC Term    | `/etc/cosmic/com.system76.CosmicTerm/v1/syntax_theme_dark` | Text |
 | Ptyxis/VTE     | `/etc/gtk-4.0/gtk.css`                           | CSS     |
 | WaveTerm       | `/etc/waveterm/config.json`                      | JSON    |
-| Warp           | `/etc/warp/themes/steelbore.yaml`                | YAML    |
-| Konsole        | `/etc/xdg/konsole/Steelbore.colorscheme`         | INI     |
-| Konsole        | `/etc/xdg/konsole/Steelbore.profile`             | INI     |
+| Warp           | `/etc/warp/themes/spacecraft.yaml`                | YAML    |
+| Konsole        | `/etc/xdg/konsole/Spacecraft Software.colorscheme`         | INI     |
+| Konsole        | `/etc/xdg/konsole/Spacecraft Software.profile`             | INI     |
 | Konsole        | `/etc/xdg/konsolerc`                             | INI     |
 | Yakuake        | `/etc/xdg/yakuakerc`                             | INI     |
 | Foot           | `/etc/xdg/foot/foot.ini`                         | INI     |
@@ -670,7 +670,7 @@ Each terminal has a system-level config placed in `/etc/` with the full Steelbor
 - **Foot quirk:** Uses hex colors without `#` prefix (handled by helper `h = c: builtins.substring 1 (builtins.stringLength c - 1) c`)
 - **Rio font config:** Uses `weight = N` integers (400 regular, 700 bold) -- no `style` key
 - **Konsole:** Full colorscheme with Normal/Faint/Intense variants, profile with 160x48 geometry, blinking cursor
-- **Yakuake:** Height 50%, width 100%, no keep-open, no animation, inherits Konsole Steelbore profile
+- **Yakuake:** Height 50%, width 100%, no keep-open, no animation, inherits Konsole Spacecraft Software profile
 
 ### 10.4 User-Level Configs (Home Manager)
 
@@ -725,7 +725,7 @@ Home Manager additionally generates user-level configs in `~/.config/` for: niri
 
 **Password Managers:** rbw (Rust, Bitwarden CLI), bitwarden-cli, bitwarden-desktop, authenticator (Rust, 2FA/OTP)
 
-**SSH:** openssh_hpn (general-purpose fallback), gitway (Steelbore SSH transport for Git, via flake input — primary path; `gitway-agent` owns `$SSH_AUTH_SOCK`, `gitway-keygen` is git's `gpg.ssh.program`, `gitway-add` replaces `ssh-add` in shell init)
+**SSH:** openssh_hpn (general-purpose fallback), gitway (Spacecraft Software SSH transport for Git, via flake input — primary path; `gitway-agent` owns `$SSH_AUTH_SOCK`, `gitway-keygen` is git's `gpg.ssh.program`, `gitway-add` replaces `ssh-add` in shell init)
 
 **Backup:** pika-backup (Rust, Borg frontend)
 
@@ -889,7 +889,7 @@ home.keyboard = {
 ```
 EDITOR = msedit/bin/edit
 VISUAL = msedit/bin/edit
-STEELBORE_THEME = true
+SPACECRAFT_THEME = true
 ```
 
 ### 13.4 User Packages
@@ -932,7 +932,7 @@ programs.nushell.enable = true;
 
 Config includes: `show_banner: false`, `ls_colors: true`, `clickable_links: true`, block cursor shapes.
 
-**Steelbore Telemetry Aliases:**
+**Spacecraft Software Telemetry Aliases:**
 - `ll` = `ls -l`
 - `lla` = `ls -la`
 - `telemetry` = `macchina`
@@ -943,7 +943,7 @@ Config includes: `show_banner: false`, `ls_colors: true`, `clickable_links: true
 - `disk-telemetry` = `yazi`
 - `edit` = `msedit`
 
-**`steelbore` command:** Prints Steelbore identity banner (STATUS: ACTIVE, LOAD: NOMINAL, INTEGRITY: VERIFIED).
+**`spacecraft` command:** Prints Spacecraft Software identity banner (STATUS: ACTIVE, LOAD: NOMINAL, INTEGRITY: VERIFIED).
 
 ### 13.8 Ion Shell Init (`~/.config/ion/initrc`)
 
@@ -952,14 +952,14 @@ Config includes: `show_banner: false`, `ls_colors: true`, `clickable_links: true
 
 ### 13.9 Alacritty (Home Manager)
 
-Managed via `programs.alacritty.enable = true` with structured Nix settings. Shell: Nushell. Full Steelbore palette via `steelborePalette` variable references.
+Managed via `programs.alacritty.enable = true` with structured Nix settings. Shell: Nushell. Full Spacecraft Software palette via `spacecraftPalette` variable references.
 
 ### 13.10 dconf Settings
 
 **Ptyxis:**
-- Default profile UUID: `steelbore`
+- Default profile UUID: `spacecraft`
 - Font: JetBrains Mono 12, custom command: Nushell
-- Full 16-color palette from steelborePalette
+- Full 16-color palette from spacecraftPalette
 - Background: Void Navy, foreground: Molten Amber, opacity: 0.95
 
 **GNOME Console:**
@@ -1024,7 +1024,7 @@ sudo nixos-rebuild switch --flake .#bravais-unstable-v3
 | Niri    | `niri --version`           | WM starts with Ironbar        |
 | LeftWM  | `leftwm --version`         | WM starts with Polybar        |
 
-### 16.3 Steelbore Standard Compliance
+### 16.3 Spacecraft Software Standard Compliance
 
 - [x] **Metallurgical naming:** Bravais (crystal structure)
 - [x] **Memory safety:** Rust-first packages, sudo-rs, Sequoia PGP, Nushell/Brush shells; bash excluded from login shells (NixOS module kept enabled for PAM/activation script compatibility)
@@ -1040,4 +1040,4 @@ sudo nixos-rebuild switch --flake .#bravais-unstable-v3
 
 ---
 
-*--- Forged in Steelbore ---*
+*--- Forged in Spacecraft Software ---*
