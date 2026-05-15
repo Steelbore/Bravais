@@ -14,7 +14,7 @@
   home.stateVersion = "25.11";
 
   # Spacecraft Software project symlink
-  home.file."steelbore".source = config.lib.file.mkOutOfStoreSymlink "/steelbore";
+  home.file."steelbore".source = config.lib.file.mkOutOfStoreSymlink "/spacecraft-software";
 
   # Keyboard layout
   home.keyboard = {

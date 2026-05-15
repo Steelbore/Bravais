@@ -285,7 +285,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 - [✓] **`default.nix`**: Define user account
 - [✓] **`home.nix`**: Set username, home directory, stateVersion 25.11
-- [✓] **`home.nix`**: Create `~/steelbore` symlink to `/steelbore`
+- [✓] **`home.nix`**: Create `~/steelbore` symlink to `/spacecraft-software`
 - [✓] **`home.nix`**: Configure keyboard layout (`us,ara`, `grp:ctrl_space_toggle`)
 - [✓] **`home.nix`**: Set session variables (`EDITOR`, `VISUAL` to msedit, `SPACECRAFT_THEME`)
 - [✓] **`home.nix`**: Configure Git with SSH signing (Sequoia), LFS enabled

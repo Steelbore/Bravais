@@ -873,7 +873,7 @@ runtime = "runc"
 - **Username:** mj
 - **Home:** `/home/mj`
 - **State version:** 25.11
-- **Symlink:** `~/steelbore` -> `/steelbore` (out-of-store symlink)
+- **Symlink:** `~/steelbore` -> `/spacecraft-software` (out-of-store symlink; `/steelbore/` legacy symlink farm still resolves)
 
 ### 13.2 Keyboard Layout
 

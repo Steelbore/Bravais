@@ -15,12 +15,12 @@ let
   # Foot requires hex colors without the '#' prefix
   h = c: builtins.substring 1 (builtins.stringLength c - 1) c;
 
-  # User-authored AI skills — single source of truth at /steelbore/construct/
+  # User-authored AI skills — single source of truth at /spacecraft-software/construct/
   # (separate GitHub repo: github:Spacecraft-Software/Construct).
   #
   # Layout: ~/.agents/ is the canonical agent-config hub managed by HM.
   # ~/.agents/skills/<skill> is a per-skill mkOutOfStoreSymlink to
-  # /steelbore/construct/<skill> — edits in the construct repo show up
+  # /spacecraft-software/construct/<skill> — edits in the construct repo show up
   # live, no rebuild needed. Every other AI tool dir gets a single
   # <tool>/skills symlink → ~/.agents/skills, so all tools share one
   # canonical skill location.
@@ -52,7 +52,7 @@ let
   agentsSkillLinks = builtins.listToAttrs (map (skill: {
     name = ".agents/skills/${skill}";
     value.source = config.lib.file.mkOutOfStoreSymlink
-      "/steelbore/construct/${skill}";
+      "/spacecraft-software/construct/${skill}";
   }) aiSkillNames);
 
   # <tool>/skills → ~/.agents/skills — single directory-level link per
@@ -92,7 +92,7 @@ in
 
   home.file = aiSkillLinks // {
     # Spacecraft Software project symlink
-    "steelbore".source = config.lib.file.mkOutOfStoreSymlink "/steelbore";
+    "steelbore".source = config.lib.file.mkOutOfStoreSymlink "/spacecraft-software";
 
     # Brush (Rust Bash-compatible) — share init with Bash via ~/.bashrc
     ".brushrc".text = ''
@@ -184,7 +184,7 @@ in
     };
 
     # Starship prompt — Spacecraft Software powerline (mirrors
-    # /steelbore/theme/Shells/Starship/starship.toml, kept inline so the
+    # /spacecraft-software/theme/Shells/Starship/starship.toml, kept inline so the
     # config doesn't depend on an out-of-flake path at eval time).
     starship = {
       enable = true;
@@ -524,9 +524,9 @@ in
         }
 
 
-        # Pull latest AI skills from /steelbore/construct (decoupled from rebuild)
+        # Pull latest AI skills from /spacecraft-software/construct (decoupled from rebuild)
         def skills-sync [] {
-          cd /steelbore/construct
+          cd /spacecraft-software/construct
           git pull --ff-only
           print $"(date now | format date '%Y-%m-%d %H:%M:%S') skills synced"
         }
