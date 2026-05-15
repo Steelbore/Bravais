@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — Niri Scrolling Tiling Compositor (Wayland)
+# Steelbore Bravais — Niri Scrolling Tiling Compositor (Wayland)
 { config, lib, pkgs, spacecraftPalette, ... }:
 
 {

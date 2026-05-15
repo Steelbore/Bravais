@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — Core Module Entry Point
+# Steelbore Bravais — Core Module Entry Point
 { config, lib, pkgs, ... }:
 
 {

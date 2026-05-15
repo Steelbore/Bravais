@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — Home Manager Configuration
+# Steelbore Bravais — Home Manager Configuration
 {
   config,
   pkgs,
@@ -105,6 +105,8 @@
           cursor_shape: { emacs: block, vi_insert: block, vi_normal: block },
         }
 
+        $env.PATH = ($env.PATH | split row (char esep) | prepend $"($env.HOME)/.local/bin" | uniq)
+
         # Spacecraft Software Telemetry Aliases
         alias ll = ls -l
         alias lla = ls -la
@@ -116,10 +118,10 @@
         alias disk-telemetry = yazi
         alias edit = ${pkgs.msedit}/bin/edit
 
-        # Project Spacecraft Software Identity
-        def spacecraft [] {
+        # Project Steelbore Identity
+        def steelbore [] {
           print "============================================================"
-          print "  SPACECRAFT SOFTWARE :: Industrial Sci-Fi Desktop"
+          print "  STEELBORE :: Industrial Sci-Fi Desktop Environment"
           print "============================================================"
           print "  STATUS    :: ACTIVE"
           print "  LOAD      :: NOMINAL"

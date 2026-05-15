@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — KDE Plasma 6 Desktop Environment (Wayland)
+# Steelbore Bravais — KDE Plasma 6 Desktop Environment (Wayland)
 { config, lib, pkgs, ... }:
 
 {

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — greetd + tuigreet Login Manager
+# Steelbore Bravais — greetd + tuigreet Login Manager
 { config, lib, pkgs, spacecraftPalette, gitway, ... }:
 
 let

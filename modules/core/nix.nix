@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — Nix Settings
+# Steelbore Bravais — Nix Settings
 { config, lib, pkgs, ... }:
 
 {

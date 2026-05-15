@@ -1,4 +1,4 @@
-# Spacecraft Software Bravais
+# Steelbore OS Bravais
 
 Bravais is a meticulously crafted, flake-based NixOS configuration implementing the **Spacecraft Software Standard**. Designed from the ground up to be modular, memory-safe, and visually cohesive, it provides a performant, reliable, and highly customizable system architecture for advanced computing workflows.
 

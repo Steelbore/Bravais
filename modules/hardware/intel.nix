@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — Intel CPU Optimizations
+# Steelbore Bravais — Intel CPU Optimizations
 { config, lib, ... }:
 
 let

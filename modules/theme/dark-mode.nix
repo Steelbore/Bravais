@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — System-Wide Dark Mode (Niri + LeftWM)
+# Steelbore Bravais — System-Wide Dark Mode (Niri + LeftWM)
 #
 # Provides the system-level plumbing for an always-on dark GTK/Qt theme
 # under bare WM sessions (Niri, LeftWM) where no DE control center is

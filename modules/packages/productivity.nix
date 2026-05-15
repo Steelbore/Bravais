@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — Office and Productivity Applications
+# Steelbore Bravais — Office and Productivity Applications
 { config, lib, pkgs, ... }:
 
 {

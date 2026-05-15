@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — Audio Configuration (PipeWire)
+# Steelbore Bravais — Audio Configuration (PipeWire)
 { config, lib, pkgs, ... }:
 
 {

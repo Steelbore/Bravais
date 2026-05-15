@@ -290,7 +290,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] **`home.nix`**: Set session variables (`EDITOR`, `VISUAL` to msedit, `SPACECRAFT_THEME`)
 - [✓] **`home.nix`**: Configure Git with SSH signing (Sequoia), LFS enabled
 - [✓] **`home.nix`**: Configure Starship prompt (Tokyo Night preset)
-- [✓] **`home.nix`**: Configure Nushell with aliases (telemetry, spacecraft banner)
+- [✓] **`home.nix`**: Configure Nushell with aliases (telemetry, steelbore banner)
 - [✓] **`home.nix`**: Configure Ion shell init (`~/.config/ion/initrc`) with aliases
 - [✓] **`home.nix`**: Configure Alacritty with Spacecraft Software colors (via `programs.alacritty`)
 - [✓] **`home.nix`**: Write user-level XDG configs (niri, ironbar, wezterm, rio, ghostty, foot, xfce4-terminal, konsole, yakuake, xresources)

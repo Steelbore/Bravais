@@ -413,13 +413,13 @@ The default shell is **Nushell** (`nu`), a modern shell written in Rust.
 | `disk-telemetry` | `yazi`                     | File manager             |
 | `edit`           | `hx`                       | Helix editor             |
 
-### 6.3 Spacecraft Software Identity
+### 6.3 Steelbore Identity
 
-Run `spacecraft` in the terminal to display the system identity banner:
+Run `steelbore` in the terminal to display the system identity banner:
 
 ```
 ============================================================
-  SPACECRAFT SOFTWARE :: Industrial Sci-Fi Desktop
+  STEELBORE :: Industrial Sci-Fi Desktop Environment
 ============================================================
   STATUS    :: ACTIVE
   LOAD      :: NOMINAL

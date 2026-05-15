@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — Library Functions
+# Steelbore Bravais — Library Functions
 { lib, ... }:
 
 {

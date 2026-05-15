@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — GNOME Desktop Environment (Wayland)
+# Steelbore Bravais — GNOME Desktop Environment (Wayland)
 {
   config,
   lib,

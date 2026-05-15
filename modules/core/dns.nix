@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — DNS via systemd-resolved with DoT + DNSSEC
+# Steelbore Bravais — DNS via systemd-resolved with DoT + DNSSEC
 #
 # Primary  : Cloudflare malware-block (1.1.1.2 / 1.0.0.2, SNI
 #            security.cloudflare-dns.com). Drops queries for known

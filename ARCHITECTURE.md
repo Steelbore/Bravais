@@ -1,4 +1,4 @@
-# Spacecraft Software Bravais — Architecture
+# Steelbore OS Bravais — Architecture
 
 ## System Architecture Diagram
 

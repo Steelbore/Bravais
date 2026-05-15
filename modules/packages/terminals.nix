@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Spacecraft Software Bravais — Terminal Emulators (All with Spacecraft Software Theme)
+# Steelbore Bravais — Terminal Emulators (All with Spacecraft Software Theme)
 { config, lib, pkgs, spacecraftPalette, ... }:
 
 let

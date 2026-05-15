@@ -1,4 +1,4 @@
-# Spacecraft Software Bravais — NixOS Configuration Reference
+# Steelbore OS Bravais — NixOS Configuration Reference
 
 > **Version:** NixOS 25.11 (Stable)
 > **Host:** `bravais` · `x86_64-linux` · Intel · XanMod Kernel
@@ -218,7 +218,7 @@ Manages per-user dotfiles via `xdg.configFile`:
 | ----- | ------------ | -------------- |
 | Git | `programs.git` | Identity, SSH signing, main branch |
 | Starship | `programs.starship` | Spacecraft Software palette, directory/git/character format |
-| Nushell | `programs.nushell` | Aliases (telemetry, sensors, edit), `spacecraft` command |
+| Nushell | `programs.nushell` | Aliases (telemetry, sensors, edit), `steelbore` command |
 | Alacritty | `programs.alacritty` | Spacecraft Software colors, Cascadia Code 12pt, 95% opacity |
 | Niri | `xdg.configFile` | Focus ring, gaps, binds, spawns |
 | Ironbar | `xdg.configFile` | YAML config + CSS (Share Tech Mono, Spacecraft Software colors) |

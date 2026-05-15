@@ -943,7 +943,7 @@ Config includes: `show_banner: false`, `ls_colors: true`, `clickable_links: true
 - `disk-telemetry` = `yazi`
 - `edit` = `msedit`
 
-**`spacecraft` command:** Prints Spacecraft Software identity banner (STATUS: ACTIVE, LOAD: NOMINAL, INTEGRITY: VERIFIED).
+**`steelbore` command:** Prints Steelbore OS Bravais identity banner (STATUS: ACTIVE, LOAD: NOMINAL, INTEGRITY: VERIFIED).
 
 ### 13.8 Ion Shell Init (`~/.config/ion/initrc`)
 
