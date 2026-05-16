@@ -11,6 +11,26 @@
     # Enable Flatpak service
     services.flatpak.enable = true;
 
+    # Resilience for the nix-flatpak install service.  Pulling 5+ GB of
+    # runtimes through Flathub's CDN routinely trips libostree's hardcoded
+    # CURLOPT_LOW_SPEED_TIME=60s / CURLOPT_LOW_SPEED_LIMIT=1KB/s curl
+    # timeouts on slow-mirror hops, and the install script exits with
+    # `set -eu` on first error.  The unit ships with Restart=on-failure
+    # RestartSec=60s — but systemd's default StartLimitBurst=5 in a
+    # 10s window means a single 60s-spaced retry exhausts the budget,
+    # so the unit gives up after one failure.  Bump the burst budget
+    # and uncap the start timeout so a slow first run can finish, and
+    # subsequent retries actually fire until the libostree partial-pull
+    # cache fills in.
+    systemd.services.flatpak-managed-install.serviceConfig = {
+      TimeoutStartSec = lib.mkForce "infinity";
+      RestartSec = lib.mkForce "30s";
+    };
+    systemd.services.flatpak-managed-install.unitConfig = {
+      StartLimitIntervalSec = "30min";
+      StartLimitBurst = 20;
+    };
+
     # Flatpak remotes
     services.flatpak.remotes = [
       {
