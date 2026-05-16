@@ -399,7 +399,7 @@ in
     # KONSOLE — KDE terminal emulator
     # Colorscheme + profile placed in system XDG data dir
     # ═══════════════════════════════════════════════════════════════════════════
-    environment.etc."xdg/konsole/Spacecraft Software.colorscheme".text = ''
+    environment.etc."xdg/konsole/Steelbore.colorscheme".text = ''
       # Spacecraft Software Konsole Color Scheme
       # Palette: Void Navy / Molten Amber / Steel Blue / Radium Green / Red Oxide / Liquid Coolant
 
@@ -514,7 +514,7 @@ in
       Wallpaper=
     '';
 
-    environment.etc."xdg/konsole/Spacecraft Software.profile".text = ''
+    environment.etc."xdg/konsole/Steelbore.profile".text = ''
       # Spacecraft Software Konsole Profile
 
       [Appearance]
@@ -523,7 +523,7 @@ in
 
       [General]
       Command=${pkgs.nushell}/bin/nu
-      Name=Spacecraft Software
+      Name=Steelbore
       Parent=FALLBACK/
       TerminalColumns=160
       TerminalRows=48
@@ -538,7 +538,7 @@ in
 
     environment.etc."xdg/konsolerc".text = ''
       [Desktop Entry]
-      DefaultProfile=Spacecraft Software.profile
+      DefaultProfile=Steelbore.profile
 
       [TabBar]
       CloseTabOnMiddleMouseButton=true
@@ -552,7 +552,7 @@ in
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."xdg/yakuakerc".text = ''
       [Desktop Entry]
-      DefaultProfile=Spacecraft Software.profile
+      DefaultProfile=Steelbore.profile
 
       [Window]
       Height=50

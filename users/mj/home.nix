@@ -1313,7 +1313,7 @@ in
 
     "konsolerc".text = ''
       [Desktop Entry]
-      DefaultProfile=Spacecraft Software.profile
+      DefaultProfile=Steelbore.profile
 
       [TabBar]
       CloseTabOnMiddleMouseButton=true
@@ -1327,7 +1327,7 @@ in
     # ═══════════════════════════════════════════════════════════════════════════
     "yakuakerc".text = ''
       [Desktop Entry]
-      DefaultProfile=Spacecraft Software.profile
+      DefaultProfile=Steelbore.profile
 
       [Window]
       Height=50
@@ -1342,7 +1342,7 @@ in
     # ═══════════════════════════════════════════════════════════════════════════
     # KONSOLE — User profile and colorscheme
     # ═══════════════════════════════════════════════════════════════════════════
-    "konsole/Spacecraft Software.colorscheme".text = ''
+    "konsole/Steelbore.colorscheme".text = ''
       # Spacecraft Software Konsole Color Scheme
 
       [Background]
@@ -1456,7 +1456,7 @@ in
       Wallpaper=
     '';
 
-    "konsole/Spacecraft Software.profile".text = ''
+    "konsole/Steelbore.profile".text = ''
       # Spacecraft Software Konsole Profile
 
       [Appearance]
@@ -1465,7 +1465,7 @@ in
 
       [General]
       Command=${pkgs.nushell}/bin/nu
-      Name=Spacecraft Software
+      Name=Steelbore
       Parent=FALLBACK/
       TerminalColumns=160
       TerminalRows=48

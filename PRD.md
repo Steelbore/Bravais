@@ -652,8 +652,8 @@ Each terminal has a system-level config placed in `/etc/` with the full Spacecra
 | Ptyxis/VTE     | `/etc/gtk-4.0/gtk.css`                           | CSS     |
 | WaveTerm       | `/etc/waveterm/config.json`                      | JSON    |
 | Warp           | `/etc/warp/themes/spacecraft.yaml`                | YAML    |
-| Konsole        | `/etc/xdg/konsole/Spacecraft Software.colorscheme`         | INI     |
-| Konsole        | `/etc/xdg/konsole/Spacecraft Software.profile`             | INI     |
+| Konsole        | `/etc/xdg/konsole/Steelbore.colorscheme`         | INI     |
+| Konsole        | `/etc/xdg/konsole/Steelbore.profile`             | INI     |
 | Konsole        | `/etc/xdg/konsolerc`                             | INI     |
 | Yakuake        | `/etc/xdg/yakuakerc`                             | INI     |
 | Foot           | `/etc/xdg/foot/foot.ini`                         | INI     |
