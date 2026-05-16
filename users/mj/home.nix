@@ -1477,6 +1477,225 @@ in
       [Terminal Features]
       BlinkingCursorEnabled=true
     '';
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # HALLOY — Rust + iced multi-server IRCv3 client (GUI)
+    # ═══════════════════════════════════════════════════════════════════════════
+    # Theme schema mirrors halloy's bundled `ferra.toml`. Servers are left
+    # as a commented-out Libera Chat example — drop in your nick / channels
+    # to start using.
+    "halloy/config.toml".text = ''
+      # Spacecraft Software Halloy configuration
+      theme = "spacecraft-software"
+
+      [font]
+      family = "JetBrains Mono"
+      size = 13
+
+      [buffer.timestamp]
+      format = "%Y-%m-%d %H:%M:%S"
+
+      # Example server (uncomment + fill in):
+      # [servers.libera]
+      # nickname = "your-nick"
+      # server = "irc.libera.chat"
+      # port = 6697
+      # use_tls = true
+      # channels = ["#nixos", "#rust"]
+    '';
+
+    "halloy/themes/spacecraft-software.toml".text = ''
+      # Spacecraft Software Halloy Theme — Void Navy / Molten Amber palette
+      # Schema mirrors halloy/assets/themes/ferra.toml.
+
+      [general]
+      background          = "${spacecraftPalette.voidNavy}"
+      horizontal_rule     = "${spacecraftPalette.steelBlue}"
+      scrollbar           = "${spacecraftPalette.steelBlue}"
+      unread_indicator    = "${spacecraftPalette.moltenAmber}"
+      highlight_indicator = "${spacecraftPalette.radiumGreen}"
+      border              = "${spacecraftPalette.steelBlue}"
+
+      [text]
+      primary   = "${spacecraftPalette.moltenAmber}"
+      secondary = "${spacecraftPalette.steelBlue}"
+      tertiary  = "${spacecraftPalette.liquidCool}"
+      success   = "${spacecraftPalette.radiumGreen}"
+      error     = "${spacecraftPalette.redOxide}"
+      warning   = "${spacecraftPalette.moltenAmber}"
+      info      = "${spacecraftPalette.liquidCool}"
+      debug     = "${spacecraftPalette.steelBlue}"
+      trace     = "${spacecraftPalette.liquidCool}"
+
+      [buffer]
+      background            = "${spacecraftPalette.voidNavy}"
+      background_text_input = "${spacecraftPalette.voidNavy}"
+      background_title_bar  = "${spacecraftPalette.voidNavy}"
+      timestamp             = "${spacecraftPalette.steelBlue}"
+      action                = "${spacecraftPalette.radiumGreen}"
+      topic                 = "${spacecraftPalette.moltenAmber}"
+      highlight             = "${spacecraftPalette.steelBlue}"
+      code                  = "${spacecraftPalette.liquidCool}"
+      nickname              = "${spacecraftPalette.moltenAmber}"
+      nickname_offline      = "${spacecraftPalette.steelBlue}"
+      url                   = "${spacecraftPalette.liquidCool}"
+      selection             = "${spacecraftPalette.steelBlue}"
+      border_selected       = "${spacecraftPalette.moltenAmber}"
+
+      [buffer.server_messages]
+      default = "${spacecraftPalette.steelBlue}"
+
+      [buttons.primary]
+      background                = "${spacecraftPalette.voidNavy}"
+      background_hover          = "${spacecraftPalette.steelBlue}"
+      background_selected       = "${spacecraftPalette.moltenAmber}"
+      background_selected_hover = "${spacecraftPalette.radiumGreen}"
+
+      [buttons.secondary]
+      background                = "${spacecraftPalette.voidNavy}"
+      background_hover          = "${spacecraftPalette.steelBlue}"
+      background_selected       = "${spacecraftPalette.moltenAmber}"
+      background_selected_hover = "${spacecraftPalette.radiumGreen}"
+
+      # IRC mIRC-style formatting palette. Mappings mirror foot/wezterm
+      # — entries the Spacecraft Software palette doesn't model directly
+      # (brown, magenta, pink, lightgrey) reuse the closest neighbor.
+      [formatting]
+      white      = "${spacecraftPalette.moltenAmber}"
+      black      = "${spacecraftPalette.voidNavy}"
+      blue       = "${spacecraftPalette.steelBlue}"
+      green      = "${spacecraftPalette.radiumGreen}"
+      red        = "${spacecraftPalette.redOxide}"
+      brown      = "${spacecraftPalette.moltenAmber}"
+      magenta    = "${spacecraftPalette.steelBlue}"
+      orange     = "${spacecraftPalette.moltenAmber}"
+      yellow     = "${spacecraftPalette.moltenAmber}"
+      lightgreen = "${spacecraftPalette.radiumGreen}"
+      cyan       = "${spacecraftPalette.liquidCool}"
+      lightcyan  = "${spacecraftPalette.liquidCool}"
+      lightblue  = "${spacecraftPalette.liquidCool}"
+      pink       = "${spacecraftPalette.redOxide}"
+      grey       = "${spacecraftPalette.steelBlue}"
+      lightgrey  = "${spacecraftPalette.moltenAmber}"
+    '';
+
+    # ═══════════════════════════════════════════════════════════════════════════
+    # TINY — Rust + crossterm multi-server IRC client (TUI)
+    # ═══════════════════════════════════════════════════════════════════════════
+    # Tiny is 256-color only (no truecolor), so palette colors are mapped
+    # to their nearest xterm-256 indices:
+    #   Void Navy      #000027 → 17  (#00005f)   [also use `default` for bg]
+    #   Molten Amber   #D98E32 → 172 (#d78700)
+    #   Steel Blue     #4B7EB0 → 67  (#5f87af)
+    #   Radium Green   #50FA7B → 84  (#5fff87)
+    #   Red Oxide      #FF5C5C → 203 (#ff5f5f)
+    #   Liquid Coolant #8BE9FD → 123 (#87ffff)
+    # `bg: default` inherits the host terminal's background — which on
+    # Bravais is already Void Navy.
+    "tiny/config.yml".text = ''
+      # Spacecraft Software Tiny configuration
+
+      # Servers — fill in or use /connect at runtime.
+      servers: []
+
+      defaults:
+          nicks: [unbreakablemj]
+          realname: Mohamed Hammad
+          join: []
+          tls: true
+
+      log_dir: "~/.local/share/tiny/logs"
+
+      scrollback: 4096
+
+      layout: aligned
+      max_nick_length: 16
+
+      # 256-color theme. See note above for the palette → index mapping.
+      colors:
+          # Per-nick color cycle through the palette.
+          nick: [172, 67, 84, 123, 203, 84, 67, 172, 123, 67]
+
+          clear:
+              fg: default
+              bg: default
+
+          user_msg:
+              fg: 172            # Molten Amber
+              bg: default
+
+          err_msg:
+              fg: 203            # Red Oxide
+              bg: default
+              attrs: [bold]
+
+          topic:
+              fg: 67             # Steel Blue
+              bg: default
+              attrs: [bold]
+
+          cursor:
+              fg: 17             # Void Navy on Molten Amber
+              bg: 172
+
+          join:
+              fg: 84             # Radium Green
+              bg: default
+              attrs: [bold]
+
+          part:
+              fg: 203            # Red Oxide
+              bg: default
+              attrs: [bold]
+
+          nick_change:
+              fg: 84             # Radium Green
+              bg: default
+              attrs: [bold]
+
+          faded:
+              fg: 67             # Steel Blue
+              bg: default
+
+          exit_dialogue:
+              fg: 172
+              bg: 17
+
+          highlight:
+              fg: 84             # Radium Green for mentions
+              bg: default
+              attrs: [bold]
+
+          completion:
+              fg: 123            # Liquid Coolant
+              bg: default
+
+          timestamp:
+              fg: 67             # Steel Blue
+              bg: default
+
+          tab_active:
+              fg: 172            # Molten Amber
+              bg: default
+              attrs: [bold]
+
+          tab_normal:
+              fg: 67             # Steel Blue
+              bg: default
+
+          tab_new_msg:
+              fg: 84             # Radium Green
+              bg: default
+
+          tab_highlight:
+              fg: 203            # Red Oxide
+              bg: default
+              attrs: [bold]
+
+          tab_joinpart:
+              fg: 67             # Steel Blue
+              bg: default
+    '';
   };
 
   # XTerm Xresources (loaded by xrdb on X session start)
