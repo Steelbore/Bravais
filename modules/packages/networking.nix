@@ -36,6 +36,10 @@
       aria2
       uget
 
+      # Chat / IRC
+      halloy                     # Rust + iced — modern multi-server IRCv3 client (GUI)
+      tiny                       # Rust + crossterm — minimal multi-server IRC client (TUI)
+
       # Clipboard
       wl-clipboard
       wl-clipboard-rs            # Rust
