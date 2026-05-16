@@ -8,11 +8,11 @@
 }:
 
 {
-  options.spacecraft.desktops.gnome = {
+  options.steelbore.desktops.gnome = {
     enable = lib.mkEnableOption "GNOME Desktop Environment (Wayland)";
   };
 
-  config = lib.mkIf config.spacecraft.desktops.gnome.enable {
+  config = lib.mkIf config.steelbore.desktops.gnome.enable {
     # Enable GNOME
     services.xserver.enable = true;
     services.displayManager.gdm.enable = lib.mkDefault false; # Use greetd instead

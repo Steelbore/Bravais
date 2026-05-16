@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Bravais — greetd + tuigreet Login Manager
-{ config, lib, pkgs, spacecraftPalette, gitway, ... }:
+{ config, lib, pkgs, steelborePalette, gitway, ... }:
 
 let
   # Wrap each shell-as-session in cage (single-app Wayland kiosk) plus rio
@@ -146,7 +146,7 @@ let
     (
       sleep 1
       ${pkgs.leftwm}/bin/leftwm-command "LoadTheme $HOME/.config/leftwm/themes/current/theme.ron"
-      ${xsetrootPkg}/bin/xsetroot -solid '${spacecraftPalette.voidNavy}'
+      ${xsetrootPkg}/bin/xsetroot -solid '${steelborePalette.voidNavy}'
     ) &
     exec ${pkgs.leftwm}/bin/leftwm
   '';

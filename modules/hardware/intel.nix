@@ -3,7 +3,7 @@
 { config, lib, ... }:
 
 let
-  cfg = config.spacecraft.hardware.intel;
+  cfg = config.steelbore.hardware.intel;
 
   # ── CachyOS shared components (v1, v3, v4) ────────────────────────────────
   # Source: github.com/CachyOS/docker-makepkg (makepkg.conf per level)
@@ -64,7 +64,7 @@ let
 
 in
 {
-  options.spacecraft.hardware.intel = {
+  options.steelbore.hardware.intel = {
     enable = lib.mkEnableOption "Intel CPU optimizations";
 
     marchLevel = lib.mkOption {

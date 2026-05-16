@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.packages.security = {
+  options.steelbore.packages.security = {
     enable = lib.mkEnableOption "Security and encryption tools";
   };
 
-  config = lib.mkIf config.spacecraft.packages.security.enable {
+  config = lib.mkIf config.steelbore.packages.security.enable {
     environment.systemPackages = with pkgs; [
       # Encryption (Rust preferred)
       age                        # Rust — Modern encryption

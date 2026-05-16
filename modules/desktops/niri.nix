@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Bravais — Niri Scrolling Tiling Compositor (Wayland)
-{ config, lib, pkgs, spacecraftPalette, ... }:
+{ config, lib, pkgs, steelborePalette, ... }:
 
 {
-  options.spacecraft.desktops.niri = {
+  options.steelbore.desktops.niri = {
     enable = lib.mkEnableOption "Niri scrolling tiling compositor (Wayland)";
   };
 
-  config = lib.mkIf config.spacecraft.desktops.niri.enable (
+  config = lib.mkIf config.steelbore.desktops.niri.enable (
     let
       # Wallpaper daemon: upstream renamed swww → awww. On unstable both
       # exist (swww is a deprecation alias that warns); on stable 25.11
@@ -71,15 +71,15 @@
           focus-ring {
               // off  — uncomment to disable; presence of the block enables it
               width 2
-              active-color "${spacecraftPalette.moltenAmber}"
-              inactive-color "${spacecraftPalette.steelBlue}"
+              active-color "${steelborePalette.moltenAmber}"
+              inactive-color "${steelborePalette.steelBlue}"
           }
 
           border {
               off
               width 1
-              active-color "${spacecraftPalette.moltenAmber}"
-              inactive-color "${spacecraftPalette.steelBlue}"
+              active-color "${steelborePalette.moltenAmber}"
+              inactive-color "${steelborePalette.steelBlue}"
           }
 
           // Default column width
@@ -95,7 +95,7 @@
       // `clear` call sets the solid Void Navy wallpaper. Eww and dunst
       // start in parallel.
       spawn-at-startup "${wallpaperPkg}/bin/${wallpaperBin}-daemon"
-      spawn-at-startup "sh" "-c" "sleep 1 && ${wallpaperPkg}/bin/${wallpaperBin} clear ${lib.removePrefix "#" spacecraftPalette.voidNavy}"
+      spawn-at-startup "sh" "-c" "sleep 1 && ${wallpaperPkg}/bin/${wallpaperBin} clear ${lib.removePrefix "#" steelborePalette.voidNavy}"
       spawn-at-startup "eww" "open" "bar"
       spawn-at-startup "dunst"
       // Load SSH key into gitway-agent once per session. With no TTY but

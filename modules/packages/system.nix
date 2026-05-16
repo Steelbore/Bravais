@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.packages.system = {
+  options.steelbore.packages.system = {
     enable = lib.mkEnableOption "System utilities and modern Unix tools";
   };
 
-  config = lib.mkIf config.spacecraft.packages.system.enable {
+  config = lib.mkIf config.steelbore.packages.system.enable {
     environment.systemPackages = with pkgs; [
       # Modern Unix (Rust preferred)
       fd                         # Rust — find replacement

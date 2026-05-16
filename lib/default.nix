@@ -4,7 +4,7 @@
 
 {
   # Spacecraft Software color palette for use across modules
-  spacecraftPalette = {
+  steelborePalette = {
     voidNavy     = "#000027";
     moltenAmber  = "#D98E32";
     steelBlue    = "#4B7EB0";
@@ -14,11 +14,11 @@
   };
 
   # Helper to create a Spacecraft Software module with standard options
-  mkSpacecraftModule = { name, description, config }: {
-    options.spacecraft.${name} = {
+  mkSteelboreModule = { name, description, config }: {
+    options.steelbore.${name} = {
       enable = lib.mkEnableOption description;
     };
 
-    config = lib.mkIf config.spacecraft.${name}.enable config;
+    config = lib.mkIf config.steelbore.${name}.enable config;
   };
 }

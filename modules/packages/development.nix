@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.packages.development = {
+  options.steelbore.packages.development = {
     enable = lib.mkEnableOption "Development tools and languages";
   };
 
-  config = lib.mkIf config.spacecraft.packages.development.enable {
+  config = lib.mkIf config.steelbore.packages.development.enable {
     environment.systemPackages = with pkgs; [
       # Git & Version Control (Rust preferred)
       git

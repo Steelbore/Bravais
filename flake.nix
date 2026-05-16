@@ -52,7 +52,7 @@
       system = "x86_64-linux";
 
       # Spacecraft Software color palette as a reusable attribute set
-      spacecraftPalette = {
+      steelborePalette = {
         voidNavy    = "#000027";
         moltenAmber = "#D98E32";
         steelBlue   = "#4B7EB0";
@@ -100,7 +100,7 @@
         in
         ch.pkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit spacecraftPalette gitway kimi-cli unstablePkgs; };
+          specialArgs = { inherit steelborePalette gitway kimi-cli unstablePkgs; };
           modules = [
             # External modules
             ch.hm.nixosModules.home-manager
@@ -118,12 +118,12 @@
 
             # Profile + Home Manager integration
             {
-              spacecraft.hardware.intel.marchLevel = marchLevel;
+              steelbore.hardware.intel.marchLevel = marchLevel;
 
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-              home-manager.extraSpecialArgs = { inherit spacecraftPalette gitway kimi-cli unstablePkgs; };
+              home-manager.extraSpecialArgs = { inherit steelborePalette gitway kimi-cli unstablePkgs; };
               home-manager.users.mj = import ./users/mj/home.nix;
             }
           ];

@@ -59,7 +59,7 @@
   # environment.shells — no user or root has bash as their login shell.
 
   # Spacecraft Software module toggles
-  spacecraft = {
+  steelbore = {
     # Desktop environments
     desktops.gnome.enable = true;
     desktops.cosmic.enable = true;   # stable pkgs (nixos-25.11)

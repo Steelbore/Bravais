@@ -4,7 +4,7 @@
   config,
   pkgs,
   lib,
-  spacecraftPalette,
+  steelborePalette,
   ...
 }:
 
@@ -26,7 +26,7 @@
   home.sessionVariables = {
     EDITOR = "${pkgs.msedit}/bin/edit";
     VISUAL = "${pkgs.msedit}/bin/edit";
-    SPACECRAFT_THEME = "true";
+    STEELBORE_THEME = "true";
   };
 
   # User packages
@@ -57,15 +57,15 @@
       enable = true;
       settings = {
         format = "$directory$git_branch$git_status$cmd_duration$character";
-        palette = "spacecraft";
+        palette = "steelbore";
 
-        palettes.spacecraft = {
-          void_navy = spacecraftPalette.voidNavy;
-          molten_amber = spacecraftPalette.moltenAmber;
-          steel_blue = spacecraftPalette.steelBlue;
-          radium_green = spacecraftPalette.radiumGreen;
-          red_oxide = spacecraftPalette.redOxide;
-          liquid_coolant = spacecraftPalette.liquidCool;
+        palettes.steelbore = {
+          void_navy = steelborePalette.voidNavy;
+          molten_amber = steelborePalette.moltenAmber;
+          steel_blue = steelborePalette.steelBlue;
+          radium_green = steelborePalette.radiumGreen;
+          red_oxide = steelborePalette.redOxide;
+          liquid_coolant = steelborePalette.liquidCool;
         };
 
         directory = {
@@ -152,36 +152,36 @@
         };
         colors = {
           primary = {
-            background = spacecraftPalette.voidNavy;
-            foreground = spacecraftPalette.moltenAmber;
+            background = steelborePalette.voidNavy;
+            foreground = steelborePalette.moltenAmber;
           };
           cursor = {
-            text = spacecraftPalette.voidNavy;
-            cursor = spacecraftPalette.moltenAmber;
+            text = steelborePalette.voidNavy;
+            cursor = steelborePalette.moltenAmber;
           };
           selection = {
-            text = spacecraftPalette.voidNavy;
-            background = spacecraftPalette.steelBlue;
+            text = steelborePalette.voidNavy;
+            background = steelborePalette.steelBlue;
           };
           normal = {
-            black = spacecraftPalette.voidNavy;
-            red = spacecraftPalette.redOxide;
-            green = spacecraftPalette.radiumGreen;
-            yellow = spacecraftPalette.moltenAmber;
-            blue = spacecraftPalette.steelBlue;
-            magenta = spacecraftPalette.steelBlue;
-            cyan = spacecraftPalette.liquidCool;
-            white = spacecraftPalette.moltenAmber;
+            black = steelborePalette.voidNavy;
+            red = steelborePalette.redOxide;
+            green = steelborePalette.radiumGreen;
+            yellow = steelborePalette.moltenAmber;
+            blue = steelborePalette.steelBlue;
+            magenta = steelborePalette.steelBlue;
+            cyan = steelborePalette.liquidCool;
+            white = steelborePalette.moltenAmber;
           };
           bright = {
-            black = spacecraftPalette.steelBlue;
-            red = spacecraftPalette.redOxide;
-            green = spacecraftPalette.radiumGreen;
-            yellow = spacecraftPalette.moltenAmber;
-            blue = spacecraftPalette.liquidCool;
-            magenta = spacecraftPalette.liquidCool;
-            cyan = spacecraftPalette.liquidCool;
-            white = spacecraftPalette.moltenAmber;
+            black = steelborePalette.steelBlue;
+            red = steelborePalette.redOxide;
+            green = steelborePalette.radiumGreen;
+            yellow = steelborePalette.moltenAmber;
+            blue = steelborePalette.liquidCool;
+            magenta = steelborePalette.liquidCool;
+            cyan = steelborePalette.liquidCool;
+            white = steelborePalette.moltenAmber;
           };
         };
       };
@@ -200,14 +200,14 @@
           focus-ring {
               enable
               width 2
-              active-color "${spacecraftPalette.moltenAmber}"
-              inactive-color "${spacecraftPalette.steelBlue}"
+              active-color "${steelborePalette.moltenAmber}"
+              inactive-color "${steelborePalette.steelBlue}"
           }
           border { off }
           gaps 8
       }
 
-      spawn-at-startup "swaybg" "-c" "${spacecraftPalette.voidNavy}"
+      spawn-at-startup "swaybg" "-c" "${steelborePalette.voidNavy}"
       spawn-at-startup "ironbar"
       spawn-at-startup "wired"
 
@@ -318,33 +318,33 @@
       }
 
       window {
-          background-color: ${spacecraftPalette.voidNavy};
-          color: ${spacecraftPalette.moltenAmber};
-          border-bottom: 2px solid ${spacecraftPalette.steelBlue};
+          background-color: ${steelborePalette.voidNavy};
+          color: ${steelborePalette.moltenAmber};
+          border-bottom: 2px solid ${steelborePalette.steelBlue};
       }
 
       .widget {
           padding: 0 10px;
-          border-left: 1px solid ${spacecraftPalette.steelBlue};
+          border-left: 1px solid ${steelborePalette.steelBlue};
       }
 
       .workspaces button {
-          color: ${spacecraftPalette.steelBlue};
+          color: ${steelborePalette.steelBlue};
           border-bottom: 2px solid transparent;
       }
 
       .workspaces button.active {
-          color: ${spacecraftPalette.moltenAmber};
-          border-bottom: 2px solid ${spacecraftPalette.moltenAmber};
+          color: ${steelborePalette.moltenAmber};
+          border-bottom: 2px solid ${steelborePalette.moltenAmber};
       }
 
       .clock {
-          color: ${spacecraftPalette.moltenAmber};
+          color: ${steelborePalette.moltenAmber};
           font-weight: bold;
       }
 
       .sys_info {
-          color: ${spacecraftPalette.radiumGreen};
+          color: ${steelborePalette.radiumGreen};
       }
     '';
 
@@ -364,42 +364,42 @@
       config.hide_tab_bar_if_only_one_tab = true
 
       config.colors = {
-        foreground = "${spacecraftPalette.moltenAmber}",
-        background = "${spacecraftPalette.voidNavy}",
-        cursor_bg = "${spacecraftPalette.moltenAmber}",
-        cursor_fg = "${spacecraftPalette.voidNavy}",
-        cursor_border = "${spacecraftPalette.moltenAmber}",
-        selection_bg = "${spacecraftPalette.steelBlue}",
-        selection_fg = "${spacecraftPalette.voidNavy}",
+        foreground = "${steelborePalette.moltenAmber}",
+        background = "${steelborePalette.voidNavy}",
+        cursor_bg = "${steelborePalette.moltenAmber}",
+        cursor_fg = "${steelborePalette.voidNavy}",
+        cursor_border = "${steelborePalette.moltenAmber}",
+        selection_bg = "${steelborePalette.steelBlue}",
+        selection_fg = "${steelborePalette.voidNavy}",
         ansi = {
-          "${spacecraftPalette.voidNavy}",
-          "${spacecraftPalette.redOxide}",
-          "${spacecraftPalette.radiumGreen}",
-          "${spacecraftPalette.moltenAmber}",
-          "${spacecraftPalette.steelBlue}",
-          "${spacecraftPalette.steelBlue}",
-          "${spacecraftPalette.liquidCool}",
-          "${spacecraftPalette.moltenAmber}"
+          "${steelborePalette.voidNavy}",
+          "${steelborePalette.redOxide}",
+          "${steelborePalette.radiumGreen}",
+          "${steelborePalette.moltenAmber}",
+          "${steelborePalette.steelBlue}",
+          "${steelborePalette.steelBlue}",
+          "${steelborePalette.liquidCool}",
+          "${steelborePalette.moltenAmber}"
         },
         brights = {
-          "${spacecraftPalette.steelBlue}",
-          "${spacecraftPalette.redOxide}",
-          "${spacecraftPalette.radiumGreen}",
-          "${spacecraftPalette.moltenAmber}",
-          "${spacecraftPalette.liquidCool}",
-          "${spacecraftPalette.liquidCool}",
-          "${spacecraftPalette.liquidCool}",
-          "${spacecraftPalette.moltenAmber}"
+          "${steelborePalette.steelBlue}",
+          "${steelborePalette.redOxide}",
+          "${steelborePalette.radiumGreen}",
+          "${steelborePalette.moltenAmber}",
+          "${steelborePalette.liquidCool}",
+          "${steelborePalette.liquidCool}",
+          "${steelborePalette.liquidCool}",
+          "${steelborePalette.moltenAmber}"
         },
         tab_bar = {
-          background = "${spacecraftPalette.voidNavy}",
+          background = "${steelborePalette.voidNavy}",
           active_tab = {
-            bg_color = "${spacecraftPalette.steelBlue}",
-            fg_color = "${spacecraftPalette.moltenAmber}",
+            bg_color = "${steelborePalette.steelBlue}",
+            fg_color = "${steelborePalette.moltenAmber}",
           },
           inactive_tab = {
-            bg_color = "${spacecraftPalette.voidNavy}",
-            fg_color = "${spacecraftPalette.steelBlue}",
+            bg_color = "${steelborePalette.voidNavy}",
+            fg_color = "${steelborePalette.steelBlue}",
           },
         },
       }
@@ -421,31 +421,31 @@
       size = 14
 
       [colors]
-      background = '${spacecraftPalette.voidNavy}'
-      foreground = '${spacecraftPalette.moltenAmber}'
-      cursor = '${spacecraftPalette.moltenAmber}'
-      selection-background = '${spacecraftPalette.steelBlue}'
-      selection-foreground = '${spacecraftPalette.voidNavy}'
+      background = '${steelborePalette.voidNavy}'
+      foreground = '${steelborePalette.moltenAmber}'
+      cursor = '${steelborePalette.moltenAmber}'
+      selection-background = '${steelborePalette.steelBlue}'
+      selection-foreground = '${steelborePalette.voidNavy}'
 
       [colors.regular]
-      black = '${spacecraftPalette.voidNavy}'
-      red = '${spacecraftPalette.redOxide}'
-      green = '${spacecraftPalette.radiumGreen}'
-      yellow = '${spacecraftPalette.moltenAmber}'
-      blue = '${spacecraftPalette.steelBlue}'
-      magenta = '${spacecraftPalette.steelBlue}'
-      cyan = '${spacecraftPalette.liquidCool}'
-      white = '${spacecraftPalette.moltenAmber}'
+      black = '${steelborePalette.voidNavy}'
+      red = '${steelborePalette.redOxide}'
+      green = '${steelborePalette.radiumGreen}'
+      yellow = '${steelborePalette.moltenAmber}'
+      blue = '${steelborePalette.steelBlue}'
+      magenta = '${steelborePalette.steelBlue}'
+      cyan = '${steelborePalette.liquidCool}'
+      white = '${steelborePalette.moltenAmber}'
 
       [colors.bright]
-      black = '${spacecraftPalette.steelBlue}'
-      red = '${spacecraftPalette.redOxide}'
-      green = '${spacecraftPalette.radiumGreen}'
-      yellow = '${spacecraftPalette.moltenAmber}'
-      blue = '${spacecraftPalette.liquidCool}'
-      magenta = '${spacecraftPalette.liquidCool}'
-      cyan = '${spacecraftPalette.liquidCool}'
-      white = '${spacecraftPalette.moltenAmber}'
+      black = '${steelborePalette.steelBlue}'
+      red = '${steelborePalette.redOxide}'
+      green = '${steelborePalette.radiumGreen}'
+      yellow = '${steelborePalette.moltenAmber}'
+      blue = '${steelborePalette.liquidCool}'
+      magenta = '${steelborePalette.liquidCool}'
+      cyan = '${steelborePalette.liquidCool}'
+      white = '${steelborePalette.moltenAmber}'
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -461,61 +461,61 @@
       window-padding-x = 10
       window-padding-y = 10
 
-      background = ${spacecraftPalette.voidNavy}
-      foreground = ${spacecraftPalette.moltenAmber}
-      cursor-color = ${spacecraftPalette.moltenAmber}
-      cursor-text = ${spacecraftPalette.voidNavy}
-      selection-background = ${spacecraftPalette.steelBlue}
-      selection-foreground = ${spacecraftPalette.voidNavy}
+      background = ${steelborePalette.voidNavy}
+      foreground = ${steelborePalette.moltenAmber}
+      cursor-color = ${steelborePalette.moltenAmber}
+      cursor-text = ${steelborePalette.voidNavy}
+      selection-background = ${steelborePalette.steelBlue}
+      selection-foreground = ${steelborePalette.voidNavy}
 
-      palette = 0=${spacecraftPalette.voidNavy}
-      palette = 1=${spacecraftPalette.redOxide}
-      palette = 2=${spacecraftPalette.radiumGreen}
-      palette = 3=${spacecraftPalette.moltenAmber}
-      palette = 4=${spacecraftPalette.steelBlue}
-      palette = 5=${spacecraftPalette.steelBlue}
-      palette = 6=${spacecraftPalette.liquidCool}
-      palette = 7=${spacecraftPalette.moltenAmber}
-      palette = 8=${spacecraftPalette.steelBlue}
-      palette = 9=${spacecraftPalette.redOxide}
-      palette = 10=${spacecraftPalette.radiumGreen}
-      palette = 11=${spacecraftPalette.moltenAmber}
-      palette = 12=${spacecraftPalette.liquidCool}
-      palette = 13=${spacecraftPalette.liquidCool}
-      palette = 14=${spacecraftPalette.liquidCool}
-      palette = 15=${spacecraftPalette.moltenAmber}
+      palette = 0=${steelborePalette.voidNavy}
+      palette = 1=${steelborePalette.redOxide}
+      palette = 2=${steelborePalette.radiumGreen}
+      palette = 3=${steelborePalette.moltenAmber}
+      palette = 4=${steelborePalette.steelBlue}
+      palette = 5=${steelborePalette.steelBlue}
+      palette = 6=${steelborePalette.liquidCool}
+      palette = 7=${steelborePalette.moltenAmber}
+      palette = 8=${steelborePalette.steelBlue}
+      palette = 9=${steelborePalette.redOxide}
+      palette = 10=${steelborePalette.radiumGreen}
+      palette = 11=${steelborePalette.moltenAmber}
+      palette = 12=${steelborePalette.liquidCool}
+      palette = 13=${steelborePalette.liquidCool}
+      palette = 14=${steelborePalette.liquidCool}
+      palette = 15=${steelborePalette.moltenAmber}
     '';
   };
 
   # dconf settings for GNOME-based terminals (Ptyxis, GNOME Console)
   dconf.settings = {
     "org/gnome/Ptyxis" = {
-      default-profile-uuid = "spacecraft";
+      default-profile-uuid = "steelbore";
       font-name = "JetBrains Mono 12";
       use-system-font = false;
     };
-    "org/gnome/Ptyxis/Profiles/spacecraft" = {
+    "org/gnome/Ptyxis/Profiles/steelbore" = {
       label = "Spacecraft Software";
       palette = [
-        spacecraftPalette.voidNavy      # black
-        spacecraftPalette.redOxide      # red
-        spacecraftPalette.radiumGreen   # green
-        spacecraftPalette.moltenAmber   # yellow
-        spacecraftPalette.steelBlue     # blue
-        spacecraftPalette.steelBlue     # magenta
-        spacecraftPalette.liquidCool    # cyan
-        spacecraftPalette.moltenAmber   # white
-        spacecraftPalette.steelBlue     # bright black
-        spacecraftPalette.redOxide      # bright red
-        spacecraftPalette.radiumGreen   # bright green
-        spacecraftPalette.moltenAmber   # bright yellow
-        spacecraftPalette.liquidCool    # bright blue
-        spacecraftPalette.liquidCool    # bright magenta
-        spacecraftPalette.liquidCool    # bright cyan
-        spacecraftPalette.moltenAmber   # bright white
+        steelborePalette.voidNavy      # black
+        steelborePalette.redOxide      # red
+        steelborePalette.radiumGreen   # green
+        steelborePalette.moltenAmber   # yellow
+        steelborePalette.steelBlue     # blue
+        steelborePalette.steelBlue     # magenta
+        steelborePalette.liquidCool    # cyan
+        steelborePalette.moltenAmber   # white
+        steelborePalette.steelBlue     # bright black
+        steelborePalette.redOxide      # bright red
+        steelborePalette.radiumGreen   # bright green
+        steelborePalette.moltenAmber   # bright yellow
+        steelborePalette.liquidCool    # bright blue
+        steelborePalette.liquidCool    # bright magenta
+        steelborePalette.liquidCool    # bright cyan
+        steelborePalette.moltenAmber   # bright white
       ];
-      background-color = spacecraftPalette.voidNavy;
-      foreground-color = spacecraftPalette.moltenAmber;
+      background-color = steelborePalette.voidNavy;
+      foreground-color = steelborePalette.moltenAmber;
       use-theme-colors = false;
       opacity = 0.95;
     };

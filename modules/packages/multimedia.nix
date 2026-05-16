@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.packages.multimedia = {
+  options.steelbore.packages.multimedia = {
     enable = lib.mkEnableOption "Multimedia players and processing tools";
   };
 
-  config = lib.mkIf config.spacecraft.packages.multimedia.enable {
+  config = lib.mkIf config.steelbore.packages.multimedia.enable {
     environment.systemPackages = with pkgs; [
       # Video Players
       mpv

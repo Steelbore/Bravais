@@ -3,11 +3,11 @@
 { config, lib, pkgs, unstablePkgs, ... }:
 
 {
-  options.spacecraft.packages.ai = {
+  options.steelbore.packages.ai = {
     enable = lib.mkEnableOption "AI coding assistants and tools";
   };
 
-  config = lib.mkIf config.spacecraft.packages.ai.enable {
+  config = lib.mkIf config.steelbore.packages.ai.enable {
     environment.systemPackages = (with pkgs; [
       # AI Coding Assistants (Rust preferred)
       aichat                     # Rust — Universal chat REPL

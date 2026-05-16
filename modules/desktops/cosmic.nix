@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Bravais — COSMIC Desktop Environment (Wayland)
-{ config, lib, pkgs, spacecraftPalette, ... }:
+{ config, lib, pkgs, steelborePalette, ... }:
 
 let
   # cosmic-theme stores colors as Srgba with 0.0–1.0 floats. Pre-converted
@@ -16,7 +16,7 @@ let
     liquidCool      = "(red: 0.54509804, green: 0.91372549, blue: 0.99215686)"; # #8BE9FD
 
     # Light-mode-only derived shades — NOT in Spacecraft Software Standard §8.
-    # Scoped to cosmic.nix; do not propagate to flake.nix spacecraftPalette,
+    # Scoped to cosmic.nix; do not propagate to flake.nix steelborePalette,
     # lib/default.nix, or modules/theme. Promote in the Standard first if
     # they ever need to become canonical.
     paper           = "(red: 0.94117647, green: 0.94901961, blue: 0.97254902)"; # #F0F2F8 — Light bg
@@ -49,11 +49,11 @@ let
 in
 
 {
-  options.spacecraft.desktops.cosmic = {
+  options.steelbore.desktops.cosmic = {
     enable = lib.mkEnableOption "COSMIC Desktop Environment (Wayland)";
   };
 
-  config = lib.mkIf config.spacecraft.desktops.cosmic.enable {
+  config = lib.mkIf config.steelbore.desktops.cosmic.enable {
     services.desktopManager.cosmic.enable = true;
     services.displayManager.cosmic-greeter.enable = false; # Use greetd
 

@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.packages.browsers = {
+  options.steelbore.packages.browsers = {
     enable = lib.mkEnableOption "Web browsers";
   };
 
-  config = lib.mkIf config.spacecraft.packages.browsers.enable {
+  config = lib.mkIf config.steelbore.packages.browsers.enable {
     # Firefox (system-managed)
     programs.firefox.enable = true;
 

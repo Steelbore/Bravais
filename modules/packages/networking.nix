@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.packages.networking = {
+  options.steelbore.packages.networking = {
     enable = lib.mkEnableOption "Networking and internet tools";
   };
 
-  config = lib.mkIf config.spacecraft.packages.networking.enable {
+  config = lib.mkIf config.steelbore.packages.networking.enable {
     environment.systemPackages = with pkgs; [
       # Network Management
       impala                     # Rust — TUI for iwd

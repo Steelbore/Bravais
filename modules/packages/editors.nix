@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.packages.editors = {
+  options.steelbore.packages.editors = {
     enable = lib.mkEnableOption "Text editors and IDEs";
   };
 
-  config = lib.mkIf config.spacecraft.packages.editors.enable {
+  config = lib.mkIf config.steelbore.packages.editors.enable {
     environment.systemPackages = with pkgs; [
       # Linting
       markdownlint-cli2           # Markdown linter

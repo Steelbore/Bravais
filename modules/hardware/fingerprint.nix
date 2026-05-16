@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.hardware.fingerprint = {
+  options.steelbore.hardware.fingerprint = {
     enable = lib.mkEnableOption "Fingerprint reader support";
   };
 
-  config = lib.mkIf config.spacecraft.hardware.fingerprint.enable {
+  config = lib.mkIf config.steelbore.hardware.fingerprint.enable {
     services.fprintd.enable = true;
 
     environment.systemPackages = [ pkgs.fprintd ];

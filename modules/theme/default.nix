@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Bravais — Theme Module Entry Point
-{ config, lib, pkgs, spacecraftPalette, ... }:
+{ config, lib, pkgs, steelborePalette, ... }:
 
 {
   imports = [
@@ -10,12 +10,12 @@
 
   # Environment variables for theme-aware applications
   environment.variables = {
-    SPACECRAFT_BACKGROUND = spacecraftPalette.voidNavy;
-    SPACECRAFT_TEXT       = spacecraftPalette.moltenAmber;
-    SPACECRAFT_ACCENT     = spacecraftPalette.steelBlue;
-    SPACECRAFT_SUCCESS    = spacecraftPalette.radiumGreen;
-    SPACECRAFT_WARNING    = spacecraftPalette.redOxide;
-    SPACECRAFT_INFO       = spacecraftPalette.liquidCool;
+    SPACECRAFT_BACKGROUND = steelborePalette.voidNavy;
+    SPACECRAFT_TEXT       = steelborePalette.moltenAmber;
+    SPACECRAFT_ACCENT     = steelborePalette.steelBlue;
+    SPACECRAFT_SUCCESS    = steelborePalette.radiumGreen;
+    SPACECRAFT_WARNING    = steelborePalette.redOxide;
+    SPACECRAFT_INFO       = steelborePalette.liquidCool;
   };
 
   # TTY / Virtual Console Colors (Spacecraft Software Palette)

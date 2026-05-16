@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.packages.productivity = {
+  options.steelbore.packages.productivity = {
     enable = lib.mkEnableOption "Office and productivity applications";
   };
 
-  config = lib.mkIf config.spacecraft.packages.productivity.enable {
+  config = lib.mkIf config.steelbore.packages.productivity.enable {
     environment.systemPackages = with pkgs; [
       # Knowledge Management (Rust preferred)
       appflowy                   # Rust — Open source Notion

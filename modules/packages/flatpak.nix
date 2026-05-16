@@ -3,11 +3,11 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.spacecraft.packages.flatpak = {
+  options.steelbore.packages.flatpak = {
     enable = lib.mkEnableOption "Flatpak application management";
   };
 
-  config = lib.mkIf config.spacecraft.packages.flatpak.enable {
+  config = lib.mkIf config.steelbore.packages.flatpak.enable {
     # Enable Flatpak service
     services.flatpak.enable = true;
 

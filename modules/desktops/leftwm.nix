@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Steelbore Bravais — LeftWM Tiling Window Manager (X11)
-{ config, lib, pkgs, spacecraftPalette, ... }:
+{ config, lib, pkgs, steelborePalette, ... }:
 
 {
-  options.spacecraft.desktops.leftwm = {
+  options.steelbore.desktops.leftwm = {
     enable = lib.mkEnableOption "LeftWM tiling window manager (X11)";
   };
 
-  config = lib.mkIf config.spacecraft.desktops.leftwm.enable (let
+  config = lib.mkIf config.steelbore.desktops.leftwm.enable (let
     # The LeftWM Themes wiki strongly recommends that
     # `~/.config/leftwm/themes/current` be a symlink rather than a real
     # directory — leftwm 0.5.x's path resolution intermittently fails to
@@ -15,47 +15,47 @@
     # (observed: "Global up script failed: IO error: No such file or
     # directory"). Ship the theme as one nix-store derivation and expose
     # it via a single xdg.configFile symlink.
-    spacecraftTheme = pkgs.linkFarm "leftwm-spacecraft-theme" [
+    steelboreTheme = pkgs.linkFarm "leftwm-steelbore-theme" [
       # up/down are stubs: actual session bring-up happens in
       # `leftwm-xinitrc` (see modules/login/default.nix). leftwm-theme
       # tooling expects up/down to exist, so we ship empty no-ops.
       {
         name = "up";
-        path = pkgs.writeShellScript "leftwm-spacecraft-up" "exit 0";
+        path = pkgs.writeShellScript "leftwm-steelbore-up" "exit 0";
       }
       {
         name = "down";
-        path = pkgs.writeShellScript "leftwm-spacecraft-down" "exit 0";
+        path = pkgs.writeShellScript "leftwm-steelbore-down" "exit 0";
       }
       {
         name = "theme.ron";
-        path = pkgs.writeText "leftwm-spacecraft-theme.ron" ''
+        path = pkgs.writeText "leftwm-steelbore-theme.ron" ''
           // Spacecraft Software LeftWM Theme
           (
               border_width: 2,
               margin: 8,
               workspace_margin: Some(8),
-              default_border_color: "${spacecraftPalette.steelBlue}",
-              floating_border_color: "${spacecraftPalette.liquidCool}",
-              focused_border_color: "${spacecraftPalette.moltenAmber}",
+              default_border_color: "${steelborePalette.steelBlue}",
+              floating_border_color: "${steelborePalette.liquidCool}",
+              focused_border_color: "${steelborePalette.moltenAmber}",
               on_new_window_cmd: None,
           )
         '';
       }
       {
         name = "polybar.ini";
-        path = pkgs.writeText "leftwm-spacecraft-polybar.ini" ''
+        path = pkgs.writeText "leftwm-steelbore-polybar.ini" ''
           ; Spacecraft Software Polybar Configuration
 
           [colors]
-          background = ${spacecraftPalette.voidNavy}
-          foreground = ${spacecraftPalette.moltenAmber}
-          accent = ${spacecraftPalette.steelBlue}
-          success = ${spacecraftPalette.radiumGreen}
-          warning = ${spacecraftPalette.redOxide}
-          info = ${spacecraftPalette.liquidCool}
+          background = ${steelborePalette.voidNavy}
+          foreground = ${steelborePalette.moltenAmber}
+          accent = ${steelborePalette.steelBlue}
+          success = ${steelborePalette.radiumGreen}
+          warning = ${steelborePalette.redOxide}
+          info = ${steelborePalette.liquidCool}
 
-          [bar/spacecraft]
+          [bar/steelbore]
           width = 100%
           height = 32
           fixed-center = true
@@ -120,17 +120,17 @@
       }
       {
         name = "template.liquid";
-        path = pkgs.writeText "leftwm-spacecraft-template.liquid" ''
+        path = pkgs.writeText "leftwm-steelbore-template.liquid" ''
           {% for tag in workspace.tags %}
           %{A1:leftwm-command "SendWorkspaceToTag {{ workspace.index }} {{ tag.index }}":}
           {% if tag.mine %}
-          %{F${spacecraftPalette.moltenAmber}}%{+u}
+          %{F${steelborePalette.moltenAmber}}%{+u}
           {% elsif tag.visible %}
-          %{F${spacecraftPalette.liquidCool}}
+          %{F${steelborePalette.liquidCool}}
           {% elsif tag.busy %}
-          %{F${spacecraftPalette.steelBlue}}
+          %{F${steelborePalette.steelBlue}}
           {% else %}
-          %{F${spacecraftPalette.steelBlue}50}
+          %{F${steelborePalette.steelBlue}50}
           {% endif %}
             {{ tag.name }}
           %{-u}%{F-}%{A}
@@ -139,7 +139,7 @@
       }
       {
         name = "picom.conf";
-        path = pkgs.writeText "leftwm-spacecraft-picom.conf" ''
+        path = pkgs.writeText "leftwm-steelbore-picom.conf" ''
           # Spacecraft Software Picom Configuration
           backend = "glx";
           vsync = true;
@@ -317,9 +317,9 @@
     '';
 
     # LeftWM theme — single symlink to a nix-store directory containing
-    # all theme files. See the spacecraftTheme let-binding above.
+    # all theme files. See the steelboreTheme let-binding above.
     home-manager.users.mj.xdg.configFile."leftwm/themes/current".source =
-      spacecraftTheme;
+      steelboreTheme;
 
     # Dunst notification configuration
     environment.etc."dunst/dunstrc".text = ''
@@ -336,7 +336,7 @@
       padding = 16
       horizontal_padding = 16
       frame_width = 2
-      frame_color = "${spacecraftPalette.steelBlue}"
+      frame_color = "${steelborePalette.steelBlue}"
       separator_color = frame
 
       font = "Share Tech Mono 12"
@@ -349,19 +349,19 @@
       max_icon_size = 48
 
       [urgency_low]
-      background = "${spacecraftPalette.voidNavy}"
-      foreground = "${spacecraftPalette.liquidCool}"
+      background = "${steelborePalette.voidNavy}"
+      foreground = "${steelborePalette.liquidCool}"
       timeout = 5
 
       [urgency_normal]
-      background = "${spacecraftPalette.voidNavy}"
-      foreground = "${spacecraftPalette.moltenAmber}"
+      background = "${steelborePalette.voidNavy}"
+      foreground = "${steelborePalette.moltenAmber}"
       timeout = 10
 
       [urgency_critical]
-      background = "${spacecraftPalette.voidNavy}"
-      foreground = "${spacecraftPalette.redOxide}"
-      frame_color = "${spacecraftPalette.redOxide}"
+      background = "${steelborePalette.voidNavy}"
+      foreground = "${steelborePalette.redOxide}"
+      frame_color = "${steelborePalette.redOxide}"
       timeout = 0
     '';
   });
