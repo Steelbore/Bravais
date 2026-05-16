@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Steelbore Bravais — Terminal Emulators (All with Spacecraft Software Theme)
+# Steelbore Bravais — Terminal Emulators (All with Steelbore Theme)
 { config, lib, pkgs, steelborePalette, ... }:
 
 let
@@ -47,7 +47,7 @@ in
     # ALACRITTY — Rust-based GPU-accelerated terminal
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."alacritty/alacritty.toml".text = ''
-      # Spacecraft Software Alacritty Configuration
+      # Steelbore Alacritty Configuration
 
       [window]
       padding = { x = 10, y = 10 }
@@ -113,7 +113,7 @@ in
     # WEZTERM — Rust-based GPU-accelerated terminal with Lua config
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."wezterm/wezterm.lua".text = ''
-      -- Spacecraft Software WezTerm Configuration
+      -- Steelbore WezTerm Configuration
       local wezterm = require 'wezterm'
       local config = {}
 
@@ -128,7 +128,7 @@ in
       config.hide_tab_bar_if_only_one_tab = true
       config.default_prog = { "${pkgs.nushell}/bin/nu" }
 
-      -- Spacecraft Software color scheme
+      -- Steelbore color scheme
       config.colors = {
         foreground = "${steelborePalette.moltenAmber}",
         background = "${steelborePalette.voidNavy}",
@@ -193,7 +193,7 @@ in
     # RIO — Rust-based terminal with native GPU rendering
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."rio/config.toml".text = ''
-      # Spacecraft Software Rio Configuration
+      # Steelbore Rio Configuration
 
       [window]
       opacity = 0.95
@@ -256,7 +256,7 @@ in
     # GHOSTTY — Zig-based GPU-accelerated terminal (memory-safe)
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."ghostty/config".text = ''
-      # Spacecraft Software Ghostty Configuration
+      # Steelbore Ghostty Configuration
 
       font-family = JetBrains Mono
       font-size = 12
@@ -265,7 +265,7 @@ in
       window-padding-x = 10
       window-padding-y = 10
 
-      # Spacecraft Software color palette
+      # Steelbore color palette
       background = ${steelborePalette.voidNavy}
       foreground = ${steelborePalette.moltenAmber}
       cursor-color = ${steelborePalette.moltenAmber}
@@ -302,7 +302,7 @@ in
     # Config is typically managed by cosmic-settings, but we provide defaults
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."cosmic/com.system76.CosmicTerm/v1/syntax_theme_dark".text = ''
-      "Spacecraft Software"
+      "Steelbore"
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
@@ -311,7 +311,7 @@ in
     # Providing a CSS override for theming
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."gtk-4.0/gtk.css".text = ''
-      /* Spacecraft Software Ptyxis/VTE Terminal Theme Override */
+      /* Steelbore Ptyxis/VTE Terminal Theme Override */
       vte-terminal {
         padding: 10px;
       }
@@ -330,7 +330,7 @@ in
       themes = {
         custom = {
           display = {
-            name = "Spacecraft Software";
+            name = "Steelbore";
             order = 1;
           };
           terminal = {
@@ -364,7 +364,7 @@ in
     # Uses YAML configuration
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."warp/themes/steelbore.yaml".text = ''
-      # Spacecraft Software Theme for Warp Terminal
+      # Steelbore Theme for Warp Terminal
       accent: '${steelborePalette.steelBlue}'
       background: '${steelborePalette.voidNavy}'
       foreground: '${steelborePalette.moltenAmber}'
@@ -400,7 +400,7 @@ in
     # Colorscheme + profile placed in system XDG data dir
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."xdg/konsole/Steelbore.colorscheme".text = ''
-      # Spacecraft Software Konsole Color Scheme
+      # Steelbore Konsole Color Scheme
       # Palette: Void Navy / Molten Amber / Steel Blue / Radium Green / Red Oxide / Liquid Coolant
 
       [Background]
@@ -507,7 +507,7 @@ in
       Anchor=0.5,0.5
       Blur=false
       ColorRandomization=false
-      Description=Spacecraft Software
+      Description=Steelbore
       FillStyle=Tile
       Opacity=0.95
       Spread=1.0
@@ -515,10 +515,10 @@ in
     '';
 
     environment.etc."xdg/konsole/Steelbore.profile".text = ''
-      # Spacecraft Software Konsole Profile
+      # Steelbore Konsole Profile
 
       [Appearance]
-      ColorScheme=Spacecraft Software
+      ColorScheme=Steelbore
       Font=JetBrains Mono,12,-1,5,50,0,0,0,0,0
 
       [General]
@@ -548,7 +548,7 @@ in
 
     # ═══════════════════════════════════════════════════════════════════════════
     # YAKUAKE — KDE drop-down terminal (uses Konsole as backend)
-    # Shell and colors are inherited from the Konsole Spacecraft Software profile above
+    # Shell and colors are inherited from the Konsole Steelbore profile above
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."xdg/yakuakerc".text = ''
       [Desktop Entry]
@@ -566,7 +566,7 @@ in
     # System-level fallback config at /etc/xdg/foot/foot.ini
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."xdg/foot/foot.ini".text = ''
-      # Spacecraft Software Foot Configuration
+      # Steelbore Foot Configuration
 
       [main]
       font=JetBrains Mono:size=12
@@ -605,7 +605,7 @@ in
     # System-level Xresources loaded by xrdb on X session start
     # ═══════════════════════════════════════════════════════════════════════════
     environment.etc."X11/Xresources".text = ''
-      ! Spacecraft Software XTerm Configuration
+      ! Steelbore XTerm Configuration
 
       XTerm*termName:              xterm-256color
       XTerm*faceName:              JetBrains Mono

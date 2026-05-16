@@ -65,7 +65,7 @@ graph TB
             DESK_DEF["default.nix"]
             GNOME["gnome.nix<br/>━━━━━━━━━━━━━<br/>GNOME Wayland<br/>Extensions<br/>De-bloated"]
             COSMIC["cosmic.nix<br/>━━━━━━━━━━━━━<br/>COSMIC DE<br/>30+ cosmic-* pkgs<br/>No cosmic-greeter"]
-            NIRI["niri.nix<br/>━━━━━━━━━━━━━<br/>Niri WM<br/>anyrun, ironbar<br/>config.kdl<br/>Spacecraft Software theme"]
+            NIRI["niri.nix<br/>━━━━━━━━━━━━━<br/>Niri WM<br/>anyrun, ironbar<br/>config.kdl<br/>Steelbore theme"]
             LEFTWM["leftwm.nix<br/>━━━━━━━━━━━━━<br/>LeftWM X11<br/>rlaunch, polybar<br/>config.ron<br/>picom, dunst"]
         end
 
@@ -89,7 +89,7 @@ graph TB
         end
     end
 
-    subgraph PALETTE["Spacecraft Software Palette"]
+    subgraph PALETTE["Steelbore Palette"]
         direction LR
         P1["#000027<br/>Void Navy"]
         P2["#D98E32<br/>Molten Amber"]
@@ -210,7 +210,7 @@ All modules follow the `spacecraft.*` namespace pattern with `lib.mkEnableOption
       # ...
     ];
 
-    # Declarative configuration with Spacecraft Software palette
+    # Declarative configuration with Steelbore palette
     environment.etc."niri/config.kdl".text = ''
       layout {
         focus-ring {
@@ -327,7 +327,7 @@ environment.systemPackages = [
 
 ## Theme Propagation
 
-The Spacecraft Software palette propagates through all layers:
+The Steelbore palette propagates through all layers:
 
 ```text
 flake.nix (spacecraftPalette)

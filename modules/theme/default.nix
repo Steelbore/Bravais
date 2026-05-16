@@ -18,7 +18,7 @@
     SPACECRAFT_INFO       = steelborePalette.liquidCool;
   };
 
-  # TTY / Virtual Console Colors (Spacecraft Software Palette)
+  # TTY / Virtual Console Colors (Steelbore Palette)
   console.colors = [
     # Normal: Black Red Green Yellow Blue Magenta Cyan White
     "000027" "FF5C5C" "50FA7B" "D98E32" "4B7EB0" "4B7EB0" "8BE9FD" "D98E32"

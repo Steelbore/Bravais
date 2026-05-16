@@ -30,7 +30,7 @@
       {
         name = "theme.ron";
         path = pkgs.writeText "leftwm-steelbore-theme.ron" ''
-          // Spacecraft Software LeftWM Theme
+          // Steelbore LeftWM Theme
           (
               border_width: 2,
               margin: 8,
@@ -45,7 +45,7 @@
       {
         name = "polybar.ini";
         path = pkgs.writeText "leftwm-steelbore-polybar.ini" ''
-          ; Spacecraft Software Polybar Configuration
+          ; Steelbore Polybar Configuration
 
           [colors]
           background = ${steelborePalette.voidNavy}
@@ -140,7 +140,7 @@
       {
         name = "picom.conf";
         path = pkgs.writeText "leftwm-steelbore-picom.conf" ''
-          # Spacecraft Software Picom Configuration
+          # Steelbore Picom Configuration
           backend = "glx";
           vsync = true;
 
@@ -214,7 +214,7 @@
 
     # LeftWM configuration
     home-manager.users.mj.xdg.configFile."leftwm/config.ron".text = ''
-      // Spacecraft Software LeftWM Configuration
+      // Steelbore LeftWM Configuration
       // The Spacecraft Software Standard — X11 Tiling
 
       #![enable(implicit_some)]
@@ -323,7 +323,7 @@
 
     # Dunst notification configuration
     environment.etc."dunst/dunstrc".text = ''
-      # Spacecraft Software Dunst Configuration
+      # Steelbore Dunst Configuration
       [global]
       monitor = 0
       follow = mouse

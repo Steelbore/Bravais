@@ -1,6 +1,6 @@
 # Bravais -- Product Requirements Document
 
-**Project:** Bravais (A Spacecraft Software NixOS Distribution)
+**Project:** Bravais (A Steelbore OS NixOS Distribution)
 **Version:** 3.1 | **Date:** 2026-04-20
 **Author:** Mohamed Hammad | **License:** GPL-3.0-or-later
 **Status:** Implemented
@@ -15,10 +15,10 @@ Bravais is a flake-based NixOS configuration implementing the Spacecraft Softwar
 
 - Memory-safe tooling preferred (Rust-first ecosystem)
 - Opt-in modularity via `lib.mkEnableOption` in the `spacecraft.*` namespace
-- Spacecraft Software Color Palette applied universally to all visual surfaces
+- Steelbore Color Palette applied universally to all visual surfaces
 - Self-sufficient flake configuration (no external dependencies beyond nixpkgs, home-manager, nix-flatpak, and gitway)
 - Dual-channel support (stable nixos-25.11 / unstable rolling) with four x86-64 microarchitecture profiles (v1-v4)
-- 14+ terminal emulators, all themed with the Spacecraft Software palette
+- 14+ terminal emulators, all themed with the Steelbore palette
 - Declarative Flatpak management via nix-flatpak
 - Podman (not Docker) with runc as default runtime and Youki (Rust) available
 - Nushell (Rust) as default user shell; Brush (Rust, Bash-compatible) as root shell; Bash disabled as login shell
@@ -48,7 +48,7 @@ bravais/
 |   |   +-- audio.nix              # PipeWire audio stack
 |   |   +-- security.nix           # sudo-rs, polkit, SSH agent
 |   |   +-- dns.nix                # systemd-resolved + DoT + DNSSEC (Cloudflare malware-block)
-|   +-- theme/                     # Spacecraft Software visual identity
+|   +-- theme/                     # Steelbore visual identity
 |   |   +-- default.nix            # Color palette env vars, TTY colors
 |   |   +-- fonts.nix              # Typography (system fonts)
 |   +-- hardware/                  # Hardware-specific modules
@@ -174,7 +174,7 @@ Ten `nixosConfigurations` are generated (5 stable + 5 unstable):
 | `nix-flatpak`            | `github:gmodena/nix-flatpak`                          | --             |
 | `gitway`                 | `github:Spacecraft-Software/Gitway` (tracks `main`)             | `nixpkgs-unstable` |
 
-### 3.2 Spacecraft Software Color Palette Definition
+### 3.2 Steelbore Color Palette Definition
 
 Defined in `flake.nix` and passed as `specialArgs` to all modules:
 
@@ -213,7 +213,7 @@ Defined inline in `modules/core/nix.nix` via `nixpkgs.overlays`. A reference cop
 
 ---
 
-## 4. Spacecraft Software Visual Identity
+## 4. Steelbore Visual Identity
 
 ### 4.1 Color Palette
 
@@ -226,7 +226,7 @@ Defined inline in `modules/core/nix.nix` via `nixpkgs.overlays`. A reference cop
 | Red Oxide      | `#FF5C5C` | RGB(255, 092, 092) | Warning / Error Status         |
 | Liquid Coolant | `#8BE9FD` | RGB(139, 233, 253) | Info / Links                   |
 
-**`#000027` (Void Navy) is the mandatory background for ALL Spacecraft Software surfaces.**
+**`#000027` (Void Navy) is the mandatory background for ALL Steelbore surfaces.**
 
 ### 4.2 16-Color Terminal Palette Mapping
 
@@ -616,7 +616,7 @@ Key bindings:
 
 ## 10. Terminal Emulators (`modules/packages/terminals.nix`)
 
-All terminals are themed with the Spacecraft Software palette. Both system-level and user-level configs use Nushell (`nu`) as the default shell.
+All terminals are themed with the Steelbore palette. Both system-level and user-level configs use Nushell (`nu`) as the default shell.
 
 ### 10.1 Terminal Package List
 
@@ -640,7 +640,7 @@ All terminals are themed with the Spacecraft Software palette. Both system-level
 
 ### 10.2 System-Level Configuration Files
 
-Each terminal has a system-level config placed in `/etc/` with the full Spacecraft Software palette. The following are generated:
+Each terminal has a system-level config placed in `/etc/` with the full Steelbore palette. The following are generated:
 
 | Terminal       | Config Path                                      | Format  |
 |----------------|--------------------------------------------------|---------|
@@ -670,7 +670,7 @@ Each terminal has a system-level config placed in `/etc/` with the full Spacecra
 - **Foot quirk:** Uses hex colors without `#` prefix (handled by helper `h = c: builtins.substring 1 (builtins.stringLength c - 1) c`)
 - **Rio font config:** Uses `weight = N` integers (400 regular, 700 bold) -- no `style` key
 - **Konsole:** Full colorscheme with Normal/Faint/Intense variants, profile with 160x48 geometry, blinking cursor
-- **Yakuake:** Height 50%, width 100%, no keep-open, no animation, inherits Konsole Spacecraft Software profile
+- **Yakuake:** Height 50%, width 100%, no keep-open, no animation, inherits Konsole Steelbore profile
 
 ### 10.4 User-Level Configs (Home Manager)
 
@@ -932,7 +932,7 @@ programs.nushell.enable = true;
 
 Config includes: `show_banner: false`, `ls_colors: true`, `clickable_links: true`, block cursor shapes.
 
-**Spacecraft Software Telemetry Aliases:**
+**Steelbore Telemetry Aliases:**
 - `ll` = `ls -l`
 - `lla` = `ls -la`
 - `telemetry` = `macchina`
@@ -952,7 +952,7 @@ Config includes: `show_banner: false`, `ls_colors: true`, `clickable_links: true
 
 ### 13.9 Alacritty (Home Manager)
 
-Managed via `programs.alacritty.enable = true` with structured Nix settings. Shell: Nushell. Full Spacecraft Software palette via `spacecraftPalette` variable references.
+Managed via `programs.alacritty.enable = true` with structured Nix settings. Shell: Nushell. Full Steelbore palette via `spacecraftPalette` variable references.
 
 ### 13.10 dconf Settings
 

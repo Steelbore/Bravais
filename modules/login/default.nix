@@ -130,7 +130,7 @@ let
     ${pkgs.eww}/bin/eww open bar &
     ${pkgs.numlockx}/bin/numlockx on &
     ${gitway.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/gitway-add "$HOME/.ssh/id_ed25519" &
-    # After leftwm is up, force-apply the Spacecraft Software theme and re-set the
+    # After leftwm is up, force-apply the Steelbore theme and re-set the
     # root background. Both calls must happen AFTER leftwm starts:
     #
     # - leftwm 0.5.4 does not auto-load themes/current/theme.ron on

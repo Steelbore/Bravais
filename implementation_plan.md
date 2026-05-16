@@ -1,4 +1,4 @@
-# Bravais: A Spacecraft Software NixOS Distribution — Implementation Status
+# Bravais: A Steelbore OS NixOS Distribution — Implementation Status
 
 **Version:** 2.1 | **Date:** 2026-04-05 | **Status:** Implemented
 
@@ -34,7 +34,7 @@ Bravais is a fully implemented flake-based NixOS configuration following the Spa
 │   │   ├── audio.nix            # PipeWire audio stack
 │   │   └── security.nix         # sudo-rs, Polkit
 │   ├── theme/
-│   │   ├── default.nix          # Spacecraft Software palette, TTY colors
+│   │   ├── default.nix          # Steelbore palette, TTY colors
 │   │   └── fonts.nix            # JetBrains Mono, Orbitron, Share Tech
 │   ├── hardware/
 │   │   ├── default.nix          # Entry point
@@ -50,7 +50,7 @@ Bravais is a fully implemented flake-based NixOS configuration following the Spa
 │   │   └── default.nix          # greetd + tuigreet
 │   └── packages/
 │       ├── default.nix          # Entry point
-│       ├── terminals.nix        # 9 terminals with Spacecraft Software themes
+│       ├── terminals.nix        # 9 terminals with Steelbore themes
 │       ├── editors.nix          # Text editors & IDEs
 │       ├── development.nix      # Dev tools & languages
 │       ├── browsers.nix         # Web browsers
@@ -117,7 +117,7 @@ All modules follow the `spacecraft.*` namespace pattern:
 
 - [x] Implement desktops/niri.nix
   - [x] Niri compositor configuration
-  - [x] Ironbar status bar with Spacecraft Software theme
+  - [x] Ironbar status bar with Steelbore theme
   - [x] wired notifications
   - [x] Keybindings (Vim + CUA)
 - [x] Implement desktops/cosmic.nix
@@ -129,7 +129,7 @@ All modules follow the `spacecraft.*` namespace pattern:
 - [x] Implement desktops/leftwm.nix
   - [x] LeftWM configuration (config.ron)
   - [x] Theme configuration (theme.ron)
-  - [x] Polybar with Spacecraft Software colors
+  - [x] Polybar with Steelbore colors
   - [x] Picom compositor
   - [x] Dunst notifications
   - [x] Keybindings (Vim + CUA)
@@ -140,7 +140,7 @@ All modules follow the `spacecraft.*` namespace pattern:
   - [x] greetd display manager
   - [x] tuigreet with ISO 8601 time format
   - [x] Session selection for all 4 desktops
-  - [x] Spacecraft Software branding in greeting
+  - [x] Steelbore branding in greeting
 
 ### 3.6 Terminal Emulators
 
@@ -171,7 +171,7 @@ All modules follow the `spacecraft.*` namespace pattern:
 - [x] Implement users/mj/default.nix (user account)
 - [x] Implement users/mj/home.nix
   - [x] Git configuration with SSH signing
-  - [x] Starship prompt with Spacecraft Software palette
+  - [x] Starship prompt with Steelbore palette
   - [x] Nushell configuration with aliases
   - [x] Alacritty user configuration
   - [x] Niri user overrides
@@ -263,7 +263,7 @@ sudo nixos-rebuild switch --flake .#bravais
 - [ ] ISO builder for installation media
 - [ ] Additional host configurations (server, VM)
 - [ ] COSMIC theme integration (cosmic-settings)
-- [ ] Helix editor Spacecraft Software theme
+- [ ] Helix editor Steelbore theme
 
 ---
 

@@ -58,7 +58,7 @@
   # bash module being active. Bash is excluded from user shells via shell= and
   # environment.shells — no user or root has bash as their login shell.
 
-  # Spacecraft Software module toggles
+  # Steelbore module toggles
   steelbore = {
     # Desktop environments
     desktops.gnome.enable = true;

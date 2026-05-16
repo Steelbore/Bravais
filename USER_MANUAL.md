@@ -1,6 +1,6 @@
 # Bravais User Manual
 
-**A Spacecraft Software NixOS Distribution**
+**A Steelbore OS NixOS Distribution**
 **Version:** 2.1 | **Date:** 2026-04-05
 
 ---
@@ -18,7 +18,7 @@
 5. [Keyboard Layout](#5-keyboard-layout)
 6. [Shell Configuration](#6-shell-configuration)
 7. [System Administration](#7-system-administration)
-8. [Spacecraft Software Theme](#8-spacecraft-software-theme)
+8. [Steelbore Theme](#8-spacecraft-software-theme)
 9. [Troubleshooting](#9-troubleshooting)
 
 ---
@@ -30,7 +30,7 @@
 Bravais is a NixOS-based operating system built on the Spacecraft Software Standard. It features:
 
 - **Four desktop environments:** Niri, LeftWM, COSMIC, and GNOME
-- **Unified theming:** All applications use the Spacecraft Software color palette
+- **Unified theming:** All applications use the Steelbore color palette
 - **Rust-first tooling:** Memory-safe alternatives wherever possible
 - **Declarative configuration:** All settings managed through Nix
 
@@ -374,7 +374,7 @@ Configure keybindings in **Settings > Keyboard > Keyboard Shortcuts**.
 - **COSMIC integration:** cosmic-term
 - **GNOME integration:** Ptyxis
 
-All terminals are themed with the Spacecraft Software color palette.
+All terminals are themed with the Steelbore color palette.
 
 ---
 
@@ -492,7 +492,7 @@ Once enrolled, you can use your fingerprint for:
 
 ---
 
-## 8. Spacecraft Software Theme
+## 8. Steelbore Theme
 
 ### 8.1 Color Palette
 

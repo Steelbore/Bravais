@@ -27,7 +27,7 @@ Bravais/
 │       └── hardware.nix               # Disk layout, kernel modules, CPU
 ├── modules/
 │   ├── core/                          # Always-enabled: boot, nix, locale, audio, security
-│   ├── theme/                         # Spacecraft Software palette env vars + TTY colors + fonts
+│   ├── theme/                         # Steelbore palette env vars + TTY colors + fonts
 │   ├── hardware/                      # Intel CPU, fingerprint (fprintd)
 │   ├── desktops/                      # GNOME, COSMIC, Niri, LeftWM (opt-in)
 │   ├── login/                         # greetd + tuigreet
@@ -51,7 +51,7 @@ Bravais/
     │   ├── niri.nix                   # Niri WM enable + config.kdl + anyrun/ironbar
     │   └── leftwm.nix                 # LeftWM X11 enable + rlaunch
     └── core/
-        ├── theme.nix                  # Spacecraft Software color palette → env vars + TTY colors
+        ├── theme.nix                  # Steelbore color palette → env vars + TTY colors
         └── settings.nix               # Nushell, Starship, terminal configs, Ironbar, Git, Flatpak, sudo-rs
 ```
 
@@ -84,7 +84,7 @@ Bravais/
 
 ---
 
-## Spacecraft Software Color Palette
+## Steelbore Color Palette
 
 > *"Color is not decoration; it is telemetry."*
 
@@ -217,13 +217,13 @@ Manages per-user dotfiles via `xdg.configFile`:
 | App | Config Type | Key Settings |
 | ----- | ------------ | -------------- |
 | Git | `programs.git` | Identity, SSH signing, main branch |
-| Starship | `programs.starship` | Spacecraft Software palette, directory/git/character format |
+| Starship | `programs.starship` | Steelbore palette, directory/git/character format |
 | Nushell | `programs.nushell` | Aliases (telemetry, sensors, edit), `steelbore` command |
-| Alacritty | `programs.alacritty` | Spacecraft Software colors, Cascadia Code 12pt, 95% opacity |
+| Alacritty | `programs.alacritty` | Steelbore colors, Cascadia Code 12pt, 95% opacity |
 | Niri | `xdg.configFile` | Focus ring, gaps, binds, spawns |
-| Ironbar | `xdg.configFile` | YAML config + CSS (Share Tech Mono, Spacecraft Software colors) |
-| WezTerm | `xdg.configFile` | Spacecraft Software colors, Cascadia Code, 95% opacity |
-| Rio | `xdg.configFile` | Spacecraft Software colors, Cascadia Code 18pt |
+| Ironbar | `xdg.configFile` | YAML config + CSS (Share Tech Mono, Steelbore colors) |
+| WezTerm | `xdg.configFile` | Steelbore colors, Cascadia Code, 95% opacity |
+| Rio | `xdg.configFile` | Steelbore colors, Cascadia Code 18pt |
 
 ---
 

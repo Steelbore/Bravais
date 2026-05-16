@@ -30,10 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - ISO 8601 date/time display (`%Y-%m-%d %H:%M:%S`)
   - Session memory (remembers last selected desktop)
   - Password asterisks for visual feedback
-  - Spacecraft Software branding in greeting message
+  - Steelbore branding in greeting message
   - PAM integration for GNOME Keyring
 
-- **Spacecraft Software themes for all terminal emulators**
+- **Steelbore themes for all terminal emulators**
   - Ghostty configuration (`/etc/ghostty/config`)
   - WaveTerm JSON configuration (`/etc/waveterm/config.json`)
   - Warp Terminal YAML theme (`/etc/warp/themes/spacecraft.yaml`)
@@ -93,7 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - COSMIC (Wayland) — Full desktop from System76
   - GNOME (Wayland) — Full desktop with extensions
 
-- **Spacecraft Software color palette** — Unified theming across all components
+- **Steelbore color palette** — Unified theming across all components
   - Void Navy (`#000027`) — Mandatory background
   - Molten Amber (`#D98E32`) — Primary text
   - Steel Blue (`#4B7EB0`) — Accents
@@ -107,12 +107,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `spacecraft.packages.*` — Application bundles (10 categories)
 
 - **Terminal configurations**
-  - Alacritty with Spacecraft Software theme
-  - WezTerm with Spacecraft Software theme
-  - Rio with Spacecraft Software theme
+  - Alacritty with Steelbore theme
+  - WezTerm with Steelbore theme
+  - Rio with Steelbore theme
 
 - **Home Manager integration**
-  - Starship prompt with Spacecraft Software palette
+  - Starship prompt with Steelbore palette
   - Nushell configuration with aliases
   - Git configuration with SSH signing
 

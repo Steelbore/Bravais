@@ -10,7 +10,7 @@ The design of Bravais is guided by four primary tenets:
 
 2. **Opt-in Modularity:** Every feature, hardware profile, and application set is structurally siloed inside its own module using Nix's `lib.mkEnableOption`. Hosts boot only exactly what they explicitly declare via the `spacecraft.*` namespace.
 
-3. **The Spacecraft Software Telemetry Palette:** Color is treated as telemetry, not just decoration. A strict, universal 6-color *Spacecraft Software Color Palette* acts as a system-wide visual identity unifying the interface—extending from desktop environments down to TTY consoles.
+3. **The Steelbore Telemetry Palette:** Color is treated as telemetry, not just decoration. A strict, universal 6-color *Steelbore Color Palette* acts as a system-wide visual identity unifying the interface—extending from desktop environments down to TTY consoles.
 
 4. **Self-Sufficient Configuration:** Built with determinism and reproducibility at the forefront. Features minimal external dependencies beyond `nixpkgs`, ensuring your host builds identically every time.
 
@@ -34,7 +34,7 @@ bravais/
 │   │   ├── locale.nix             # Timezone (UTC), i18n
 │   │   ├── audio.nix              # PipeWire audio stack
 │   │   └── security.nix           # sudo-rs, polkit
-│   ├── theme/                     # Spacecraft Software visual identity
+│   ├── theme/                     # Steelbore visual identity
 │   │   ├── default.nix            # Color palette, TTY colors
 │   │   └── fonts.nix              # Typography (Orbitron, JetBrains Mono)
 │   ├── hardware/                  # Hardware-specific modules
@@ -53,7 +53,7 @@ bravais/
 │   └── packages/                  # Application bundles (opt-in)
 │       ├── default.nix            # Package module entry
 │       ├── browsers.nix           # Web browsers
-│       ├── terminals.nix          # Terminal emulators (Spacecraft Software themed, starship+nushell)
+│       ├── terminals.nix          # Terminal emulators (Steelbore themed, starship+nushell)
 │       ├── editors.nix            # Text editors & IDEs
 │       ├── development.nix        # Dev tools & languages
 │       ├── security.nix           # Encryption & auth (Sequoia stack)
@@ -71,7 +71,7 @@ bravais/
 └── v0/                            # Frozen v0-era configurations (archive)
 ```
 
-## Spacecraft Software Color Palette
+## Steelbore Color Palette
 
 | Token          | Hex       | Role                           |
 |----------------|-----------|--------------------------------|
@@ -82,7 +82,7 @@ bravais/
 | Red Oxide      | `#FF5C5C` | Warning / Error Status         |
 | Liquid Coolant | `#8BE9FD` | Info / Links                   |
 
-**`#000027` (Void Navy) is the mandatory background for ALL Spacecraft Software surfaces.**
+**`#000027` (Void Navy) is the mandatory background for ALL Steelbore surfaces.**
 
 ## Desktop Environments
 
@@ -97,7 +97,7 @@ Bravais officially provisions definitions for four primary desktop targets:
 
 ## Terminal Emulators
 
-All terminals are themed with the Spacecraft Software color palette and launch **nushell + starship** by default.
+All terminals are themed with the Steelbore color palette and launch **nushell + starship** by default.
 
 | Terminal | Stack | Notes |
 |----------|-------|-------|
@@ -108,7 +108,7 @@ All terminals are themed with the Spacecraft Software color palette and launch *
 | Warp | Rust / AI | AI-powered terminal |
 | WaveTerm | Go / AI | AI-native terminal |
 | COSMIC Term | Rust | COSMIC desktop terminal |
-| Konsole | C++ / KDE | Spacecraft Software colorscheme + profile |
+| Konsole | C++ / KDE | Steelbore colorscheme + profile |
 | Yakuake | C++ / KDE | Drop-down terminal (Konsole backend) |
 | Ptyxis | C / GNOME | VTE-based, GNOME integration |
 | GNOME Console | C / GNOME | Minimal GNOME 4x terminal |
@@ -230,4 +230,4 @@ sudo nixos-rebuild switch --flake .#bravais-unstable-v1    # Baseline x86-64
 | **Total** | **107** | **78** | **185** |
 
 ---
-*Bravais (A Spacecraft Software NixOS Distribution)* | *Version 2.0*
+*Bravais (A Steelbore OS NixOS Distribution)* | *Version 2.0*

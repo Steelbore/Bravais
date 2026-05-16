@@ -67,7 +67,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 
 ## Phase 4: Login Management (`modules/login/`)
 
-- [✓] **`default.nix`**: greetd + tuigreet with Spacecraft Software branding
+- [✓] **`default.nix`**: greetd + tuigreet with Steelbore branding
 - [✓] **`default.nix`**: Session memory and ISO 8601 time display
 - [✓] **`default.nix`**: Shell sessions (Ion, Nushell, Brush) via `mkShellSession`
 - [✓] **`default.nix`**: Register session packages (niri, cosmic, ion, nushell, brush)
@@ -108,7 +108,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] Define `spacecraft.desktops.niri` option
 - [✓] Enable Niri compositor
 - [✓] Install companion packages (14: swaybg, xwayland-satellite, ironbar, waybar, etc.)
-- [✓] Write `/etc/niri/config.kdl` with Spacecraft Software palette
+- [✓] Write `/etc/niri/config.kdl` with Steelbore palette
 - [✓] Write `/etc/ironbar/config.yaml` and `/etc/ironbar/style.css`
 - [✓] Configure keybindings (Vim-style + CUA arrows); `Mod+Return` → rio (default terminal)
 - [✓] Configure workspaces 1-5
@@ -122,7 +122,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] Install companion packages (15: rlaunch, rofi, dmenu, polybar, picom, etc.)
 - [✓] Write `/etc/leftwm/config.ron` with keybindings; `Mod+Return` → rio (default terminal)
 - [✓] Write theme files (`theme.ron`, `up`, `down`, `polybar.ini`, `template.liquid`, `picom.conf`)
-- [✓] Write `/etc/dunst/dunstrc` with Spacecraft Software theme
+- [✓] Write `/etc/dunst/dunstrc` with Steelbore theme
 
 ---
 
@@ -147,7 +147,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] Install AI-native terminals (WaveTerm)
 - [✓] Install KDE terminals (Konsole, Yakuake)
 - [✓] Install other terminals (Foot, XTerm, XFCE4 Terminal, Termius, COSMIC Term)
-- [✓] Write system-level configs for all 15 terminals with Spacecraft Software theme
+- [✓] Write system-level configs for all 15 terminals with Steelbore theme
 
 ### editors.nix
 
@@ -292,7 +292,7 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] **`home.nix`**: Configure Starship prompt (Tokyo Night preset)
 - [✓] **`home.nix`**: Configure Nushell with aliases (telemetry, steelbore banner)
 - [✓] **`home.nix`**: Configure Ion shell init (`~/.config/ion/initrc`) with aliases
-- [✓] **`home.nix`**: Configure Alacritty with Spacecraft Software colors (via `programs.alacritty`)
+- [✓] **`home.nix`**: Configure Alacritty with Steelbore colors (via `programs.alacritty`)
 - [✓] **`home.nix`**: Write user-level XDG configs (niri, ironbar, wezterm, rio, ghostty, foot, xfce4-terminal, konsole, yakuake, xresources)
 - [✓] **`home.nix`**: Configure dconf settings (Ptyxis profile, GNOME Console)
 - [✓] **`home.nix`**: Configure containers (`~/.config/containers/containers.conf`, runc default)
@@ -323,9 +323,9 @@ This document tracks the implementation status of the Bravais NixOS distribution
 - [✓] Verify KDE Plasma 6 session boots on Wayland
 - [ ] Verify LeftWM session boots with Polybar
 - [✓] Verify greetd/tuigreet login with session selection
-- [✓] Verify Spacecraft Software palette on TTY
-- [~] Verify Spacecraft Software palette on all themed terminals (15)
-- [ ] Verify Spacecraft Software palette on Ironbar and Polybar
+- [✓] Verify Steelbore palette on TTY
+- [~] Verify Steelbore palette on all themed terminals (15)
+- [ ] Verify Steelbore palette on Ironbar and Polybar
 - [ ] Verify sudo-rs works for privilege escalation
 - [✓] Verify fingerprint authentication (fprintd)
 - [ ] Verify Podman with `docker` compat alias

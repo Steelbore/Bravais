@@ -4,7 +4,7 @@
 
 let
   # cosmic-theme stores colors as Srgba with 0.0–1.0 floats. Pre-converted
-  # from the canonical Spacecraft Software palette (Standard §8). Eight-digit
+  # from the canonical Steelbore palette (Standard §8). Eight-digit
   # precision matches what cosmic-settings writes itself, so user-facing
   # diffs stay clean.
   rgb = {
@@ -71,7 +71,7 @@ in
       "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
     };
 
-    # Spacecraft Software-themed Builder overrides for cosmic-theme. cosmic-settings-daemon
+    # Steelbore-themed Builder overrides for cosmic-theme. cosmic-settings-daemon
     # watches these via inotify, so changes apply without logout. palette /
     # corner_radii / spacing / gaps / active_hint / is_frosted / window_hint /
     # primary_container_bg / secondary_container_bg are intentionally left to

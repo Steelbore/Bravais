@@ -43,7 +43,7 @@
 
 ### **3. System Monitoring & Panels**
 * **Bars & Widgets**
-    * **Ironbar** 🦀 `[GUI 🖱️]` *(The "Spacecraft Software" GTK4 taskbar/panel)*
+    * **Ironbar** 🦀 `[GUI 🖱️]` *(The "Steelbore" GTK4 taskbar/panel)*
     * **eww** 🦀 `[GUI 🖱️]` *(ElKowars wacky widgets - custom UI creator)*
 * **Notifications**
     * **wired** 🦀 `[Daemon]` *(Lightweight, customizable notification daemon)*

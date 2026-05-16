@@ -91,12 +91,12 @@ in
   home.stateVersion = "25.11";
 
   home.file = aiSkillLinks // {
-    # Spacecraft Software project symlink
+    # Steelbore project symlink
     "steelbore".source = config.lib.file.mkOutOfStoreSymlink "/spacecraft-software";
 
     # Brush (Rust Bash-compatible) — share init with Bash via ~/.bashrc
     ".brushrc".text = ''
-      # Spacecraft Software Brush shell init — sources Home Manager's bashrc so Bash and Brush
+      # Steelbore Brush shell init — sources Home Manager's bashrc so Bash and Brush
       # share aliases, env, and gitway-agent key auto-loading.
       [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
     '';
@@ -183,7 +183,7 @@ in
       '';
     };
 
-    # Starship prompt — Spacecraft Software powerline (mirrors
+    # Starship prompt — Steelbore powerline (mirrors
     # /spacecraft-software/theme/Shells/Starship/starship.toml, kept inline so the
     # config doesn't depend on an out-of-flake path at eval time).
     starship = {
@@ -356,9 +356,9 @@ in
           min_time_to_notify = 45000;
         };
 
-        # Spacecraft Software palette — Catppuccin role keys preserved so the
+        # Steelbore palette — Catppuccin role keys preserved so the
         # upstream powerline preset renders unchanged, but every hex
-        # value resolves to a token from the Spacecraft Software canonical palette.
+        # value resolves to a token from the Steelbore canonical palette.
         palettes.steelbore = {
           # Powerline section accents
           red      = "#FF5C5C";  # red_oxide     — OS / username cap
@@ -388,7 +388,7 @@ in
           subtext0 = "#E6E6F0";
           subtext1 = "#E6E6F0";
 
-          # Remaining catppuccin role keys mapped to nearest Spacecraft Software semantic
+          # Remaining catppuccin role keys mapped to nearest Steelbore semantic
           rosewater = "#FF5C5C";
           flamingo  = "#FF5C5C";
           pink      = "#FF5C5C";
@@ -420,7 +420,7 @@ in
         # it. The visible UX is identical except the indicator is uncolored.
         $env.PROMPT_MULTILINE_INDICATOR = "::: "
 
-        # Spacecraft Software palette — kept in sync with flake.nix steelborePalette.
+        # Steelbore palette — kept in sync with flake.nix steelborePalette.
         # Nushell needs literals; env-var interpolation isn't available inside
         # color_config records.
         let steelbore = {
@@ -501,7 +501,7 @@ in
           }
         }
 
-        # Spacecraft Software Telemetry Aliases
+        # Steelbore Telemetry Aliases
         alias ll = ls -l
         alias lla = ls -la
         alias telemetry = macchina
@@ -533,7 +533,7 @@ in
       '';
     };
 
-    # Alacritty (Spacecraft Software theme)
+    # Alacritty (Steelbore theme)
     alacritty = {
       enable = true;
       settings = {
@@ -736,7 +736,7 @@ in
     # via `eww open bar` from their startup scripts.
     # ═══════════════════════════════════════════════════════════════════════════
     "eww/eww.yuck".text = ''
-      ;; Spacecraft Software Eww — shared bar widget
+      ;; Steelbore Eww — shared bar widget
 
       (defpoll time    :interval "1s"  "date '+%Y-%m-%d %H:%M:%S'")
       (defpoll cpu     :interval "3s"  "top -bn1 -d 0.1 | awk '/^%Cpu/ {printf \"%d\", $2 + $4}'")
@@ -792,9 +792,9 @@ in
     '';
 
     # ═══════════════════════════════════════════════════════════════════════════
-    # ZELLIJ — Full Spacecraft Software config
+    # ZELLIJ — Full Steelbore config
     # User has no custom keybinds; ship a complete config that activates the
-    # Spacecraft Software theme. zellij will write any auto-generated keybinds to its
+    # Steelbore theme. zellij will write any auto-generated keybinds to its
     # internal cache; our config.kdl wins because it's at $XDG_CONFIG_HOME.
     # ═══════════════════════════════════════════════════════════════════════════
     "zellij/config.kdl".text = ''
@@ -826,7 +826,7 @@ in
     # ION — Shell init (Starship prompt)
     # ═══════════════════════════════════════════════════════════════════════════
     "ion/initrc".text = ''
-      # Spacecraft Software Ion Shell Init
+      # Steelbore Ion Shell Init
 
       # Override SSH_AUTH_SOCK back to gitway-agent's socket. PAM's
       # pam_gnome_keyring otherwise sets it to /run/user/$UID/keyring/ssh.
@@ -851,7 +851,7 @@ in
     # NIRI — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "niri/config.kdl".text = ''
-      // Spacecraft Software Niri User Configuration
+      // Steelbore Niri User Configuration
 
       // XDG_CURRENT_DESKTOP routes xdg-desktop-portal lookups (see
       // xdg.portal.config.niri in modules/theme/dark-mode.nix). Niri
@@ -1072,7 +1072,7 @@ in
     # WEZTERM — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "wezterm/wezterm.lua".text = ''
-      -- Spacecraft Software WezTerm User Configuration
+      -- Steelbore WezTerm User Configuration
       local wezterm = require 'wezterm'
       local config = {}
 
@@ -1132,7 +1132,7 @@ in
     # RIO — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "rio/config.toml".text = ''
-      # Spacecraft Software Rio User Configuration
+      # Steelbore Rio User Configuration
 
       [window]
       opacity = 0.95
@@ -1192,7 +1192,7 @@ in
     # GHOSTTY — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "ghostty/config".text = ''
-      # Spacecraft Software Ghostty User Configuration
+      # Steelbore Ghostty User Configuration
 
       font-family = JetBrains Mono
       font-size = 12
@@ -1233,7 +1233,7 @@ in
     # FOOT — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "foot/foot.ini".text = ''
-      # Spacecraft Software Foot User Configuration
+      # Steelbore Foot User Configuration
 
       [main]
       font=JetBrains Mono:size=12
@@ -1323,7 +1323,7 @@ in
 
     # ═══════════════════════════════════════════════════════════════════════════
     # YAKUAKE — KDE drop-down terminal (uses Konsole as backend)
-    # Inherits shell and colors from the Konsole Spacecraft Software profile above
+    # Inherits shell and colors from the Konsole Steelbore profile above
     # ═══════════════════════════════════════════════════════════════════════════
     "yakuakerc".text = ''
       [Desktop Entry]
@@ -1343,7 +1343,7 @@ in
     # KONSOLE — User profile and colorscheme
     # ═══════════════════════════════════════════════════════════════════════════
     "konsole/Steelbore.colorscheme".text = ''
-      # Spacecraft Software Konsole Color Scheme
+      # Steelbore Konsole Color Scheme
 
       [Background]
       Color=0,0,39
@@ -1449,7 +1449,7 @@ in
       Anchor=0.5,0.5
       Blur=false
       ColorRandomization=false
-      Description=Spacecraft Software
+      Description=Steelbore
       FillStyle=Tile
       Opacity=0.95
       Spread=1.0
@@ -1457,10 +1457,10 @@ in
     '';
 
     "konsole/Steelbore.profile".text = ''
-      # Spacecraft Software Konsole Profile
+      # Steelbore Konsole Profile
 
       [Appearance]
-      ColorScheme=Spacecraft Software
+      ColorScheme=Steelbore
       Font=JetBrains Mono,12,-1,5,50,0,0,0,0,0
 
       [General]
@@ -1485,7 +1485,7 @@ in
     # as a commented-out Libera Chat example — drop in your nick / channels
     # to start using.
     "halloy/config.toml".text = ''
-      # Spacecraft Software Halloy configuration
+      # Steelbore Halloy configuration
       theme = "spacecraft-software"
 
       [font]
@@ -1505,7 +1505,7 @@ in
     '';
 
     "halloy/themes/spacecraft-software.toml".text = ''
-      # Spacecraft Software Halloy Theme — Void Navy / Molten Amber palette
+      # Steelbore Halloy Theme — Void Navy / Molten Amber palette
       # Schema mirrors halloy/assets/themes/ferra.toml.
 
       [general]
@@ -1558,7 +1558,7 @@ in
       background_selected_hover = "${steelborePalette.radiumGreen}"
 
       # IRC mIRC-style formatting palette. Mappings mirror foot/wezterm
-      # — entries the Spacecraft Software palette doesn't model directly
+      # — entries the Steelbore palette doesn't model directly
       # (brown, magenta, pink, lightgrey) reuse the closest neighbor.
       [formatting]
       white      = "${steelborePalette.moltenAmber}"
@@ -1593,7 +1593,7 @@ in
     # `bg: default` inherits the host terminal's background — which on
     # Bravais is already Void Navy.
     "tiny/config.yml".text = ''
-      # Spacecraft Software Tiny configuration
+      # Steelbore Tiny configuration
 
       # Servers — fill in or use /connect at runtime.
       servers: []
@@ -1759,7 +1759,7 @@ in
       use-system-font = false;
     };
     "org/gnome/Ptyxis/Profiles/steelbore" = {
-      label = "Spacecraft Software";
+      label = "Steelbore";
       use-custom-command = true;
       custom-command = "${pkgs.nushell}/bin/nu";
       palette = [

@@ -53,7 +53,7 @@
 
     # System-wide Niri configuration
     environment.etc."niri/config.kdl".text = ''
-      // Spacecraft Software Niri Configuration
+      // Steelbore Niri Configuration
       // The Spacecraft Software Standard — Scrolling Tiling
 
       // Session-wide environment. Niri imports these into the systemd

@@ -13,7 +13,7 @@
   home.homeDirectory = "/home/mj";
   home.stateVersion = "25.11";
 
-  # Spacecraft Software project symlink
+  # Steelbore project symlink
   home.file."steelbore".source = config.lib.file.mkOutOfStoreSymlink "/spacecraft-software";
 
   # Keyboard layout
@@ -52,7 +52,7 @@
       };
     };
 
-    # Starship prompt (Spacecraft Software theme)
+    # Starship prompt (Steelbore theme)
     starship = {
       enable = true;
       settings = {
@@ -107,7 +107,7 @@
 
         $env.PATH = ($env.PATH | split row (char esep) | prepend $"($env.HOME)/.local/bin" | uniq)
 
-        # Spacecraft Software Telemetry Aliases
+        # Steelbore Telemetry Aliases
         alias ll = ls -l
         alias lla = ls -la
         alias telemetry = macchina
@@ -131,7 +131,7 @@
       '';
     };
 
-    # Alacritty (Spacecraft Software theme)
+    # Alacritty (Steelbore theme)
     alacritty = {
       enable = true;
       settings = {
@@ -194,7 +194,7 @@
     # NIRI — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "niri/config.kdl".text = ''
-      // Spacecraft Software Niri User Configuration
+      // Steelbore Niri User Configuration
 
       layout {
           focus-ring {
@@ -352,7 +352,7 @@
     # WEZTERM — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "wezterm/wezterm.lua".text = ''
-      -- Spacecraft Software WezTerm User Configuration
+      -- Steelbore WezTerm User Configuration
       local wezterm = require 'wezterm'
       local config = {}
 
@@ -411,7 +411,7 @@
     # RIO — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "rio/config.toml".text = ''
-      # Spacecraft Software Rio User Configuration
+      # Steelbore Rio User Configuration
 
       [window]
       opacity = 0.95
@@ -452,7 +452,7 @@
     # GHOSTTY — User configuration
     # ═══════════════════════════════════════════════════════════════════════════
     "ghostty/config".text = ''
-      # Spacecraft Software Ghostty User Configuration
+      # Steelbore Ghostty User Configuration
 
       font-family = JetBrains Mono
       font-size = 12
@@ -495,7 +495,7 @@
       use-system-font = false;
     };
     "org/gnome/Ptyxis/Profiles/steelbore" = {
-      label = "Spacecraft Software";
+      label = "Steelbore";
       palette = [
         steelborePalette.voidNavy      # black
         steelborePalette.redOxide      # red

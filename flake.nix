@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 {
-  description = "Bravais — A Spacecraft Software NixOS Distribution";
+  description = "Bravais — A Steelbore OS NixOS Distribution";
 
   inputs = {
     # Core (Stable — 25.11)
@@ -51,7 +51,7 @@
     let
       system = "x86_64-linux";
 
-      # Spacecraft Software color palette as a reusable attribute set
+      # Steelbore color palette as a reusable attribute set
       steelborePalette = {
         voidNavy    = "#000027";
         moltenAmber = "#D98E32";
